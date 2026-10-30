@@ -1,0 +1,983 @@
+{
+  "submissions": [
+    {
+      "id": "sub_seed01",
+      "createdAt": "2026-10-28T15:12:00.000Z",
+      "status": "new",
+      "contact": {
+        "name": "Marcus Bell",
+        "title": "Owner & President",
+        "email": "marcus@crescenthvac.example",
+        "phone": "(704) 555-0142"
+      },
+      "company": {
+        "name": "Crescent HVAC & Plumbing",
+        "website": "crescenthvac.example",
+        "city": "Charlotte",
+        "state": "NC",
+        "yearFounded": 2004,
+        "employees": 62,
+        "description": "Residential and light commercial HVAC and plumbing service, repair, and replacement across the Charlotte metro. Roughly 45% of revenue comes from recurring maintenance agreements with 6,800 members."
+      },
+      "ownership": {
+        "diverseOwned": true,
+        "ownerOperator": true
+      },
+      "deal": {
+        "amount": 5500000,
+        "capitalType": "senior_debt",
+        "useOfFunds": "acquisition",
+        "timeline": "0-3",
+        "details": "Acquiring a retiring competitor in Rock Hill, SC ($1.1M EBITDA) for $5.0M. Seller has agreed to a 10% seller note; seeking senior debt to fund the balance and refinance our existing term loan."
+      },
+      "financials": {
+        "revenueLTM": 14200000,
+        "revenuePrior": 12100000,
+        "ebitdaLTM": 2300000,
+        "topCustomerPct": 6,
+        "existingDebt": 900000
+      },
+      "notes": [],
+      "introductions": []
+    },
+    {
+      "id": "sub_seed02",
+      "createdAt": "2026-10-27T13:40:00.000Z",
+      "status": "new",
+      "contact": {
+        "name": "Danielle Okafor",
+        "title": "Founder & CEO",
+        "email": "danielle@brightpathhh.example",
+        "phone": "(404) 555-0190"
+      },
+      "company": {
+        "name": "Brightpath Home Health",
+        "website": "brightpathhh.example",
+        "city": "Atlanta",
+        "state": "GA",
+        "yearFounded": 2012,
+        "employees": 140,
+        "description": "Medicare-certified home health agency providing skilled nursing visits, physical therapy, and personal home care to seniors in metro Atlanta. Caregivers serve about 620 active patients."
+      },
+      "ownership": {
+        "diverseOwned": true,
+        "ownerOperator": true
+      },
+      "deal": {
+        "amount": 2500000,
+        "capitalType": "sba_7a",
+        "useOfFunds": "growth",
+        "timeline": "3-6",
+        "details": "Opening a second branch in Macon and funding working capital for the first 9 months of payroll before reimbursements ramp."
+      },
+      "financials": {
+        "revenueLTM": 9800000,
+        "revenuePrior": 8400000,
+        "ebitdaLTM": 1400000,
+        "topCustomerPct": 38,
+        "existingDebt": 400000
+      },
+      "notes": [],
+      "introductions": []
+    },
+    {
+      "id": "sub_seed03",
+      "createdAt": "2026-10-24T18:05:00.000Z",
+      "status": "introduced",
+      "contact": {
+        "name": "Andre Whitfield",
+        "title": "Searcher / Incoming CEO",
+        "email": "andre@whitfieldcap.example",
+        "phone": "(216) 555-0117"
+      },
+      "company": {
+        "name": "Keystone Precision Machining",
+        "website": "keystoneprecision.example",
+        "city": "Cleveland",
+        "state": "OH",
+        "yearFounded": 1987,
+        "employees": 48,
+        "description": "CNC machining and precision components for aerospace and industrial OEMs. 5-axis machine shop with AS9100 certification; founder is retiring with no succession plan."
+      },
+      "ownership": {
+        "diverseOwned": true,
+        "ownerOperator": false
+      },
+      "deal": {
+        "amount": 7000000,
+        "capitalType": "senior_debt",
+        "useOfFunds": "acquisition",
+        "timeline": "0-3",
+        "details": "Signed LOI to acquire 100% of the company at $11.5M (5.3x). Equity from search investors and a 15% seller note; senior debt for the remainder."
+      },
+      "financials": {
+        "revenueLTM": 11500000,
+        "revenuePrior": 11900000,
+        "ebitdaLTM": 2150000,
+        "topCustomerPct": 27,
+        "existingDebt": 0
+      },
+      "notes": [
+        {
+          "at": "2026-10-25T14:00:00.000Z",
+          "author": "Jasmine (MAPlab)",
+          "text": "QoE kicked off with seller's accountant. Top customer is a Tier 1 aerospace supplier, 12-year relationship."
+        }
+      ],
+      "introductions": [
+        {
+          "providerId": "prov_lakeshore",
+          "at": "2026-10-26T16:30:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "sub_seed04",
+      "createdAt": "2026-10-23T11:22:00.000Z",
+      "status": "new",
+      "contact": {
+        "name": "Greg Hollister",
+        "title": "CFO",
+        "email": "ghollister@northlinelogistics.example",
+        "phone": "(312) 555-0166"
+      },
+      "company": {
+        "name": "Northline Logistics",
+        "website": "northlinelogistics.example",
+        "city": "Chicago",
+        "state": "IL",
+        "yearFounded": 2016,
+        "employees": 35,
+        "description": "Asset-light freight brokerage and third-party logistics (3PL) provider serving food and beverage shippers in the Midwest. Manages about 1,900 loads per month through a carrier network of 4,000 trucking companies."
+      },
+      "ownership": {
+        "diverseOwned": false,
+        "ownerOperator": false
+      },
+      "deal": {
+        "amount": 10000000,
+        "capitalType": "mezzanine",
+        "useOfFunds": "recap",
+        "timeline": "3-6",
+        "details": "Partial recapitalization to buy out a passive co-founder and refinance a $3M line of credit."
+      },
+      "financials": {
+        "revenueLTM": 42000000,
+        "revenuePrior": 35000000,
+        "ebitdaLTM": 2800000,
+        "topCustomerPct": 18,
+        "existingDebt": 3000000
+      },
+      "notes": [],
+      "introductions": []
+    },
+    {
+      "id": "sub_seed05",
+      "createdAt": "2026-10-21T16:48:00.000Z",
+      "status": "new",
+      "contact": {
+        "name": "Luis Caballero",
+        "title": "Owner",
+        "email": "luis@verdelandscape.example",
+        "phone": "(713) 555-0103"
+      },
+      "company": {
+        "name": "Verde Commercial Landscaping",
+        "website": "verdelandscape.example",
+        "city": "Houston",
+        "state": "TX",
+        "yearFounded": 2009,
+        "employees": 85,
+        "description": "Commercial landscaping and grounds maintenance for HOAs, office parks, and municipal contracts in the Houston area. 92% of revenue is under annual maintenance contracts."
+      },
+      "ownership": {
+        "diverseOwned": true,
+        "ownerOperator": true
+      },
+      "deal": {
+        "amount": 3000000,
+        "capitalType": "senior_debt",
+        "useOfFunds": "equipment",
+        "timeline": "0-3",
+        "details": "Replace aging mower fleet and add 12 crew trucks to service two new municipal contracts starting in January."
+      },
+      "financials": {
+        "revenueLTM": 7400000,
+        "revenuePrior": 6600000,
+        "ebitdaLTM": 1050000,
+        "topCustomerPct": 12,
+        "existingDebt": 600000
+      },
+      "notes": [],
+      "introductions": []
+    },
+    {
+      "id": "sub_seed06",
+      "createdAt": "2026-10-17T14:15:00.000Z",
+      "status": "in_review",
+      "contact": {
+        "name": "Kwame Asante",
+        "title": "Co-founder & CEO",
+        "email": "kwame@sankofait.example",
+        "phone": "(202) 555-0181"
+      },
+      "company": {
+        "name": "Sankofa IT Solutions",
+        "website": "sankofait.example",
+        "city": "Washington",
+        "state": "DC",
+        "yearFounded": 2014,
+        "employees": 52,
+        "description": "Managed services (MSP) and cybersecurity provider for federal contractors and nonprofits. Holds 8(a) certification and two GSA schedules; 70% of revenue is recurring monthly contracts."
+      },
+      "ownership": {
+        "diverseOwned": true,
+        "ownerOperator": true
+      },
+      "deal": {
+        "amount": 5000000,
+        "capitalType": "minority_equity",
+        "useOfFunds": "growth",
+        "timeline": "3-6",
+        "details": "Growth equity to build a SOC-as-a-service offering and hire a business development team to pursue larger federal primes."
+      },
+      "financials": {
+        "revenueLTM": 12600000,
+        "revenuePrior": 9900000,
+        "ebitdaLTM": 2000000,
+        "topCustomerPct": 31,
+        "existingDebt": 0
+      },
+      "notes": [
+        {
+          "at": "2026-10-20T15:10:00.000Z",
+          "author": "Ray (MAPlab)",
+          "text": "Strong growth story. Need detail on the 31% customer: subcontract under a federal prime, recompete is Q3 2027."
+        }
+      ],
+      "introductions": []
+    },
+    {
+      "id": "sub_seed07",
+      "createdAt": "2026-10-14T10:30:00.000Z",
+      "status": "in_review",
+      "contact": {
+        "name": "Evelyn Harris",
+        "title": "Second-generation Owner",
+        "email": "evelyn@harborstreetbakery.example",
+        "phone": "(410) 555-0129"
+      },
+      "company": {
+        "name": "Harbor Street Bakery Co.",
+        "website": "harborstreetbakery.example",
+        "city": "Baltimore",
+        "state": "MD",
+        "yearFounded": 1998,
+        "employees": 70,
+        "description": "Wholesale commercial bakery producing bread, rolls, and pastries for grocery chains, hospitals, and restaurants in the Mid-Atlantic. Runs two production shifts out of a 40,000 sq ft facility."
+      },
+      "ownership": {
+        "diverseOwned": true,
+        "ownerOperator": true
+      },
+      "deal": {
+        "amount": 4000000,
+        "capitalType": "senior_debt",
+        "useOfFunds": "refinance",
+        "timeline": "3-6",
+        "details": "Refinance a high-rate equipment loan and merchant cash advance taken during 2024 flour cost spike; lower debt service by roughly $300K per year."
+      },
+      "financials": {
+        "revenueLTM": 8900000,
+        "revenuePrior": 8600000,
+        "ebitdaLTM": 720000,
+        "topCustomerPct": 24,
+        "existingDebt": 1500000
+      },
+      "notes": [],
+      "introductions": []
+    },
+    {
+      "id": "sub_seed08",
+      "createdAt": "2026-10-10T19:02:00.000Z",
+      "status": "new",
+      "contact": {
+        "name": "Tanya Brooks",
+        "title": "Founder",
+        "email": "tanya@littlescholars.example",
+        "phone": "(901) 555-0155"
+      },
+      "company": {
+        "name": "Little Scholars Learning Centers",
+        "website": "littlescholars.example",
+        "city": "Memphis",
+        "state": "TN",
+        "yearFounded": 2011,
+        "employees": 95,
+        "description": "Operator of four licensed child care and early learning centers serving 410 children from infants through pre-K. Three-star state quality rating at all sites."
+      },
+      "ownership": {
+        "diverseOwned": true,
+        "ownerOperator": true
+      },
+      "deal": {
+        "amount": 1800000,
+        "capitalType": "sba_7a",
+        "useOfFunds": "growth",
+        "timeline": "6-12",
+        "details": "Build out a fifth center in Southaven, MS on a leased site; waitlist of 160 families across existing locations."
+      },
+      "financials": {
+        "revenueLTM": 5200000,
+        "revenuePrior": 4600000,
+        "ebitdaLTM": 680000,
+        "topCustomerPct": 9,
+        "existingDebt": 900000
+      },
+      "notes": [],
+      "introductions": []
+    },
+    {
+      "id": "sub_seed09",
+      "createdAt": "2026-10-08T13:55:00.000Z",
+      "status": "introduced",
+      "contact": {
+        "name": "Robert Mayfield",
+        "title": "Founder & Chairman",
+        "email": "rmayfield@summitfacility.example",
+        "phone": "(214) 555-0172"
+      },
+      "company": {
+        "name": "Summit Facility Services",
+        "website": "summitfacility.example",
+        "city": "Dallas",
+        "state": "TX",
+        "yearFounded": 2006,
+        "employees": 310,
+        "description": "Commercial janitorial and facility services for Class A office, healthcare, and education clients across Dallas-Fort Worth. Multi-year contracts with 140 client sites."
+      },
+      "ownership": {
+        "diverseOwned": true,
+        "ownerOperator": false
+      },
+      "deal": {
+        "amount": 14000000,
+        "capitalType": "majority_equity",
+        "useOfFunds": "recap",
+        "timeline": "3-6",
+        "details": "Founder seeking majority recapitalization and succession partner; wants to roll 30% and stay on the board."
+      },
+      "financials": {
+        "revenueLTM": 18400000,
+        "revenuePrior": 16900000,
+        "ebitdaLTM": 2100000,
+        "topCustomerPct": 14,
+        "existingDebt": 1800000
+      },
+      "notes": [
+        {
+          "at": "2026-10-09T17:20:00.000Z",
+          "author": "Jasmine (MAPlab)",
+          "text": "Founder is 64. COO (12 yrs tenure) would step into CEO role. Clean books, reviewed financials."
+        }
+      ],
+      "introductions": [
+        {
+          "providerId": "prov_unity",
+          "at": "2026-10-12T15:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "sub_seed10",
+      "createdAt": "2026-10-06T09:18:00.000Z",
+      "status": "declined",
+      "contact": {
+        "name": "Brian Kessler",
+        "title": "Owner",
+        "email": "brian@ridgeviewcollision.example",
+        "phone": "(602) 555-0138"
+      },
+      "company": {
+        "name": "Ridgeview Auto Collision",
+        "website": "ridgeviewcollision.example",
+        "city": "Phoenix",
+        "state": "AZ",
+        "yearFounded": 2019,
+        "employees": 22,
+        "description": "Single-location collision repair and auto body shop. Most work comes through an insurer direct repair program (DRP)."
+      },
+      "ownership": {
+        "diverseOwned": false,
+        "ownerOperator": true
+      },
+      "deal": {
+        "amount": 1500000,
+        "capitalType": "senior_debt",
+        "useOfFunds": "working_capital",
+        "timeline": "0-3",
+        "details": "Cover a cash shortfall after a slow first half and catch up on vendor payables."
+      },
+      "financials": {
+        "revenueLTM": 3100000,
+        "revenuePrior": 3300000,
+        "ebitdaLTM": 310000,
+        "topCustomerPct": 41,
+        "existingDebt": 700000
+      },
+      "notes": [
+        {
+          "at": "2026-10-07T13:00:00.000Z",
+          "author": "Ray (MAPlab)",
+          "text": "Declined: leverage would exceed 7x and DRP dependence is high. Suggested they revisit after 2 profitable quarters."
+        }
+      ],
+      "introductions": []
+    }
+  ],
+  "providers": [
+    {
+      "id": "prov_piedmont",
+      "name": "Piedmont Community Bank",
+      "type": "Bank",
+      "capitalTypes": [
+        "senior_debt"
+      ],
+      "checkMin": 1000000,
+      "checkMax": 10000000,
+      "minEbitda": 750000,
+      "minRevenue": 3000000,
+      "maxLeverage": 3.0,
+      "geographies": [
+        "NC",
+        "SC",
+        "VA",
+        "GA"
+      ],
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "useOfFunds": [
+        "acquisition",
+        "growth",
+        "refinance",
+        "equipment",
+        "working_capital",
+        "real_estate"
+      ],
+      "diverseFocus": false,
+      "contact": {
+        "name": "Carla Jennings",
+        "email": "cjennings@piedmontcb.example"
+      },
+      "notes": "Relationship lender for Carolinas and Georgia businesses. Prefers full banking relationship (deposits + treasury)."
+    },
+    {
+      "id": "prov_heritage",
+      "name": "Heritage Capital SBA Lending",
+      "type": "SBA Lender",
+      "capitalTypes": [
+        "sba_7a",
+        "senior_debt"
+      ],
+      "checkMin": 350000,
+      "checkMax": 5000000,
+      "minEbitda": 200000,
+      "minRevenue": 1000000,
+      "maxLeverage": 4.0,
+      "geographies": [
+        "National"
+      ],
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [
+        "52"
+      ],
+      "useOfFunds": [
+        "acquisition",
+        "growth",
+        "working_capital",
+        "equipment",
+        "refinance",
+        "real_estate"
+      ],
+      "diverseFocus": true,
+      "contact": {
+        "name": "Omar Reid",
+        "email": "oreid@heritagesba.example"
+      },
+      "notes": "Preferred SBA lender. Will do 7(a) up to $5M with 10% equity injection; active in search fund acquisitions."
+    },
+    {
+      "id": "prov_greenwood",
+      "name": "Greenwood Growth CDFI",
+      "type": "CDFI",
+      "capitalTypes": [
+        "senior_debt",
+        "sba_7a",
+        "revenue_based"
+      ],
+      "checkMin": 250000,
+      "checkMax": 3000000,
+      "minEbitda": 100000,
+      "minRevenue": 500000,
+      "maxLeverage": 4.5,
+      "geographies": [
+        "National"
+      ],
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "useOfFunds": [
+        "growth",
+        "working_capital",
+        "equipment",
+        "real_estate",
+        "acquisition"
+      ],
+      "diverseFocus": true,
+      "contact": {
+        "name": "Nia Coleman",
+        "email": "ncoleman@greenwoodcdfi.example"
+      },
+      "notes": "Mission lender focused on Black- and minority-owned businesses. Flexible on collateral; offers technical assistance."
+    },
+    {
+      "id": "prov_lakeshore",
+      "name": "Lakeshore Commercial Finance",
+      "type": "Bank",
+      "capitalTypes": [
+        "senior_debt"
+      ],
+      "checkMin": 3000000,
+      "checkMax": 25000000,
+      "minEbitda": 2000000,
+      "minRevenue": 10000000,
+      "maxLeverage": 3.5,
+      "geographies": [
+        "OH",
+        "IL",
+        "MI",
+        "IN",
+        "WI",
+        "PA"
+      ],
+      "sectorsPreferred": [
+        "31-33",
+        "42",
+        "48-49"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "useOfFunds": [
+        "acquisition",
+        "refinance",
+        "growth",
+        "recap",
+        "equipment"
+      ],
+      "diverseFocus": false,
+      "contact": {
+        "name": "Tom Kowalski",
+        "email": "tkowalski@lakeshorecf.example"
+      },
+      "notes": "Middle-market bank group with a manufacturing and distribution specialty."
+    },
+    {
+      "id": "prov_meridian",
+      "name": "Meridian Private Credit Partners",
+      "type": "Private Credit",
+      "capitalTypes": [
+        "senior_debt",
+        "mezzanine"
+      ],
+      "checkMin": 5000000,
+      "checkMax": 40000000,
+      "minEbitda": 2500000,
+      "minRevenue": 10000000,
+      "maxLeverage": 5.0,
+      "geographies": [
+        "National"
+      ],
+      "sectorsPreferred": [
+        "54",
+        "56",
+        "62",
+        "31-33"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [
+        "72"
+      ],
+      "useOfFunds": [
+        "acquisition",
+        "recap",
+        "refinance",
+        "growth"
+      ],
+      "diverseFocus": false,
+      "contact": {
+        "name": "Priya Natarajan",
+        "email": "pnatarajan@meridianpc.example"
+      },
+      "notes": "Unitranche and second lien for sponsor and non-sponsor deals. Will go to 5.0x for recurring-revenue businesses."
+    },
+    {
+      "id": "prov_ironbridge",
+      "name": "Ironbridge Mezzanine Fund II",
+      "type": "Mezzanine Fund",
+      "capitalTypes": [
+        "mezzanine"
+      ],
+      "checkMin": 3000000,
+      "checkMax": 15000000,
+      "minEbitda": 2000000,
+      "minRevenue": 8000000,
+      "maxLeverage": 5.5,
+      "geographies": [
+        "National"
+      ],
+      "sectorsPreferred": [
+        "31-33",
+        "42",
+        "48-49",
+        "23"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "useOfFunds": [
+        "acquisition",
+        "recap",
+        "growth"
+      ],
+      "diverseFocus": false,
+      "contact": {
+        "name": "Dave Lindqvist",
+        "email": "dlindqvist@ironbridgemezz.example"
+      },
+      "notes": "Subordinated debt with warrants. Comfortable as the junior capital behind a bank senior facility."
+    },
+    {
+      "id": "prov_unity",
+      "name": "Unity Capital Partners",
+      "type": "Private Equity",
+      "capitalTypes": [
+        "majority_equity",
+        "minority_equity"
+      ],
+      "checkMin": 5000000,
+      "checkMax": 30000000,
+      "minEbitda": 1500000,
+      "minRevenue": 8000000,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "sectorsPreferred": [
+        "56",
+        "62",
+        "23",
+        "54"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [
+        "72",
+        "44-45"
+      ],
+      "useOfFunds": [
+        "acquisition",
+        "recap",
+        "growth"
+      ],
+      "diverseFocus": true,
+      "contact": {
+        "name": "Alicia Freeman",
+        "email": "afreeman@unitycp.example"
+      },
+      "notes": "Lower-middle-market PE fund with an inclusive ownership mandate. Seeks founder transitions and family succession."
+    },
+    {
+      "id": "prov_fulcrum",
+      "name": "Fulcrum Equity Fund",
+      "type": "Private Equity",
+      "capitalTypes": [
+        "minority_equity"
+      ],
+      "checkMin": 2000000,
+      "checkMax": 10000000,
+      "minEbitda": 1000000,
+      "minRevenue": 5000000,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "sectorsPreferred": [
+        "54",
+        "62",
+        "61"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "useOfFunds": [
+        "growth",
+        "recap"
+      ],
+      "diverseFocus": true,
+      "contact": {
+        "name": "Jordan Pierce",
+        "email": "jpierce@fulcrumequity.example"
+      },
+      "notes": "Non-control growth equity for founder-led services and tech-enabled businesses."
+    },
+    {
+      "id": "prov_anchor",
+      "name": "Anchor Family Office",
+      "type": "Family Office",
+      "capitalTypes": [
+        "minority_equity",
+        "majority_equity",
+        "mezzanine"
+      ],
+      "checkMin": 1000000,
+      "checkMax": 12000000,
+      "minEbitda": 750000,
+      "minRevenue": 3000000,
+      "maxLeverage": 5.0,
+      "geographies": [
+        "TX",
+        "OK",
+        "LA",
+        "AZ",
+        "NM"
+      ],
+      "sectorsPreferred": [
+        "23",
+        "56",
+        "81"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "useOfFunds": [
+        "acquisition",
+        "recap",
+        "growth"
+      ],
+      "diverseFocus": false,
+      "contact": {
+        "name": "Wade Thornton",
+        "email": "wthornton@anchorfo.example"
+      },
+      "notes": "Long-hold capital from a Texas family office. Flexible structures; no fund life pressure."
+    },
+    {
+      "id": "prov_sterling",
+      "name": "Sterling Equipment Finance",
+      "type": "Specialty Lender",
+      "capitalTypes": [
+        "senior_debt"
+      ],
+      "checkMin": 250000,
+      "checkMax": 8000000,
+      "minEbitda": 300000,
+      "minRevenue": 2000000,
+      "maxLeverage": 4.0,
+      "geographies": [
+        "National"
+      ],
+      "sectorsPreferred": [
+        "23",
+        "31-33",
+        "48-49",
+        "56"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "useOfFunds": [
+        "equipment",
+        "refinance"
+      ],
+      "diverseFocus": false,
+      "contact": {
+        "name": "Kim Alvarez",
+        "email": "kalvarez@sterlingef.example"
+      },
+      "notes": "Equipment loans and leases secured by the assets; fast credit decisions under $2M."
+    },
+    {
+      "id": "prov_bayou",
+      "name": "Bayou State Bank",
+      "type": "Bank",
+      "capitalTypes": [
+        "senior_debt",
+        "sba_7a"
+      ],
+      "checkMin": 500000,
+      "checkMax": 7500000,
+      "minEbitda": 400000,
+      "minRevenue": 2000000,
+      "maxLeverage": 3.0,
+      "geographies": [
+        "TX",
+        "LA",
+        "MS",
+        "AL"
+      ],
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "useOfFunds": [
+        "acquisition",
+        "growth",
+        "refinance",
+        "working_capital",
+        "equipment",
+        "real_estate"
+      ],
+      "diverseFocus": false,
+      "contact": {
+        "name": "Renee Broussard",
+        "email": "rbroussard@bayoustate.example"
+      },
+      "notes": "Gulf South community bank with an active SBA desk."
+    },
+    {
+      "id": "prov_keel",
+      "name": "Keel Revenue Capital",
+      "type": "Specialty Lender",
+      "capitalTypes": [
+        "revenue_based"
+      ],
+      "checkMin": 250000,
+      "checkMax": 3000000,
+      "minEbitda": 0,
+      "minRevenue": 1500000,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "sectorsPreferred": [
+        "54"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "useOfFunds": [
+        "growth",
+        "working_capital"
+      ],
+      "diverseFocus": false,
+      "contact": {
+        "name": "Sam Ortega",
+        "email": "sortega@keelrevenue.example"
+      },
+      "notes": "Revenue-based financing repaid as a percentage of monthly revenue. Best for recurring-revenue businesses."
+    },
+    {
+      "id": "prov_founders",
+      "name": "Founders First Search Capital",
+      "type": "Search Fund Investor",
+      "capitalTypes": [
+        "majority_equity",
+        "mezzanine"
+      ],
+      "checkMin": 2000000,
+      "checkMax": 12000000,
+      "minEbitda": 750000,
+      "minRevenue": 3000000,
+      "maxLeverage": 5.0,
+      "geographies": [
+        "National"
+      ],
+      "sectorsPreferred": [
+        "56",
+        "23",
+        "31-33",
+        "81",
+        "54"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [
+        "72"
+      ],
+      "useOfFunds": [
+        "acquisition"
+      ],
+      "diverseFocus": true,
+      "contact": {
+        "name": "Imani Carter",
+        "email": "icarter@foundersfirst.example"
+      },
+      "notes": "Backs searchers, with a focus on first-time Black and Latino acquirers. Equity and structured capital for acquisitions."
+    },
+    {
+      "id": "prov_capitalcity",
+      "name": "Capital City Community Bank",
+      "type": "Bank",
+      "capitalTypes": [
+        "senior_debt",
+        "sba_7a"
+      ],
+      "checkMin": 500000,
+      "checkMax": 6000000,
+      "minEbitda": 500000,
+      "minRevenue": 2000000,
+      "maxLeverage": 3.5,
+      "geographies": [
+        "DC",
+        "MD",
+        "VA"
+      ],
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "useOfFunds": [
+        "acquisition",
+        "growth",
+        "refinance",
+        "recap",
+        "working_capital",
+        "equipment",
+        "real_estate"
+      ],
+      "diverseFocus": true,
+      "contact": {
+        "name": "Derrick Simmons",
+        "email": "dsimmons@capcitycb.example"
+      },
+      "notes": "Minority depository institution serving the DC metro."
+    },
+    {
+      "id": "prov_harmony",
+      "name": "Harmony Health Capital",
+      "type": "Private Credit",
+      "capitalTypes": [
+        "senior_debt",
+        "mezzanine"
+      ],
+      "checkMin": 2000000,
+      "checkMax": 20000000,
+      "minEbitda": 1000000,
+      "minRevenue": 5000000,
+      "maxLeverage": 4.5,
+      "geographies": [
+        "National"
+      ],
+      "sectorsPreferred": [
+        "62"
+      ],
+      "sectorsOnly": true,
+      "sectorsExcluded": [],
+      "useOfFunds": [
+        "acquisition",
+        "growth",
+        "refinance",
+        "recap"
+      ],
+      "diverseFocus": false,
+      "contact": {
+        "name": "Elena Brandt",
+        "email": "ebrandt@harmonyhealthcap.example"
+      },
+      "notes": "Healthcare-only lender. Understands Medicare and Medicaid reimbursement cycles."
+    }
+  ]
+}

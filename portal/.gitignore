@@ -1,0 +1,6 @@
+node_modules/
+.next/
+next-env.d.ts
+*.tsbuildinfo
+# Local prototype database, recreated from data/seed.json on first run
+data/db.json
