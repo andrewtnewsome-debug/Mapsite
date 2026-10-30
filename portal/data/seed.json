@@ -126,7 +126,7 @@
       ],
       "introductions": [
         {
-          "providerId": "prov_lakeshore",
+          "providerId": "prov_ag11",
           "at": "2026-10-26T16:30:00.000Z"
         }
       ]
@@ -383,7 +383,7 @@
       ],
       "introductions": [
         {
-          "providerId": "prov_unity",
+          "providerId": "prov_ag01",
           "at": "2026-10-12T15:00:00.000Z"
         }
       ]
@@ -437,394 +437,1936 @@
   ],
   "providers": [
     {
-      "id": "prov_piedmont",
-      "name": "Piedmont Community Bank",
-      "type": "Bank",
+      "id": "prov_ag01",
+      "ref": "AG01",
+      "name": "Altura Capital",
+      "fund": "Lower Middle Market Debt & Equity Impact Strategy",
+      "category": "Acquisition & Growth",
+      "type": "Private credit + equity",
+      "relevance": "Broader inclusion / impact",
       "capitalTypes": [
-        "senior_debt"
+        "mezzanine",
+        "minority_equity",
+        "majority_equity"
       ],
-      "checkMin": 1000000,
-      "checkMax": 10000000,
-      "minEbitda": 750000,
-      "minRevenue": 3000000,
-      "maxLeverage": 3.0,
-      "geographies": [
-        "NC",
-        "SC",
-        "VA",
-        "GA"
-      ],
-      "sectorsPreferred": [],
-      "sectorsOnly": false,
-      "sectorsExcluded": [],
-      "useOfFunds": [
-        "acquisition",
-        "growth",
-        "refinance",
-        "equipment",
-        "working_capital",
-        "real_estate"
-      ],
-      "diverseFocus": false,
-      "contact": {
-        "name": "Carla Jennings",
-        "email": "cjennings@piedmontcb.example"
-      },
-      "notes": "Relationship lender for Carolinas and Georgia businesses. Prefers full banking relationship (deposits + treasury)."
-    },
-    {
-      "id": "prov_heritage",
-      "name": "Heritage Capital SBA Lending",
-      "type": "SBA Lender",
-      "capitalTypes": [
-        "sba_7a",
-        "senior_debt"
-      ],
-      "checkMin": 350000,
-      "checkMax": 5000000,
-      "minEbitda": 200000,
-      "minRevenue": 1000000,
-      "maxLeverage": 4.0,
-      "geographies": [
-        "National"
-      ],
-      "sectorsPreferred": [],
-      "sectorsOnly": false,
-      "sectorsExcluded": [
-        "52"
-      ],
-      "useOfFunds": [
-        "acquisition",
-        "growth",
-        "working_capital",
-        "equipment",
-        "refinance",
-        "real_estate"
-      ],
-      "diverseFocus": true,
-      "contact": {
-        "name": "Omar Reid",
-        "email": "oreid@heritagesba.example"
-      },
-      "notes": "Preferred SBA lender. Will do 7(a) up to $5M with 10% equity injection; active in search fund acquisitions."
-    },
-    {
-      "id": "prov_greenwood",
-      "name": "Greenwood Growth CDFI",
-      "type": "CDFI",
-      "capitalTypes": [
-        "senior_debt",
-        "sba_7a",
-        "revenue_based"
-      ],
-      "checkMin": 250000,
-      "checkMax": 3000000,
-      "minEbitda": 100000,
-      "minRevenue": 500000,
-      "maxLeverage": 4.5,
-      "geographies": [
-        "National"
-      ],
-      "sectorsPreferred": [],
-      "sectorsOnly": false,
-      "sectorsExcluded": [],
-      "useOfFunds": [
-        "growth",
-        "working_capital",
-        "equipment",
-        "real_estate",
-        "acquisition"
-      ],
-      "diverseFocus": true,
-      "contact": {
-        "name": "Nia Coleman",
-        "email": "ncoleman@greenwoodcdfi.example"
-      },
-      "notes": "Mission lender focused on Black- and minority-owned businesses. Flexible on collateral; offers technical assistance."
-    },
-    {
-      "id": "prov_lakeshore",
-      "name": "Lakeshore Commercial Finance",
-      "type": "Bank",
-      "capitalTypes": [
-        "senior_debt"
-      ],
-      "checkMin": 3000000,
+      "checkMin": 5000000,
       "checkMax": 25000000,
-      "minEbitda": 2000000,
-      "minRevenue": 10000000,
-      "maxLeverage": 3.5,
-      "geographies": [
-        "OH",
-        "IL",
-        "MI",
-        "IN",
-        "WI",
-        "PA"
-      ],
-      "sectorsPreferred": [
-        "31-33",
-        "42",
-        "48-49"
-      ],
-      "sectorsOnly": false,
-      "sectorsExcluded": [],
-      "useOfFunds": [
-        "acquisition",
-        "refinance",
-        "growth",
-        "recap",
-        "equipment"
-      ],
-      "diverseFocus": false,
-      "contact": {
-        "name": "Tom Kowalski",
-        "email": "tkowalski@lakeshorecf.example"
-      },
-      "notes": "Middle-market bank group with a manufacturing and distribution specialty."
-    },
-    {
-      "id": "prov_meridian",
-      "name": "Meridian Private Credit Partners",
-      "type": "Private Credit",
-      "capitalTypes": [
-        "senior_debt",
-        "mezzanine"
-      ],
-      "checkMin": 5000000,
-      "checkMax": 40000000,
-      "minEbitda": 2500000,
-      "minRevenue": 10000000,
-      "maxLeverage": 5.0,
-      "geographies": [
-        "National"
-      ],
-      "sectorsPreferred": [
-        "54",
-        "56",
-        "62",
-        "31-33"
-      ],
-      "sectorsOnly": false,
-      "sectorsExcluded": [
-        "72"
-      ],
-      "useOfFunds": [
-        "acquisition",
-        "recap",
-        "refinance",
-        "growth"
-      ],
-      "diverseFocus": false,
-      "contact": {
-        "name": "Priya Natarajan",
-        "email": "pnatarajan@meridianpc.example"
-      },
-      "notes": "Unitranche and second lien for sponsor and non-sponsor deals. Will go to 5.0x for recurring-revenue businesses."
-    },
-    {
-      "id": "prov_ironbridge",
-      "name": "Ironbridge Mezzanine Fund II",
-      "type": "Mezzanine Fund",
-      "capitalTypes": [
-        "mezzanine"
-      ],
-      "checkMin": 3000000,
-      "checkMax": 15000000,
-      "minEbitda": 2000000,
-      "minRevenue": 8000000,
-      "maxLeverage": 5.5,
-      "geographies": [
-        "National"
-      ],
-      "sectorsPreferred": [
-        "31-33",
-        "42",
-        "48-49",
-        "23"
-      ],
-      "sectorsOnly": false,
-      "sectorsExcluded": [],
-      "useOfFunds": [
-        "acquisition",
-        "recap",
-        "growth"
-      ],
-      "diverseFocus": false,
-      "contact": {
-        "name": "Dave Lindqvist",
-        "email": "dlindqvist@ironbridgemezz.example"
-      },
-      "notes": "Subordinated debt with warrants. Comfortable as the junior capital behind a bank senior facility."
-    },
-    {
-      "id": "prov_unity",
-      "name": "Unity Capital Partners",
-      "type": "Private Equity",
-      "capitalTypes": [
-        "majority_equity",
-        "minority_equity"
-      ],
-      "checkMin": 5000000,
-      "checkMax": 30000000,
-      "minEbitda": 1500000,
-      "minRevenue": 8000000,
+      "checkNote": "Published investment range, USD.",
+      "ebitdaMin": 2000000,
+      "ebitdaMax": 10000000,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Strategy-specific target: $2\u201310m EBITDA. General intermediary page differs; use this strategy's screen.",
+      "revenueMin": 10000000,
+      "revenueMax": 200000000,
+      "revenueNote": "Revenue $10\u2013200m; established positive cash flow.",
+      "minYears": null,
       "maxLeverage": null,
       "geographies": [
         "National"
       ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States.",
       "sectorsPreferred": [
+        "54",
         "56",
+        "31-33",
+        "62"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Business services; consumer products; specialty manufacturing; healthcare.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "growth",
+        "acquisition",
+        "recap",
+        "refinance"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Growth, acquisitions, recapitalizations, ownership transitions and refinancing; tailored junior capital.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Overlooked entrepreneurs and underserved communities; no exclusive racial ownership test published.",
+      "controlNote": "Flexible debt/equity; ownership percentage not stated.",
+      "acquisitionNote": "Yes \u2014 acquisition and ownership-transition capital.",
+      "diverseFocus": false,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm current fund vehicle and whether a control or non-control structure fits.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://alturacap.com/our-strategies/",
+        "https://alturacap.com/our-firm/intermediaries/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "\"Tailored junior capital\" read as mezzanine plus minority or majority equity.",
+        "Business services mapped to professional (54) and admin/facility services (56); consumer products and specialty manufacturing to manufacturing (31-33)."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag02",
+      "ref": "AG02",
+      "name": "Altura Capital",
+      "fund": "Economic Opportunity Equity Strategy",
+      "category": "Acquisition & Growth",
+      "type": "Opportunity Zone private equity",
+      "relevance": "Broader inclusion / impact",
+      "capitalTypes": [
+        "minority_equity",
+        "majority_equity"
+      ],
+      "checkMin": 1000000,
+      "checkMax": 10000000,
+      "checkNote": "Published equity investment range, USD.",
+      "ebitdaMin": 1000000,
+      "ebitdaMax": 10000000,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Published strategy range: $1\u201310m EBITDA.",
+      "revenueMin": 10000000,
+      "revenueMax": 200000000,
+      "revenueNote": "Revenue $10\u2013200m.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": "Company must be located in a Qualified Opportunity Zone",
+      "geographyNote": "Qualified Opportunity Zones across the United States.",
+      "sectorsPreferred": [
+        "54",
+        "56",
+        "31-33",
+        "62"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Business services; consumer products; specialty manufacturing; healthcare.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "growth",
+        "acquisition",
+        "recap"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Equity for growth, acquisitions, roll-ups and ownership transitions in qualifying opportunity zones.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Place-based opportunity-zone qualification; underserved entrepreneurs/community impact.",
+      "controlNote": "Equity; control requirements not stated.",
+      "acquisitionNote": "Yes \u2014 acquisitions and ownership transitions.",
+      "diverseFocus": false,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm qualifying location, current vehicle and tax/holding-period requirements.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://alturacap.com/our-strategies/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Opportunity Zone location can't be checked from the submission, so every match is flagged to confirm."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag03",
+      "ref": "AG03",
+      "name": "The Copia Group",
+      "fund": "Private credit & preferred-equity strategy",
+      "category": "Acquisition & Growth",
+      "type": "Private credit / structured equity",
+      "relevance": "Broader inclusion / impact",
+      "capitalTypes": [
+        "senior_debt",
+        "mezzanine",
+        "minority_equity"
+      ],
+      "checkMin": 3000000,
+      "checkMax": 30000000,
+      "checkNote": "Published investment range, USD.",
+      "ebitdaMin": 1000000,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Published screen is EBITDA greater than $1m; no upper bound disclosed.",
+      "revenueMin": 5000000,
+      "revenueMax": null,
+      "revenueNote": "Revenue >$5m; transaction value >$15m.",
+      "minYears": 2,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States focus; confirm geographic eligibility.",
+      "sectorsPreferred": [
+        "54",
+        "56",
+        "31-33",
         "62",
-        "23",
-        "54"
+        "52"
       ],
       "sectorsOnly": false,
       "sectorsExcluded": [
-        "72",
-        "44-45"
+        "53"
       ],
+      "industriesNote": "Business services; consumer and food; financial services; healthcare; industrial businesses.",
+      "exclusionsNote": "Startups; real estate.",
+      "useOfFunds": [
+        "growth",
+        "acquisition",
+        "recap"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Senior or subordinated loans, hybrid instruments and preferred equity for growth, acquisitions and recapitalizations.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Economic inclusion and undercapitalized businesses; not published as exclusively minority-owned.",
+      "controlNote": "Often seeks to limit owner dilution; flexible debt/preferred equity.",
+      "acquisitionNote": "Yes \u2014 acquisition financing.",
+      "diverseFocus": false,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm ownership eligibility, current fund and whether a $1m EBITDA company clears the strict >$1m screen.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://copiagroupllc.com/strategy",
+        "https://copiagroupllc.com/approach",
+        "https://copiagroupllc.com/impact"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Published EBITDA screen is strictly greater than $1M; entered as a $1M floor.",
+        "\"Startups\" exclusion entered as at least 2 years in business.",
+        "Preferred equity read as minority equity."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag04",
+      "ref": "AG04",
+      "name": "Advantage Capital",
+      "fund": "Empower the Change Fund",
+      "category": "Acquisition & Growth",
+      "type": "Flexible growth capital / junior capital",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "mezzanine",
+        "minority_equity"
+      ],
+      "checkMin": null,
+      "checkMax": null,
+      "checkNote": "No general check range found. A $7.5m General Trucking investment is an example, not a minimum or maximum.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "No public fund-wide EBITDA dollar screen found. Portfolio operating profit is not a fund threshold.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "No public numeric screen found; underwriting varies.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States.",
+      "sectorsPreferred": [
+        "48-49",
+        "54"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Observed investments: transportation/logistics; government IT and professional services; utility engineering. Full sector mandate not published.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "growth",
+        "acquisition"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Flexible growth and acquisition capital for established minority-owned businesses; can complement senior bank debt.",
+      "ownershipRequirement": "minority",
+      "ownershipLabel": null,
+      "ownershipNote": "Addresses financing gaps for businesses owned by people of color.",
+      "controlNote": "Flexible structures; supports minority business ownership and acquisition.",
+      "acquisitionNote": "Yes \u2014 documented acquisition financing.",
+      "diverseFocus": true,
+      "status": "October 7, 2026 announcement: investment in KDM Engineering.",
+      "nextQuestion": "Ask for current EBITDA/check range, certification requirements and sector exclusions.",
+      "sourceQuality": "Firm + ecosystem partner + syndicated issuer release",
+      "sources": [
+        "https://www.advantagecap.com/news/advantage-capital-invests-kdm-engineering/",
+        "https://nmsdc.org/news/advantage-capital-and-the-nmsdc-business-consortium-fund-announce-new-private-growth-fund/",
+        "https://www.financialcontent.com/article/bizwire-2023-6-1-advantage-capital-makes-first-investment-from-empower-the-change-fund-with-a-75-million-commitment-to-general-trucking"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Sectors are observed investments, not a published mandate.",
+        "Fund is for established minority-owned businesses, so minority ownership is required."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag05",
+      "ref": "AG05",
+      "name": "FVLCRUM Funds",
+      "fund": "Control equity strategy",
+      "category": "Acquisition & Growth",
+      "type": "Control private equity",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "majority_equity"
+      ],
+      "checkMin": null,
+      "checkMax": null,
+      "checkNote": "No public company-level check range found; confirm directly.",
+      "ebitdaMin": 3000000,
+      "ebitdaMax": 25000000,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Published EBITDA screen begins at $3m; investments selectively reach $25m. Upper end is selective.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "No public numeric screen found; underwriting varies.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "U.S.-headquartered businesses.",
+      "sectorsPreferred": [
+        "54",
+        "56",
+        "62"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Government contracting; healthcare; business services. Favors recurring, mission-critical services or technology.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
       "useOfFunds": [
         "acquisition",
         "recap",
         "growth"
       ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Buyouts, recapitalizations, growth investments, management buyouts, divestitures and executive-led searches.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Addresses the financing gap affecting minority-owned businesses and scales diverse ownership.",
+      "controlNote": "Control investor / lead institutional equity.",
+      "acquisitionNote": "Yes \u2014 executive-led search and acquisition transactions explicitly included.",
       "diverseFocus": true,
-      "contact": {
-        "name": "Alicia Freeman",
-        "email": "afreeman@unitycp.example"
-      },
-      "notes": "Lower-middle-market PE fund with an inclusive ownership mandate. Seeks founder transitions and family succession."
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm typical versus exceptional EBITDA size, equity check and post-close minority certification.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://fvlcrum.com/investment-criteria/",
+        "https://fvlcrum.com/about-us/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Government contracting mapped to professional services (54).",
+        "EBITDA up to $25M is selective; typical deals are smaller."
+      ],
+      "contact": null
     },
     {
-      "id": "prov_fulcrum",
-      "name": "Fulcrum Equity Fund",
-      "type": "Private Equity",
+      "id": "prov_ag06",
+      "ref": "AG06",
+      "name": "Ariel Alternatives",
+      "fund": "Project Black",
+      "category": "Acquisition & Growth",
+      "type": "Middle-market control private equity",
+      "relevance": "Creates / expands minority ownership",
+      "capitalTypes": [
+        "majority_equity"
+      ],
+      "checkMin": null,
+      "checkMax": null,
+      "checkNote": "No public company-level check range found; confirm directly.",
+      "ebitdaMin": 10000000,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Current site: $10m to more than $50m EBITDA. $50m is not a hard ceiling; numeric maximum intentionally blank.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "Historical materials cite $100m\u2013$1bn revenue; not treated as a current hard rule.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "North America.",
+      "sectorsPreferred": [
+        "54",
+        "22",
+        "52",
+        "51"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "IT services; energy and utility services; business and financial services; media and marketing.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "acquisition"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Acquire and scale suppliers serving large corporations; can buy standalone companies or corporate divisions.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Targets do not have to be minority-owned before investment; creating minority-owned suppliers is central.",
+      "controlNote": "Majority ownership; strategy can establish minority control and supplier certification.",
+      "acquisitionNote": "Acquisitions yes; materially larger than a typical individual search acquisition.",
+      "diverseFocus": true,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm current target size, equity check and supplier-diversity certification pathway.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.arielalternatives.com/about-us/",
+        "https://www.arielinvestments.com/wp-content/uploads/2024/12/Ariel-ESG-Report_2023rev.pdf"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "North America entered as national.",
+        "Targets need not be minority-owned before investment."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag07",
+      "ref": "AG07",
+      "name": "New Majority Capital",
+      "fund": "NMC Fund I / microbuyout strategy",
+      "category": "Acquisition & Growth",
+      "type": "Acquisition equity / patient capital",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "minority_equity",
+        "majority_equity"
+      ],
+      "checkMin": null,
+      "checkMax": null,
+      "checkNote": "No public company-level check range found; confirm directly.",
+      "ebitdaMin": 500000,
+      "ebitdaMax": 2000000,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Published target: $500k\u2013$2m EBITDA.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "Profitable established small businesses; succession opportunities.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "No fixed sector thesis stated; entrepreneurs select suitable acquisition sectors.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "acquisition"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Back underrepresented entrepreneurs acquiring profitable small businesses, often alongside SBA financing; employee profit-sharing.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Addresses wealth gaps affecting underrepresented entrepreneurs; inclusive, nondiscrimination policy.",
+      "controlNote": "Entrepreneur-led acquisition; structure and investor ownership negotiated.",
+      "acquisitionNote": "Yes \u2014 core entrepreneurship-through-acquisition strategy.",
+      "diverseFocus": true,
+      "status": "Investor page includes 2026 acquisitions; remaining fund capacity not verified.",
+      "nextQuestion": "Confirm investor check, entrepreneur cash contribution, SBA compatibility and personal guarantees.",
+      "sourceQuality": "Firm + LP description",
+      "sources": [
+        "https://newmajoritycapital.com/investors",
+        "https://newmajoritycapital.com/entrepreneurs/",
+        "https://iciaptos.com/new-majority-capital-fund-i-lp/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Acquisition equity for searchers; investor stake is negotiated, so both minority and majority equity are allowed."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag08",
+      "ref": "AG08",
+      "name": "Innovate Capital Growth Fund",
+      "fund": "Innovate Capital Growth Fund (ICGF)",
+      "category": "Acquisition & Growth",
+      "type": "SBIC growth equity",
+      "relevance": "Explicit minority / diverse business focus",
       "capitalTypes": [
         "minority_equity"
       ],
       "checkMin": 2000000,
-      "checkMax": 10000000,
-      "minEbitda": 1000000,
-      "minRevenue": 5000000,
+      "checkMax": 5000000,
+      "checkNote": "Published investment range, USD.",
+      "ebitdaMin": null,
+      "ebitdaMax": 4000000,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Published EBITDA ceiling: up to $4m. No numeric floor disclosed.",
+      "revenueMin": 2000000,
+      "revenueMax": 20000000,
+      "revenueNote": "Revenue $2\u201320m.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "DE",
+        "MD",
+        "DC",
+        "NJ",
+        "NY",
+        "PA",
+        "VA",
+        "WV"
+      ],
+      "geographiesConfirm": [
+        "AL",
+        "AK",
+        "AZ",
+        "AR",
+        "CA",
+        "CO",
+        "CT",
+        "FL",
+        "GA",
+        "HI",
+        "ID",
+        "IL",
+        "IN",
+        "IA",
+        "KS",
+        "KY",
+        "LA",
+        "ME",
+        "MA",
+        "MI",
+        "MN",
+        "MS",
+        "MO",
+        "MT",
+        "NE",
+        "NV",
+        "NH",
+        "NM",
+        "NC",
+        "ND",
+        "OH",
+        "OK",
+        "OR",
+        "RI",
+        "SC",
+        "SD",
+        "TN",
+        "TX",
+        "UT",
+        "VT",
+        "WA",
+        "WI",
+        "WY"
+      ],
+      "geographyConfirm": null,
+      "geographyNote": "Primarily Mid-Atlantic United States.",
+      "sectorsPreferred": [
+        "54",
+        "56",
+        "62",
+        "31-33",
+        "23",
+        "51",
+        "42"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Business services; healthcare services; manufacturing; consumer products; infrastructure services; software/technology; value-added distribution.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "growth"
+      ],
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Expansion capital and operational support for minority- and women-owned companies.",
+      "ownershipRequirement": "minority_or_women",
+      "ownershipLabel": null,
+      "ownershipNote": "Minority- and women-owned businesses are the fund's central mandate.",
+      "controlNote": "Growth equity; confirm ownership stake and control provisions.",
+      "acquisitionNote": "Potential growth/acquisition fit; dedicated search-fund mandate not published.",
+      "diverseFocus": true,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm ownership/certification standard, acquisition eligibility and current SBIC deployment.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://innovatecapitalgrowth.com/investment-criteria/",
+        "https://innovatecapitalgrowth.com/about/",
+        "https://www.njeda.gov/njeda-approves-investment-into-innovate-capital-growth-fund-to-support-early-stage-nj-companies/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "\"Primarily Mid-Atlantic\" read as DE, MD, DC, NJ, NY, PA, VA, WV; other states flagged to confirm.",
+        "Minority- or women-owned required; a non-minority submission is flagged to confirm women ownership."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag09",
+      "ref": "AG09",
+      "name": "ETA Fund / Cincinnati Business Excellerator",
+      "fund": "ETA Fund I",
+      "category": "Acquisition & Growth",
+      "type": "Equity, debt and hybrid acquisition capital",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "senior_debt",
+        "mezzanine",
+        "minority_equity",
+        "majority_equity"
+      ],
+      "checkMin": 250000,
+      "checkMax": null,
+      "checkNote": "Typical check $1\u20132.5m. Absolute minimum $250k; published maximum is 10% of committed capital, not $2.5m.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "No fund-wide EBITDA range published.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "No public numeric screen found; underwriting varies.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "OH",
+        "IN",
+        "KY",
+        "TN",
+        "WV"
+      ],
+      "geographiesConfirm": [
+        "MI",
+        "PA",
+        "IL",
+        "MO",
+        "VA",
+        "NC"
+      ],
+      "geographyConfirm": null,
+      "geographyNote": "Approximately six-hour radius of Cincinnati: OH, IN, KY, TN, WV and parts of surrounding states.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Broad business mandate; fund-wide sector restrictions not published.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "acquisition",
+        "growth"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Acquisition and growth capital for underserved entrepreneurs; stated mix also includes early-stage investments.",
+      "ownershipRequirement": "minority",
+      "ownershipLabel": null,
+      "ownershipNote": "Historically excluded entrepreneurs and diverse business ownership.",
+      "controlNote": "Equity, debt or hybrids; ownership terms vary.",
+      "acquisitionNote": "Yes \u2014 core acquisition focus.",
+      "diverseFocus": true,
+      "status": "Live fund site identifies ETA Fund I; exact remaining capacity requires confirmation.",
+      "nextQuestion": "Confirm postcode eligibility, minority ownership test, target EBITDA and maximum check under the concentration limit.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://etafund1.com/about-us/",
+        "https://etafund1.com/",
+        "https://minoritybusinessaccelerator.com/wp-content/uploads/2024/03/MBA_AnnualReport-2022_2023.pdf"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Six-hour radius of Cincinnati read as OH, IN, KY, TN, WV; MI, PA, IL, MO, VA and NC flagged to confirm.",
+        "Check size: $250K absolute minimum; typical $1M to $2.5M; maximum is 10% of committed capital, so no maximum entered."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag10",
+      "ref": "AG10",
+      "name": "o15 Capital Partners",
+      "fund": "Emerging America Credit Opportunities (EACO) Fund I",
+      "category": "Acquisition & Growth",
+      "type": "Private credit + structured equity",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "senior_debt",
+        "mezzanine",
+        "minority_equity"
+      ],
+      "checkMin": 10000000,
+      "checkMax": 40000000,
+      "checkNote": "Current target investment range, USD; older $10\u201325m materials are superseded.",
+      "ebitdaMin": 3000000,
+      "ebitdaMax": 15000000,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Current approach page: $3\u201315m EBITDA; replaces older $2\u201310m materials.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "No public numeric screen found; underwriting varies.",
+      "minYears": null,
       "maxLeverage": null,
       "geographies": [
         "National"
       ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States; underserved, low-income and rural communities receive attention.",
       "sectorsPreferred": [
-        "54",
         "62",
-        "61"
+        "61",
+        "54",
+        "56",
+        "51"
       ],
       "sectorsOnly": false,
       "sectorsExcluded": [],
+      "industriesNote": "Healthcare; education; business services; technology.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
       "useOfFunds": [
-        "growth",
-        "recap"
+        "acquisition",
+        "recap",
+        "refinance",
+        "growth"
       ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "First-lien, unitranche, second-lien, mezzanine, structured equity and co-investment; sponsor and non-sponsor transactions.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Businesses led by or serving undercapitalized communities; inclusive ownership/workforce impact.",
+      "controlNote": "Credit-led; may add equity co-investments or structured equity.",
+      "acquisitionNote": "Yes \u2014 buyouts, management acquisitions, buy-and-build, add-ons, recaps and refinancing.",
       "diverseFocus": true,
-      "contact": {
-        "name": "Jordan Pierce",
-        "email": "jpierce@fulcrumequity.example"
-      },
-      "notes": "Non-control growth equity for founder-led services and tech-enabled businesses."
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm sector mix, sponsor requirements and minority-ownership interpretation.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.o15.com/approach",
+        "https://www.o15.com/our-firm",
+        "https://www.o15.com/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Structured equity read as minority equity."
+      ],
+      "contact": null
     },
     {
-      "id": "prov_anchor",
-      "name": "Anchor Family Office",
-      "type": "Family Office",
+      "id": "prov_ag11",
+      "ref": "AG11",
+      "name": "Small Business Community Capital",
+      "fund": "Small Business Community Capital II / SBCC strategy",
+      "category": "Acquisition & Growth",
+      "type": "SBIC debt + equity",
+      "relevance": "Explicit minority / diverse business focus",
       "capitalTypes": [
-        "minority_equity",
-        "majority_equity",
-        "mezzanine"
+        "senior_debt",
+        "mezzanine",
+        "minority_equity"
       ],
       "checkMin": 1000000,
       "checkMax": 12000000,
-      "minEbitda": 750000,
-      "minRevenue": 3000000,
-      "maxLeverage": 5.0,
+      "checkNote": "Standalone investments $1\u201312m; larger financings through co-investment.",
+      "ebitdaMin": 1000000,
+      "ebitdaMax": 10000000,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Website target: $1\u201310m EBITDA.",
+      "revenueMin": 5000000,
+      "revenueMax": 100000000,
+      "revenueNote": "Revenue $5\u2013100m; at least three years operating history.",
+      "minYears": 3,
+      "maxLeverage": null,
       "geographies": [
-        "TX",
-        "OK",
-        "LA",
+        "AL",
+        "AK",
         "AZ",
-        "NM"
+        "AR",
+        "CA",
+        "CO",
+        "CT",
+        "DC",
+        "DE",
+        "FL",
+        "GA",
+        "HI",
+        "ID",
+        "IL",
+        "IN",
+        "IA",
+        "KS",
+        "KY",
+        "LA",
+        "ME",
+        "MD",
+        "MA",
+        "MI",
+        "MN",
+        "MS",
+        "MO",
+        "MT",
+        "NE",
+        "NV",
+        "NH",
+        "NJ",
+        "NM",
+        "NY",
+        "NC",
+        "ND",
+        "OH",
+        "OK",
+        "OR",
+        "PA",
+        "RI",
+        "SC",
+        "SD",
+        "TN",
+        "TX",
+        "UT",
+        "VT",
+        "VA",
+        "WA",
+        "WV",
+        "WI",
+        "WY"
       ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States and Puerto Rico.",
       "sectorsPreferred": [
-        "23",
+        "31-33",
+        "54",
         "56",
-        "81"
+        "72",
+        "51",
+        "62"
       ],
       "sectorsOnly": false,
       "sectorsExcluded": [],
+      "industriesNote": "Consumer products; business services; food/beverage; manufacturing; technology; media/entertainment; healthcare.",
+      "exclusionsNote": "Current full exclusions not published. A 2015 launch release excluded construction; reconfirm before relying on it.",
+      "useOfFunds": [
+        "growth",
+        "acquisition",
+        "recap"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Senior/subordinated debt and equity for expansion, acquisitions and ownership transitions.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Focus on minority-, Hispanic- and women-owned businesses and low/moderate-income communities.",
+      "controlNote": "Flexible debt/equity; ownership stake not specified.",
+      "acquisitionNote": "Yes \u2014 acquisition and transition capital.",
+      "diverseFocus": true,
+      "status": "Live criteria, but dated fund materials; new-investment capacity needs direct confirmation.",
+      "nextQuestion": "Confirm fund vintage, available capital and relationship with Altura before duplicating outreach.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.sbccfund.com/",
+        "https://www.sbccfund.com/strategy.html",
+        "https://www.sbccfund.com/assets/launching_press_release_july_28_2015.pdf"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Construction exclusion is from 2015 material; not applied, confirm with the fund.",
+        "Puerto Rico is also eligible."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag12",
+      "ref": "AG12",
+      "name": "Arkview Capital",
+      "fund": "Diversity-oriented private equity strategy",
+      "category": "Acquisition & Growth",
+      "type": "Private equity",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "minority_equity",
+        "majority_equity"
+      ],
+      "checkMin": null,
+      "checkMax": null,
+      "checkNote": "No public company-level check range found; confirm directly.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "No public numeric screen found; underwriting varies.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "U.S. portfolio focus; formal geographic limits not published.",
+      "sectorsPreferred": [
+        "48-49",
+        "52",
+        "56",
+        "54"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Essential businesses; transportation; financial services. Workforce and business-service investments also documented.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "acquisition",
+        "growth"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Invest in overlooked businesses and build value through supplier relationships and operating support.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Minority-certified, diversity-oriented investment platform with minority-business and supplier-diversity emphasis.",
+      "controlNote": "Private equity; precise control/non-control requirements not published.",
+      "acquisitionNote": "Acquisition-oriented platform; independent-searcher eligibility not published.",
+      "diverseFocus": true,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Obtain current EBITDA, equity check, ownership requirements and sector screen directly.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.arkviewcapital.com/",
+        "https://www.arkviewcapital.com/news/metasys-arkview-partnership"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "No size criteria published; check size and EBITDA always flagged to confirm."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag13",
+      "ref": "AG13",
+      "name": "IMB Partners",
+      "fund": "IMB SBIC Fund I / control-investment strategy",
+      "category": "Acquisition & Growth",
+      "type": "Control private equity / SBIC",
+      "relevance": "Creates / expands minority ownership",
+      "capitalTypes": [
+        "majority_equity"
+      ],
+      "checkMin": null,
+      "checkMax": null,
+      "checkNote": "No public company-level check range found; confirm directly.",
+      "ebitdaMin": 2000000,
+      "ebitdaMax": 15000000,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Current platform screen $2\u201315m EBITDA; add-ons can start at $1m. Older $5\u201325m materials differ.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "Favors recurring contracts; capex less than 20% of EBITDA.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States.",
+      "sectorsPreferred": [
+        "22",
+        "54"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Electric and gas utility services; government contracting and related business services.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "acquisition",
+        "recap"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Management/leveraged buyouts, recapitalizations, build-ups, corporate divestitures and joint ventures.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Seeks to increase minority ownership and leadership through acquisitions and growth.",
+      "controlNote": "Control investments with meaningful management/seller alignment.",
+      "acquisitionNote": "Yes \u2014 management buyouts, platform/add-on acquisitions.",
+      "diverseFocus": true,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm check range, current fund and resulting minority-control/certification structure.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://imbpartners.com/our-approach/",
+        "https://imbpartners.com/who-we-are-copy/",
+        "https://imbpartners.com/fee-agreement/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Add-on acquisitions can start at $1M EBITDA; platform floor of $2M entered."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag14",
+      "ref": "AG14",
+      "name": "Riveter Capital",
+      "fund": "Acquisition and growth strategy",
+      "category": "Acquisition & Growth",
+      "type": "Private equity / independent sponsor",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "minority_equity",
+        "majority_equity"
+      ],
+      "checkMin": null,
+      "checkMax": null,
+      "checkNote": "No public company-level check range found; confirm directly.",
+      "ebitdaMin": 2000000,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Current website specifies $2m+ EBITDA; no maximum. Historical $1\u20135m profiles are not the current screen.",
+      "revenueMin": 10000000,
+      "revenueMax": null,
+      "revenueNote": "Revenue $10m+.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States focus; confirm location eligibility.",
+      "sectorsPreferred": [
+        "44-45",
+        "62",
+        "31-33",
+        "54",
+        "56",
+        "42"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Consumer/retail; healthcare services; industrial and manufacturing businesses; business services; distribution.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
       "useOfFunds": [
         "acquisition",
         "recap",
         "growth"
       ],
-      "diverseFocus": false,
-      "contact": {
-        "name": "Wade Thornton",
-        "email": "wthornton@anchorfo.example"
-      },
-      "notes": "Long-hold capital from a Texas family office. Flexible structures; no fund life pressure."
+      "useOfFundsConfirm": [],
+      "strategyNote": "Buyouts, succession and ownership transitions, growth, acquisitions and consolidation.",
+      "ownershipRequirement": "minority_or_women",
+      "ownershipLabel": null,
+      "ownershipNote": "Exclusively women- and minority-owned or led businesses.",
+      "controlNote": "Buyout/growth approach; transaction-specific ownership.",
+      "acquisitionNote": "Yes \u2014 acquisitions and transitions.",
+      "diverseFocus": true,
+      "status": "Current site has criteria; independent-sponsor description is from a 2021 partner interview.",
+      "nextQuestion": "Confirm committed-fund versus deal-by-deal funding, check range and control needs.",
+      "sourceQuality": "Firm + investment-partner interview",
+      "sources": [
+        "https://rivetercapital.com/",
+        "https://www.trivest.com/independently-sponsored-august-2021/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Women- or minority-owned or led businesses only."
+      ],
+      "contact": null
     },
     {
-      "id": "prov_sterling",
-      "name": "Sterling Equipment Finance",
-      "type": "Specialty Lender",
+      "id": "prov_ag15",
+      "ref": "AG15",
+      "name": "TGC Impact",
+      "fund": "TGC Impact Growth Fund",
+      "category": "Acquisition & Growth",
+      "type": "Non-control growth equity",
+      "relevance": "Explicit minority / diverse business focus",
       "capitalTypes": [
-        "senior_debt"
+        "minority_equity"
       ],
-      "checkMin": 250000,
-      "checkMax": 8000000,
-      "minEbitda": 300000,
-      "minRevenue": 2000000,
-      "maxLeverage": 4.0,
+      "checkMin": 2000000,
+      "checkMax": 7000000,
+      "checkNote": "$2\u20137m investment range from 2022 launch announcement; historical, not reverified as current.",
+      "ebitdaMin": null,
+      "ebitdaMax": 6000000,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "2022 launch material: EBITDA below $6m, a strict upper threshold. Current criteria page does not restate it; reconfirm.",
+      "revenueMin": 2000000,
+      "revenueMax": null,
+      "revenueNote": "Current screen: >$2m revenue, >3 years operating, positive cash flow, >15% growth.",
+      "minYears": 3,
+      "maxLeverage": null,
       "geographies": [
-        "National"
+        "DE",
+        "MD",
+        "DC",
+        "VA",
+        "WV",
+        "NC",
+        "SC",
+        "GA",
+        "FL",
+        "KY",
+        "TN",
+        "AL",
+        "MS",
+        "AR",
+        "LA",
+        "OK",
+        "TX"
       ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "New American South: 16-state area from Delaware to Texas.",
       "sectorsPreferred": [
         "23",
-        "31-33",
         "48-49",
+        "22",
+        "31-33",
+        "42",
+        "54",
         "56"
       ],
       "sectorsOnly": false,
       "sectorsExcluded": [],
+      "industriesNote": "Infrastructure; transportation/logistics; energy transition; manufacturing/distribution; business services.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
       "useOfFunds": [
-        "equipment",
-        "refinance"
+        "growth"
       ],
-      "diverseFocus": false,
-      "contact": {
-        "name": "Kim Alvarez",
-        "email": "kalvarez@sterlingef.example"
-      },
-      "notes": "Equipment loans and leases secured by the assets; fast credit decisions under $2M."
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Non-control growth equity for established, rapidly growing businesses.",
+      "ownershipRequirement": "minority_or_women",
+      "ownershipLabel": null,
+      "ownershipNote": "Minority- and women-owned or operated businesses.",
+      "controlNote": "Non-control equity.",
+      "acquisitionNote": "Growth and acquisition expansion may fit; dedicated ETA mandate not published.",
+      "diverseFocus": true,
+      "status": "Current strategy page; size ranges rely on 2022 launch materials.",
+      "nextQuestion": "Confirm fund deployment, current check/EBITDA screens and precise state list.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://tgcimpact.com/investment-strategy/",
+        "https://tgcimpact.com/tgc-impact-announces-launch-ofinaugural-growth-equity-fund/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "\"16-state area from Delaware to Texas\" read as the Census South (16 states plus DC); confirm the exact list with the fund.",
+        "EBITDA ceiling and check size are from 2022 launch materials."
+      ],
+      "contact": null
     },
     {
-      "id": "prov_bayou",
-      "name": "Bayou State Bank",
-      "type": "Bank",
+      "id": "prov_ag16",
+      "ref": "AG16",
+      "name": "SWS Capital Management",
+      "fund": "Clear Vision Impact Fund",
+      "category": "Acquisition & Growth",
+      "type": "Private credit",
+      "relevance": "Broader inclusion / impact",
       "capitalTypes": [
-        "senior_debt",
-        "sba_7a"
+        "senior_debt"
       ],
-      "checkMin": 500000,
-      "checkMax": 7500000,
-      "minEbitda": 400000,
-      "minRevenue": 2000000,
-      "maxLeverage": 3.0,
+      "checkMin": 2000000,
+      "checkMax": null,
+      "checkNote": "Loans approximately $2m and above; no published ceiling.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": true,
+      "ebitdaNote": "Positive EBITDA required; dollar minimum and maximum not published.",
+      "revenueMin": null,
+      "revenueMax": 150000000,
+      "revenueNote": "Revenue up to $150m; at least two years operating.",
+      "minYears": 2,
+      "maxLeverage": null,
       "geographies": [
-        "TX",
-        "LA",
-        "MS",
-        "AL"
+        "National"
       ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States.",
       "sectorsPreferred": [],
       "sectorsOnly": false,
       "sectorsExcluded": [],
+      "industriesNote": "Broad sustainable and inclusive businesses; full sector list not published.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "working_capital",
+        "equipment",
+        "growth",
+        "acquisition"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Working capital, capital expenditure, growth and acquisition loans for established businesses.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Underserved businesses/communities; launch emphasized minority-owned businesses, current criteria are broader.",
+      "controlNote": "Debt; preserves operating ownership subject to financing terms.",
+      "acquisitionNote": "Yes \u2014 acquisition use expressly included.",
+      "diverseFocus": false,
+      "status": "Live criteria and 2026 portfolio updates; available capital unconfirmed.",
+      "nextQuestion": "Ask for current minority-ownership preference, loan ceiling and sector exclusions.",
+      "sourceQuality": "Firm + syndicated issuer release",
+      "sources": [
+        "https://www.clearvisionimpact.com/investment-criteria",
+        "https://www.clearvisionimpact.com/",
+        "https://www.globenewswire.com/news-release/2020/08/13/2077984/0/en/siebert-williams-shank-partners-with-microsoft-to-launch-impact-investment-fund.html"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Requires positive EBITDA; no dollar floor published."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag18",
+      "ref": "AG18",
+      "name": "Apis & Heritage Capital Partners",
+      "fund": "Employee-led buyout strategy",
+      "category": "Acquisition & Growth",
+      "type": "Structured equity / employee-ownership buyouts",
+      "relevance": "Creates / expands minority ownership",
+      "capitalTypes": [
+        "majority_equity"
+      ],
+      "checkMin": null,
+      "checkMax": null,
+      "checkNote": "No public company-level check range found; confirm directly.",
+      "ebitdaMin": 4000000,
+      "ebitdaMax": 10000000,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Current firm website specifies $4\u201310m EBITDA. Older $1\u20134m profiles are superseded.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "At least 40 employees.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States.",
+      "sectorsPreferred": [
+        "31-33",
+        "23",
+        "48-49",
+        "56",
+        "11"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Manufacturing; construction; logistics/transportation; waste; landscaping; commercial services; agriculture/food processing.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "acquisition",
+        "recap"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Finance conversions of established businesses into employee-owned companies, generally using ESOPs.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Targets wealth building for workforces with meaningful representation of employees of color.",
+      "controlNote": "Buyout to broad employee ownership; not conventional minority-founder growth equity.",
+      "acquisitionNote": "Yes \u2014 succession and employee-led acquisitions.",
+      "diverseFocus": true,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm workforce eligibility, total transaction size, ESOP economics and seller terms.",
+      "sourceQuality": "Firm + foundation investor",
+      "sources": [
+        "https://www.apisheritage.com/",
+        "https://www.wkkf.org/investments/ah-apis-heritage-capital-partners/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Employee-ownership (ESOP) buyouts only; the seller must want to sell to employees.",
+        "Requires at least 40 employees (not checked automatically)."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag19",
+      "ref": "AG19",
+      "name": "Arctaris Impact Investors",
+      "fund": "GrowthDebt / operating-business impact strategy",
+      "category": "Acquisition & Growth",
+      "type": "Royalty-enhanced debt / impact capital",
+      "relevance": "Broader inclusion / impact",
+      "capitalTypes": [
+        "revenue_based",
+        "mezzanine"
+      ],
+      "checkMin": 1000000,
+      "checkMax": 10000000,
+      "checkNote": "GrowthDebt investment range; do not apply this screen to separate real estate/infrastructure strategies.",
+      "ebitdaMin": 1000000,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "GrowthDebt comparison page requires $1m+ EBITDA; no maximum published.",
+      "revenueMin": 5000000,
+      "revenueMax": null,
+      "revenueNote": "FAQ: revenue $10m+; royalty-finance page says $5m+. Product-specific conflict requires confirmation.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": "Company must be in an underserved or qualifying impact location",
+      "geographyNote": "U.S. underserved communities and qualifying impact locations.",
+      "sectorsPreferred": [
+        "31-33",
+        "51",
+        "54"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Manufacturing; technology; business services. Broader operating portfolio includes consumer and healthcare.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "growth"
+      ],
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Finance operating-company growth using loans enhanced with revenue royalties; broader platform also invests equity.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Place-based impact; minority-owned and MBE businesses are prioritized within operating investments.",
+      "controlNote": "GrowthDebt is debt/royalty capital; other strategies differ.",
+      "acquisitionNote": "Potential growth/acquisition financing; confirm product suitability.",
+      "diverseFocus": false,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Resolve revenue-screen conflict and confirm the relevant product, geography and repayment structure.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.arctaris.com/growthdebt/compare-options/",
+        "https://www.arctaris.com/investment-philosophy/",
+        "https://www.arctaris.com/growthdebt/royaltyfinance/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Revenue screen conflicts ($5M vs $10M); the lower $5M entered.",
+        "Royalty-enhanced debt read as revenue-based financing or mezzanine."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag20",
+      "ref": "AG20",
+      "name": "Founders First Capital Partners",
+      "fund": "Revenue-based and term growth financing",
+      "category": "Acquisition & Growth",
+      "type": "Non-dilutive growth debt / revenue-based finance",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "revenue_based"
+      ],
+      "checkMin": null,
+      "checkMax": 1000000,
+      "checkNote": "Funding up to $1m; no current general minimum found.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Profitability or a path to profitability; no dollar EBITDA screen published.",
+      "revenueMin": 500000,
+      "revenueMax": null,
+      "revenueNote": "At least $500k annual revenue; website describes $500k\u2013$10m+ businesses.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "AL",
+        "AK",
+        "AZ",
+        "AR",
+        "CA",
+        "CO",
+        "DC",
+        "DE",
+        "GA",
+        "HI",
+        "ID",
+        "IL",
+        "IN",
+        "IA",
+        "KS",
+        "KY",
+        "LA",
+        "ME",
+        "MD",
+        "MA",
+        "MI",
+        "MN",
+        "MS",
+        "MO",
+        "MT",
+        "NE",
+        "NH",
+        "NJ",
+        "NM",
+        "NY",
+        "NC",
+        "ND",
+        "OH",
+        "OK",
+        "OR",
+        "PA",
+        "RI",
+        "SC",
+        "SD",
+        "TN",
+        "UT",
+        "VT",
+        "VA",
+        "WA",
+        "WV",
+        "WI",
+        "WY"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "U.S.; FAQ temporarily excludes FL, TX, CT and NV. Reconfirm state eligibility.",
+      "sectorsPreferred": [
+        "54",
+        "56"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "B2B and B2G services; recurring-revenue businesses.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "growth",
+        "working_capital"
+      ],
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Revenue-linked or term funding to grow recurring-revenue service businesses.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Diverse founders, including people of color, women, veterans, LGBTQ+ founders and LMI-community businesses.",
+      "controlNote": "Non-dilutive financing; owner retains equity.",
+      "acquisitionNote": "Primarily growth finance; acquisition uses require confirmation.",
+      "diverseFocus": true,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm current state restrictions, financing product, acquisition eligibility and total repayment cost.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://foundersfirstcapitalpartners.com/faq",
+        "https://foundersfirstcapitalpartners.com/",
+        "https://funding.foundersfirstcapitalpartners.com/funding-diverse-companies"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "FL, TX, CT and NV are temporarily excluded per their FAQ."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag21",
+      "ref": "AG21",
+      "name": "Momentus Capital / Capital Impact Partners",
+      "fund": "Impact Investments",
+      "category": "Acquisition & Growth",
+      "type": "Profit-share preferred equity / revenue-share mezzanine",
+      "relevance": "Broader inclusion / impact",
+      "capitalTypes": [
+        "mezzanine",
+        "revenue_based",
+        "minority_equity"
+      ],
+      "checkMin": 1000000,
+      "checkMax": 15000000,
+      "checkNote": "Current investment range $1\u201315m. Older $1\u20135m materials are superseded.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": true,
+      "ebitdaNote": "Current page: preferred equity for profitable businesses; mezzanine requires positive cash balance. No current numeric EBITDA floor.",
+      "revenueMin": 4000000,
+      "revenueMax": null,
+      "revenueNote": "Current minimum revenue $4m; older $2m screen is superseded.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States.",
+      "sectorsPreferred": [
+        "62"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Community-impact businesses; healthcare; healthy food; employee/community ownership. Broader opportunities considered.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "growth",
+        "acquisition"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Growth and acquisitions with flexible, nondilutive or limited-dilution instruments; typically 3\u20135 year terms.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Community-rooted businesses creating economic opportunity; not exclusive to a racial ownership group.",
+      "controlNote": "Designed to preserve entrepreneur control.",
+      "acquisitionNote": "Yes \u2014 growth and acquisition financing.",
+      "diverseFocus": false,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm profit-share versus revenue-share eligibility, cash-flow requirements and exit terms.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.capitalimpact.org/impact-investments/",
+        "https://momentuscap.org/annual-report-2025/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Preferred equity requires a profitable business; entered as positive EBITDA."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag25",
+      "ref": "AG25",
+      "name": "HCAP Partners",
+      "fund": "Lower-middle-market debt and equity strategy",
+      "category": "Acquisition & Growth",
+      "type": "Mezzanine debt / preferred and common equity",
+      "relevance": "Broader inclusion / impact",
+      "capitalTypes": [
+        "mezzanine",
+        "minority_equity",
+        "majority_equity"
+      ],
+      "checkMin": 5000000,
+      "checkMax": 35000000,
+      "checkNote": "Published investment range, USD.",
+      "ebitdaMin": 2000000,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Published EBITDA floor $2m; no upper EBITDA limit disclosed.",
+      "revenueMin": 10000000,
+      "revenueMax": 100000000,
+      "revenueNote": "Revenue $10\u2013100m.",
+      "minYears": 2,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States; confirm location preference.",
+      "sectorsPreferred": [
+        "62",
+        "51",
+        "54",
+        "56",
+        "31-33"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Healthcare; technology; services; manufacturing.",
+      "exclusionsNote": "Startups.",
+      "useOfFunds": [
+        "growth",
+        "acquisition",
+        "recap"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Growth, acquisitions and ownership transitions with flexible debt and equity.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Quality-job creation and underserved communities; no exclusive minority-ownership rule published.",
+      "controlNote": "Control and non-control structures considered.",
+      "acquisitionNote": "Yes \u2014 acquisition and transition capital.",
+      "diverseFocus": false,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm impact/job-quality alignment, current vehicle and acquisition capital structure.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.hcap.com/our-approach"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "\"Startups\" exclusion entered as at least 2 years in business."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag26",
+      "ref": "AG26",
+      "name": "Avante Capital Partners",
+      "fund": "Enterprise / Elevate junior-capital strategies",
+      "category": "Acquisition & Growth",
+      "type": "Private credit / structured equity",
+      "relevance": "Adjacent \u2014 diverse manager / broad mandate",
+      "capitalTypes": [
+        "senior_debt",
+        "mezzanine",
+        "minority_equity"
+      ],
+      "checkMin": 10000000,
+      "checkMax": 85000000,
+      "checkNote": "Expertise page: $10\u201385m investment size. Strategy pages cite larger total facilities; confirm actual hold size.",
+      "ebitdaMin": 3000000,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Current strategy material starts at $3m and extends beyond $30m EBITDA. Product-specific and older pages differ.",
+      "revenueMin": 10000000,
+      "revenueMax": 100000000,
+      "revenueNote": "Strategy pages generally cite revenue $10\u2013100m.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States and Canada.",
+      "sectorsPreferred": [
+        "54",
+        "56",
+        "62",
+        "31-33",
+        "61",
+        "44-45"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Business/technology services; industrial/facility services; healthcare; manufacturing; education; consumer.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "acquisition",
+        "growth",
+        "recap"
+      ],
+      "useOfFundsConfirm": [
+        "refinance"
+      ],
+      "strategyNote": "Stretch senior, unitranche, second-lien, mezzanine, holdco PIK, preferred equity and co-investments.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Women- and minority-owned investment firm with inclusion initiatives; borrowers are not exclusively minority-owned.",
+      "controlNote": "Primarily non-control capital; sponsor and independent-sponsor transactions.",
+      "acquisitionNote": "Yes \u2014 buyout, acquisition and independent-sponsor financing.",
+      "diverseFocus": false,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Resolve product-specific size differences and distinguish facility size from Avante's funded check.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://avantecap.com/strategies/",
+        "https://avantecap.com/expertise/",
+        "https://avantecap.com/avante-capital-partners-highlighted-in-forbes/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "US and Canada entered as national.",
+        "Check size may describe total facility, not Avante's hold."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag27",
+      "ref": "AG27",
+      "name": "Lafayette Square",
+      "fund": "LS Investments / middle-market direct lending",
+      "category": "Acquisition & Growth",
+      "type": "Private credit / BDC platform",
+      "relevance": "Broader inclusion / impact",
+      "capitalTypes": [
+        "senior_debt",
+        "mezzanine"
+      ],
+      "checkMin": 15000000,
+      "checkMax": null,
+      "checkNote": "Platform check size $15\u201375m+; no finite ceiling. BDC-specific criteria can differ.",
+      "ebitdaMin": 5000000,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "LS Investments targets $5\u2013100m+ EBITDA. Upper bound is open; individual vehicles may use narrower criteria.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "No public numeric screen found; underwriting varies.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States; overlooked places and working-class communities.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [
+        "44-45",
+        "72"
+      ],
+      "industriesNote": "Broad industry coverage, subject to exclusions.",
+      "exclusionsNote": "Commodities; consumer discretionary, per LS Investments criteria.",
+      "useOfFunds": [
+        "acquisition"
+      ],
+      "useOfFundsConfirm": [
+        "growth",
+        "refinance",
+        "recap"
+      ],
+      "strategyNote": "Primarily senior secured loans; selective junior debt/equity and workforce-support programs.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Place- and workforce-based impact; no exclusive minority-ownership requirement.",
+      "controlNote": "Credit-led; generally non-control financing.",
+      "acquisitionNote": "Yes \u2014 sponsor and acquisition-related lending, subject to underwriting.",
+      "diverseFocus": false,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm the actual lending vehicle, EBITDA floor, hold size and sector classification.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.lafayettesquare.com/ls-investments",
+        "https://www.lafayettesquarebdc.com/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Consumer discretionary exclusion mapped to retail (44-45) and food service (72); commodities not mapped."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_ag28",
+      "ref": "AG28",
+      "name": "Jacmel Partners",
+      "fund": "Private equity / deal-by-deal investment strategy",
+      "category": "Acquisition & Growth",
+      "type": "Private equity / independent sponsor",
+      "relevance": "Adjacent \u2014 inclusive ownership / leadership",
+      "capitalTypes": [
+        "majority_equity"
+      ],
+      "checkMin": null,
+      "checkMax": null,
+      "checkNote": "No public company-level check range found; confirm directly.",
+      "ebitdaMin": 5000000,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Current PE criteria: $5m+ EBITDA; no upper bound published.",
+      "revenueMin": 20000000,
+      "revenueMax": null,
+      "revenueNote": "Revenue $20m+; family/founder businesses with meaningful rollover preferred.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "North America.",
+      "sectorsPreferred": [
+        "23",
+        "51",
+        "54"
+      ],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Infrastructure-related services; information services; technology-enabled business services.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "acquisition",
+        "growth"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Acquire asset-light businesses and grow through operating improvements and add-on acquisitions.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Diverse leadership and broad economic participation; not published as exclusively minority-owned targets.",
+      "controlNote": "Control investments with seller/management alignment.",
+      "acquisitionNote": "Yes \u2014 platform acquisitions and buy-and-build.",
+      "diverseFocus": false,
+      "status": "Live investment criteria; 2025 investor report describes deal-by-deal model.",
+      "nextQuestion": "Confirm financing certainty, transaction check, sector definitions and diverse-ownership goals.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://jacmelpartners.com/private-equity/",
+        "https://jacmelpartners.com/investment-approach/",
+        "https://livingcities.org/wp-content/uploads/2025/11/Living-Cities-Blended-Catalyst-Fund-Final-Report.pdf"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "North America entered as national."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_cc01",
+      "ref": "CC01",
+      "name": "Business Consortium Fund (BCF)",
+      "fund": "Term loans / supplier-diversity business lending",
+      "category": "Community Credit",
+      "type": "CDFI small-business lender",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "senior_debt"
+      ],
+      "checkMin": 25000,
+      "checkMax": 350000,
+      "checkNote": "New-borrower loans $25k\u2013$350k; existing borrowers may qualify for up to $1m.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "Operating-business and repayment underwriting; no numeric EBITDA screen published.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Broad supplier businesses; sector-specific exclusions not fully published.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "working_capital",
+        "equipment",
+        "refinance",
+        "growth"
+      ],
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Working capital, contract fulfillment, inventory, equipment and refinancing for businesses in corporate/government supply chains.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Historically focused on minority business enterprises; current materials also address economically disadvantaged owners.",
+      "controlNote": "Debt; no equity ownership required by the listed product.",
+      "acquisitionNote": "Business acquisition not explicitly listed; ask lender.",
+      "diverseFocus": true,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm current ownership/certification rules and whether acquisitions or SBA equity injections are eligible.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://bcfcapital.com/getting-started/faqs.html",
+        "https://bcfcapital.com/business-loans/term-loan.html",
+        "https://bcfcapital.com/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Existing borrowers may qualify for up to $1M."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_cc02",
+      "ref": "CC02",
+      "name": "BBIF",
+      "fund": "Entrepreneur Loan",
+      "category": "Community Credit",
+      "type": "CDFI small-business lender",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "senior_debt"
+      ],
+      "checkMin": 25000,
+      "checkMax": 1000000,
+      "checkNote": "Entrepreneur Loan: $25k\u2013$1m. Broader marketing mentions up to $2m across products, not this product's standard cap.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "General readiness page calls for at least 12 months operating; confirm exceptions by loan product.",
+      "minYears": 1,
+      "maxLeverage": null,
+      "geographies": [
+        "FL",
+        "GA"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "Current website describes Florida and Georgia coverage; confirm service area for the specific loan.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Broad small-business lending; confirm restricted industries.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "working_capital",
+        "refinance",
+        "equipment",
+        "real_estate"
+      ],
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Working capital, refinancing, fixed assets and owner-occupied commercial property.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Black and other underserved entrepreneurs; borrower eligibility depends on product.",
+      "controlNote": "Debt.",
+      "acquisitionNote": "Business acquisition use not clearly published; confirm.",
+      "diverseFocus": true,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm geography, current maximum, business-acquisition use and collateral.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.bbif.com/loans/entrepreneur-loan",
+        "https://connect.bbif.com/loanready",
+        "https://www.bbif.com/how-it-works"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Service area read as FL and GA; confirm whether the loan reaches other states."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_cc03",
+      "ref": "CC03",
+      "name": "NCRC Community Development Fund",
+      "fund": "Micro and small-business loans",
+      "category": "Community Credit",
+      "type": "CDFI small-business lender",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "senior_debt"
+      ],
+      "checkMin": 5000,
+      "checkMax": 500000,
+      "checkNote": "Microloans $5k\u2013$50k; small-business loans $50,001 to less than $500k. Upper bound is strict.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "Startups eligible; FAQ cites 580 minimum personal credit score and repayment analysis.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Broad for-profit businesses; state-legal cannabis may be considered subject to requirements.",
+      "exclusionsNote": "Firearms; tobacco; illegal activity; businesses inconsistent with mission. Cannabis is not a blanket exclusion in its FAQ.",
       "useOfFunds": [
         "acquisition",
         "growth",
@@ -833,151 +2375,1207 @@
         "equipment",
         "real_estate"
       ],
-      "diverseFocus": false,
-      "contact": {
-        "name": "Renee Broussard",
-        "email": "rbroussard@bayoustate.example"
-      },
-      "notes": "Gulf South community bank with an active SBA desk."
+      "useOfFundsConfirm": [],
+      "strategyNote": "Startup and operating-business loans for acquisitions, franchises, equipment, inventory, real estate, working capital or refinancing.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Emphasis on Black, Latino, women, LGBTQ+ and low/moderate-income entrepreneurs.",
+      "controlNote": "Debt.",
+      "acquisitionNote": "Yes \u2014 business and franchise acquisitions listed.",
+      "diverseFocus": true,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm exact loan size, industry eligibility and any state limitations.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.communitydevelopmentfund.org/faq/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [],
+      "contact": null
     },
     {
-      "id": "prov_keel",
-      "name": "Keel Revenue Capital",
-      "type": "Specialty Lender",
+      "id": "prov_cc04",
+      "ref": "CC04",
+      "name": "TruFund Financial Services",
+      "fund": "Small Business Loan / CDFI lending programs",
+      "category": "Community Credit",
+      "type": "CDFI small-business lender",
+      "relevance": "Explicit minority / diverse business focus",
       "capitalTypes": [
-        "revenue_based"
+        "senior_debt"
       ],
-      "checkMin": 250000,
-      "checkMax": 3000000,
-      "minEbitda": 0,
-      "minRevenue": 1500000,
+      "checkMin": 50000,
+      "checkMax": 350000,
+      "checkNote": "Small Business Loan one-pager: $50k\u2013$350k. Other programs have different ranges; confirm current product.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": 200000,
+      "revenueMax": null,
+      "revenueNote": "One-pager: prior-year revenue $200k+, one year operating and 1.1x debt-service coverage.",
+      "minYears": 1,
       "maxLeverage": null,
       "geographies": [
-        "National"
+        "NY",
+        "NJ",
+        "GA",
+        "AL",
+        "LA",
+        "TX"
       ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "Core lending in NY, NJ, GA, AL, LA and TX; some programs have broader reach.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Broad small businesses and contractors; program-specific underwriting.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "working_capital",
+        "growth"
+      ],
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Flexible debt for working capital and business expansion, including specialized contractor financing.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Minority/women entrepreneurs, low-income communities and other historically underserved businesses.",
+      "controlNote": "Debt.",
+      "acquisitionNote": "Potential acquisition fit; not established for the cited product.",
+      "diverseFocus": true,
+      "status": "Live lending page; numeric criteria from program one-pager without a clear current date.",
+      "nextQuestion": "Confirm geography, current loan range, eligibility and acquisition uses by product.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.trufund.org/small-business-lending/",
+        "https://www.trufund.org/wp-content/uploads/Small_Business_Loan_One_Pager.pdf",
+        "https://www.trufund.org/small-business-lending/cdfi-long-term-loan-fund/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Core lending states entered; some programs reach further, so ask about other states."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_cc05",
+      "ref": "CC05",
+      "name": "Growth Opportunity Partners",
+      "fund": "GO Capital",
+      "category": "Community Credit",
+      "type": "Community lender / flexible growth capital",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "senior_debt"
+      ],
+      "checkMin": null,
+      "checkMax": null,
+      "checkNote": "No public company-level check range found; confirm directly.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "Growth businesses creating meaningful-wage jobs; no numeric EBITDA range found.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "OH"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "Ohio focus; confirm exact service area.",
       "sectorsPreferred": [
-        "54"
+        "31-33",
+        "22",
+        "42",
+        "62",
+        "51",
+        "54",
+        "48-49"
       ],
       "sectorsOnly": false,
       "sectorsExcluded": [],
+      "industriesNote": "Advanced manufacturing; clean energy; distribution; healthcare; technology/software; professional services; logistics.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "working_capital",
+        "growth",
+        "equipment",
+        "real_estate",
+        "acquisition"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Loans for working capital, bridge needs, growth, equipment, facilities and acquisitions.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Underserved businesses and communities, including minority-owned companies.",
+      "controlNote": "Debt-led; structure depends on program.",
+      "acquisitionNote": "Yes \u2014 acquisition financing included.",
+      "diverseFocus": true,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Obtain current EBITDA, check range, borrower contribution and geography.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.growthopps.org/go-capital/",
+        "https://www.growthopps.org/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Ohio focus entered as Ohio only; confirm the exact service area."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_cc06",
+      "ref": "CC06",
+      "name": "Carolina Small Business Development Fund",
+      "fund": "Core small-business lending",
+      "category": "Community Credit",
+      "type": "CDFI small-business lender",
+      "relevance": "Broader inclusion / impact",
+      "capitalTypes": [
+        "senior_debt"
+      ],
+      "checkMin": null,
+      "checkMax": 350000,
+      "checkNote": "Core loan program up to $350k; no general minimum verified.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "Startup and established businesses eligible; repayment capacity underwritten.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "NC"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "All 100 North Carolina counties.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Broad small businesses across industries.",
+      "exclusionsNote": "Website refers to 'sin businesses' without a complete definition; ask for the restricted-industry list.",
       "useOfFunds": [
         "growth",
         "working_capital"
       ],
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Startup and expansion loans with technical assistance.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Underserved entrepreneurs and communities; not exclusively minority-owned.",
+      "controlNote": "Debt.",
+      "acquisitionNote": "Acquisition eligibility needs product-specific confirmation.",
       "diverseFocus": false,
-      "contact": {
-        "name": "Sam Ortega",
-        "email": "sortega@keelrevenue.example"
-      },
-      "notes": "Revenue-based financing repaid as a percentage of monthly revenue. Best for recurring-revenue businesses."
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm acquisition use, collateral, prohibited sectors and current product cap.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.carolinasmallbusiness.org/loans"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [],
+      "contact": null
     },
     {
-      "id": "prov_founders",
-      "name": "Founders First Search Capital",
-      "type": "Search Fund Investor",
+      "id": "prov_cc07",
+      "ref": "CC07",
+      "name": "ECDI",
+      "fund": "Small-business loan programs",
+      "category": "Community Credit",
+      "type": "CDFI / SBA microloan and small-business lender",
+      "relevance": "Broader inclusion / impact",
       "capitalTypes": [
-        "majority_equity",
-        "mezzanine"
+        "senior_debt"
       ],
-      "checkMin": 2000000,
-      "checkMax": 12000000,
-      "minEbitda": 750000,
-      "minRevenue": 3000000,
-      "maxLeverage": 5.0,
+      "checkMin": null,
+      "checkMax": null,
+      "checkNote": "Public ranges differ: brochure cites startup loans to $250k and existing businesses to $500k; loan page lists smaller $30k/$50k working-capital tiers. No universal cap entered.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "Different startup and established-business products; no numeric EBITDA screen found.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "OH"
+      ],
+      "geographiesConfirm": [
+        "IN",
+        "KY",
+        "WV",
+        "PA",
+        "MI"
+      ],
+      "geographyConfirm": null,
+      "geographyNote": "Ohio-centered regional footprint; verify state/county eligibility.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Broad small businesses; product eligibility applies.",
+      "exclusionsNote": "Cited materials exclude nonprofits, real-estate acquisition and certain federal-default/criminal-history situations; confirm current rules.",
+      "useOfFunds": [
+        "working_capital",
+        "equipment",
+        "growth"
+      ],
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Startup, working capital, equipment, inventory and business-improvement loans.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Underserved entrepreneurs, including minority, immigrant and women business owners.",
+      "controlNote": "Debt.",
+      "acquisitionNote": "Acquisition eligibility unclear; real-estate acquisition restriction may be product-specific.",
+      "diverseFocus": false,
+      "status": "Live page contains tiers labeled 2025; brochure differs. Treat size as unresolved.",
+      "nextQuestion": "Resolve current product, geography, acquisition use and maximum before sizing a request.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.ecdi.org/loans",
+        "https://www.ecdi.org/_files/ugd/c93ed5_7b0cc22a3e8945f0ac8c3a39f0e98621.pdf"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Published loan sizes conflict, so no check size entered.",
+        "Ohio-centered regional footprint; neighboring IN, KY, WV, PA and MI flagged to confirm."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_cc08",
+      "ref": "CC08",
+      "name": "Accion Opportunity Fund",
+      "fund": "Small-business term loan",
+      "category": "Community Credit",
+      "type": "CDFI nonprofit lender",
+      "relevance": "Broader inclusion / impact",
+      "capitalTypes": [
+        "senior_debt"
+      ],
+      "checkMin": 5000,
+      "checkMax": 250000,
+      "checkNote": "Published loan terms: $5k\u2013$250k; minimum can vary by state.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": 300000,
+      "revenueMax": null,
+      "revenueNote": "July 2026 help page: $300k annual revenue, two years in business and 660 credit score.",
+      "minYears": 2,
+      "maxLeverage": null,
+      "geographies": [
+        "AL",
+        "AK",
+        "AZ",
+        "AR",
+        "CA",
+        "CO",
+        "CT",
+        "DE",
+        "FL",
+        "GA",
+        "HI",
+        "ID",
+        "IL",
+        "IN",
+        "IA",
+        "KS",
+        "KY",
+        "LA",
+        "ME",
+        "MD",
+        "MA",
+        "MI",
+        "MN",
+        "MS",
+        "MO",
+        "NE",
+        "NV",
+        "NH",
+        "NJ",
+        "NM",
+        "NY",
+        "NC",
+        "OH",
+        "OK",
+        "OR",
+        "PA",
+        "RI",
+        "SC",
+        "TX",
+        "UT",
+        "VA",
+        "WA",
+        "WV",
+        "WI",
+        "WY"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "U.S., excluding DC, VT, SD, ND, MT and TN under the cited eligibility page.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Broad small-business industries; confirm restricted activities.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "working_capital",
+        "growth"
+      ],
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Loans and business support for established underserved small businesses.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Underserved owners, including people of color, women and low-income entrepreneurs; broad application eligibility.",
+      "controlNote": "Debt.",
+      "acquisitionNote": "Acquisition uses not established in reviewed terms; ask.",
+      "diverseFocus": false,
+      "status": "Official eligibility help article updated July 2026.",
+      "nextQuestion": "Confirm current state coverage, credit requirements and use-of-proceeds restrictions.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://aofund.zendesk.com/hc/en-us/articles/26804506894861-What-are-AOF-s-loan-terms",
+        "https://aofund.zendesk.com/hc/en-us/articles/26804416541709-What-are-the-eligibility-requirements-for-a-loan-with-AOF",
+        "https://aofund.org/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [],
+      "contact": null
+    },
+    {
+      "id": "prov_cc09",
+      "ref": "CC09",
+      "name": "Lendistry",
+      "fund": "SBA 7(a) Standard / small-business lending",
+      "category": "Community Credit",
+      "type": "CDFI / SBA lender",
+      "relevance": "Broader inclusion / impact",
+      "capitalTypes": [
+        "sba_7a"
+      ],
+      "checkMin": 350001,
+      "checkMax": 5000000,
+      "checkNote": "Cited SBA 7(a) Standard product: $350,001\u2013$5m; other Lendistry products differ.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "Generally two years operating; acquisition/new-entity exceptions may apply.",
+      "minYears": 2,
+      "maxLeverage": null,
       "geographies": [
         "National"
       ],
-      "sectorsPreferred": [
-        "56",
-        "23",
-        "31-33",
-        "81",
-        "54"
-      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States; product-specific geographic rules.",
+      "sectorsPreferred": [],
       "sectorsOnly": false,
-      "sectorsExcluded": [
-        "72"
-      ],
+      "sectorsExcluded": [],
+      "industriesNote": "Broad SBA-eligible operating businesses.",
+      "exclusionsNote": "SBA and lender restrictions apply; obtain current product eligibility rather than assuming every industry qualifies.",
       "useOfFunds": [
-        "acquisition"
+        "acquisition",
+        "growth",
+        "equipment",
+        "real_estate"
       ],
-      "diverseFocus": true,
-      "contact": {
-        "name": "Imani Carter",
-        "email": "icarter@foundersfirst.example"
-      },
-      "notes": "Backs searchers, with a focus on first-time Black and Latino acquirers. Equity and structured capital for acquisitions."
+      "useOfFundsConfirm": [],
+      "strategyNote": "Business/franchise acquisitions, expansion, equipment and owner-occupied commercial real estate.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Underserved rural and urban businesses; minority-led lender, not an exclusive minority-borrower rule.",
+      "controlNote": "Debt; SBA underwriting and guarantees apply.",
+      "acquisitionNote": "Yes \u2014 business acquisition financing.",
+      "diverseFocus": false,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm equity injection, guarantees, acquisition eligibility and SBA program requirements.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://lendistry.com/",
+        "https://lendistry.com/about/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Two-year operating rule has exceptions for acquisitions."
+      ],
+      "contact": null
     },
     {
-      "id": "prov_capitalcity",
-      "name": "Capital City Community Bank",
-      "type": "Bank",
+      "id": "prov_cc10",
+      "ref": "CC10",
+      "name": "Latino Economic Development Center (LEDC)",
+      "fund": "Micro and growth business loans",
+      "category": "Community Credit",
+      "type": "CDFI small-business lender",
+      "relevance": "Explicit minority / diverse business focus",
       "capitalTypes": [
-        "senior_debt",
-        "sba_7a"
+        "senior_debt"
       ],
-      "checkMin": 500000,
-      "checkMax": 6000000,
-      "minEbitda": 500000,
-      "minRevenue": 2000000,
-      "maxLeverage": 3.5,
+      "checkMin": 1000,
+      "checkMax": 250000,
+      "checkNote": "Portfolio range $1k\u2013$250k; growth loans up to $250k, startup products have smaller caps.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "Growth product generally requires two years operating; no universal revenue minimum on current landing page.",
+      "minYears": 2,
+      "maxLeverage": null,
       "geographies": [
         "DC",
         "MD",
         "VA"
       ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "Washington DC, Maryland, Virginia and Puerto Rico; verify product coverage.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [
+        "53"
+      ],
+      "industriesNote": "Broad small businesses.",
+      "exclusionsNote": "Listed restrictions include illegal/sexual businesses, liquor stores, speculative activity and real-estate businesses; confirm application to each product.",
+      "useOfFunds": [
+        "growth",
+        "working_capital"
+      ],
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Startup and business-growth financing paired with business assistance.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Latino and other underserved entrepreneurs.",
+      "controlNote": "Debt.",
+      "acquisitionNote": "Business acquisition use not confirmed.",
+      "diverseFocus": true,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm geography, product cap, business age and restrictions on acquisition proceeds.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.ledcmetro.org/lending",
+        "https://www.ledcmetro.org/business_loans_landing",
+        "https://www.ledcmetro.org/sb-loan-requirements"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Puerto Rico is also eligible.",
+        "Real-estate businesses excluded; liquor stores also excluded (not mapped)."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_cc11",
+      "ref": "CC11",
+      "name": "Ascendus",
+      "fund": "Small Business Term Loan",
+      "category": "Community Credit",
+      "type": "CDFI nonprofit lender",
+      "relevance": "Broader inclusion / impact",
+      "capitalTypes": [
+        "senior_debt"
+      ],
+      "checkMin": null,
+      "checkMax": 100000,
+      "checkNote": "Current term-loan page: up to $100k. Historical Entrepreneurs of Color Fund material cites higher limits; not treated as the current standard cap.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "Six months consistent revenue, 575 credit score and local-referral condition on cited product page.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "AL",
+        "AK",
+        "AZ",
+        "AR",
+        "CA",
+        "CO",
+        "CT",
+        "DC",
+        "DE",
+        "FL",
+        "GA",
+        "HI",
+        "ID",
+        "IL",
+        "IN",
+        "IA",
+        "KS",
+        "KY",
+        "LA",
+        "ME",
+        "MD",
+        "MA",
+        "MI",
+        "MN",
+        "MS",
+        "MO",
+        "MT",
+        "NE",
+        "NV",
+        "NH",
+        "NJ",
+        "NM",
+        "NY",
+        "NC",
+        "ND",
+        "OH",
+        "OK",
+        "OR",
+        "PA",
+        "RI",
+        "SC",
+        "SD",
+        "TN",
+        "TX",
+        "UT",
+        "VA",
+        "WA",
+        "WV",
+        "WI",
+        "WY"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States except Vermont, subject to program/referral conditions.",
       "sectorsPreferred": [],
       "sectorsOnly": false,
       "sectorsExcluded": [],
+      "industriesNote": "Broad small-business lending; some industries ineligible but full list not public on the cited page.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
       "useOfFunds": [
-        "acquisition",
-        "growth",
-        "refinance",
-        "recap",
         "working_capital",
         "equipment",
-        "real_estate"
+        "refinance",
+        "growth"
       ],
-      "diverseFocus": true,
-      "contact": {
-        "name": "Derrick Simmons",
-        "email": "dsimmons@capcitycb.example"
-      },
-      "notes": "Minority depository institution serving the DC metro."
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Working capital, equipment, refinancing, renovations and business vehicles.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Underserved, immigrant, minority and women entrepreneurs; ask about any current Entrepreneurs of Color program.",
+      "controlNote": "Debt.",
+      "acquisitionNote": "Acquisition use not expressly listed.",
+      "diverseFocus": false,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm referral requirement, state eligibility and whether an acquisition product is available.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.ascendus.org/products/small-business-term-loan/",
+        "https://www.ascendus.org/resources/cheers-to-another-year-a-recap-of-essential-resources-from-2023/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [],
+      "contact": null
     },
     {
-      "id": "prov_harmony",
-      "name": "Harmony Health Capital",
-      "type": "Private Credit",
+      "id": "prov_cc12",
+      "ref": "CC12",
+      "name": "DreamSpring",
+      "fund": "Small Business Loan",
+      "category": "Community Credit",
+      "type": "CDFI nonprofit lender",
+      "relevance": "Broader inclusion / impact",
+      "capitalTypes": [
+        "senior_debt"
+      ],
+      "checkMin": 1000,
+      "checkMax": 250000,
+      "checkNote": "Published small-business loans $1k\u2013$250k.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "Startup and operating-business products; no EBITDA threshold published.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "AL",
+        "AZ",
+        "CA",
+        "CO",
+        "FL",
+        "GA",
+        "IL",
+        "IA",
+        "KS",
+        "LA",
+        "MI",
+        "MS",
+        "MO",
+        "NE",
+        "NV",
+        "NM",
+        "NY",
+        "NC",
+        "OH",
+        "OK",
+        "PA",
+        "SC",
+        "TN",
+        "TX",
+        "UT",
+        "WA",
+        "WY"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "27 states: AL, AZ, CA, CO, FL, GA, IL, IA, KS, LA, MI, MS, MO, NE, NV, NM, NY, NC, OH, OK, PA, SC, TN, TX, UT, WA, WY.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Broad small businesses; restricted-industry list not found.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "working_capital",
+        "equipment",
+        "growth"
+      ],
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Startup and growth financing for inventory, equipment, renovations and working capital.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Underserved entrepreneurs, including people of color, women, veterans and owners with disabilities.",
+      "controlNote": "Debt.",
+      "acquisitionNote": "Acquisition use requires confirmation.",
+      "diverseFocus": false,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm current state availability, loan cap, underwriting and acquisition use.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.dreamspring.org/small-business-loans",
+        "https://help.dreamspring.org/knowledge/where-does-dreamspring-provide-small-business-loans"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [],
+      "contact": null
+    },
+    {
+      "id": "prov_cc13",
+      "ref": "CC13",
+      "name": "Partner Community Capital (PCAP)",
+      "fund": "Small-business and community loans",
+      "category": "Community Credit",
+      "type": "CDFI senior / subordinated lender",
+      "relevance": "Broader inclusion / impact",
       "capitalTypes": [
         "senior_debt",
         "mezzanine"
       ],
-      "checkMin": 2000000,
-      "checkMax": 20000000,
-      "minEbitda": 1000000,
-      "minRevenue": 5000000,
-      "maxLeverage": 4.5,
+      "checkMin": 5000,
+      "checkMax": null,
+      "checkNote": "Published financing from $5k to over $2m; no finite ceiling.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "No public numeric screen found; underwriting varies.",
+      "minYears": null,
+      "maxLeverage": null,
       "geographies": [
-        "National"
+        "NC",
+        "WV"
       ],
-      "sectorsPreferred": [
-        "62"
+      "geographiesConfirm": [
+        "VA",
+        "KY",
+        "TN"
       ],
-      "sectorsOnly": true,
+      "geographyConfirm": null,
+      "geographyNote": "North Carolina, West Virginia and central Appalachian/surrounding communities; confirm exact area.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
       "sectorsExcluded": [],
+      "industriesNote": "Community businesses and nonprofits; varied sectors.",
+      "exclusionsNote": "Gambling; lending; speculation; certain multilevel-sales/distribution businesses, per application criteria.",
       "useOfFunds": [
         "acquisition",
         "growth",
         "refinance",
-        "recap"
+        "working_capital",
+        "equipment",
+        "real_estate"
       ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Business acquisitions, real estate, equipment, working capital, energy improvements and refinancing.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Underserved businesses and communities; not exclusively minority ownership.",
+      "controlNote": "Debt, including flexible/subordinated structures.",
+      "acquisitionNote": "Yes \u2014 business acquisition listed.",
       "diverseFocus": false,
-      "contact": {
-        "name": "Elena Brandt",
-        "email": "ebrandt@harmonyhealthcap.example"
-      },
-      "notes": "Healthcare-only lender. Understands Medicare and Medicaid reimbursement cycles."
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm regional eligibility, acquisition structure, maximum loan and restricted sectors.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://partnercap.org/apply/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "NC and WV entered; central Appalachian VA, KY and TN flagged to confirm."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_cc14",
+      "ref": "CC14",
+      "name": "Thread Capital / NC Rural Center",
+      "fund": "Direct small-business lending and referral network",
+      "category": "Community Credit",
+      "type": "CDFI lender / capital-access intermediary",
+      "relevance": "Broader inclusion / impact",
+      "capitalTypes": [
+        "senior_debt"
+      ],
+      "checkMin": 500,
+      "checkMax": 100000,
+      "checkNote": "Partner directory: direct loans $500\u2013$100k, startups up to $50k; disaster products differ. Up to $5m on its portal includes network financing, not all direct loans.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "No public numeric screen found; underwriting varies.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "NC"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "North Carolina.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Broad North Carolina small businesses.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "working_capital",
+        "equipment",
+        "acquisition"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Small-business working capital, equipment and business purchases; referrals for larger needs.",
+      "ownershipRequirement": "none",
+      "ownershipLabel": null,
+      "ownershipNote": "Focus on rural, low-income, women and entrepreneurs of color.",
+      "controlNote": "Debt or referral to other lenders.",
+      "acquisitionNote": "Yes \u2014 business purchases appear in program description; confirm product.",
+      "diverseFocus": false,
+      "status": "Direct limits sourced from a partner directory; current direct-versus-referral offering needs confirmation.",
+      "nextQuestion": "Verify that the relevant loan is direct, current and acquisition-eligible.",
+      "sourceQuality": "Program portal + ecosystem directory",
+      "sources": [
+        "https://www.capitalopportunitiesnc.org/banker/thread-capital",
+        "https://loans.threadcap.org/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Larger requests are referred to partner lenders."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_cc15",
+      "ref": "CC15",
+      "name": "Native American Bank",
+      "fund": "Commercial / tribal enterprise loans",
+      "category": "Community Credit",
+      "type": "Bank / Native and tribal business lender",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "senior_debt",
+        "sba_7a"
+      ],
+      "checkMin": null,
+      "checkMax": null,
+      "checkNote": "No public company-level check range found; confirm directly.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "No public numeric screen found; underwriting varies.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States; Native/tribal business focus.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Tribal enterprises and Native businesses across sectors; project eligibility varies.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "acquisition",
+        "real_estate",
+        "equipment",
+        "working_capital",
+        "growth"
+      ],
+      "useOfFundsConfirm": [],
+      "strategyNote": "Acquisitions, commercial real estate, construction, equipment, bridge/receivables finance and renewable-energy projects.",
+      "ownershipRequirement": "specific",
+      "ownershipLabel": "Native American or tribal ownership",
+      "ownershipNote": "Native American and tribal enterprises; confirm ownership and program requirements.",
+      "controlNote": "Bank debt; may use government-guaranteed programs.",
+      "acquisitionNote": "Yes \u2014 business acquisition lending listed.",
+      "diverseFocus": true,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Ask for loan size, EBITDA/DSCR tests, guarantees and Native-ownership eligibility.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.nativeamericanbank.com/business-banking/business-loans/",
+        "https://www.nativeamericanbank.com/tribal-enterprise-banking/loans-financing/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [],
+      "contact": null
+    },
+    {
+      "id": "prov_cc16",
+      "ref": "CC16",
+      "name": "Black Farmer Fund",
+      "fund": "BFF Fund 2.0 / integrated capital",
+      "category": "Community Credit",
+      "type": "Nonprofit integrated-capital fund \u2014 loans + grants",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "senior_debt"
+      ],
+      "checkMin": null,
+      "checkMax": null,
+      "checkNote": "No public company-level check range found; confirm directly.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "No public numeric screen found; underwriting varies.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "ME",
+        "NH",
+        "VT",
+        "RI",
+        "MA",
+        "NY",
+        "CT",
+        "NJ",
+        "PA"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "Northeastern U.S.: ME, NH, VT, RI, MA, NY, CT, NJ and PA.",
+      "sectorsPreferred": [
+        "11",
+        "31-33",
+        "42",
+        "72"
+      ],
+      "sectorsOnly": true,
+      "sectorsExcluded": [],
+      "industriesNote": "Farming; food/fiber/fuel production; restaurants; food distribution and processing.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "growth",
+        "working_capital"
+      ],
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Patient loans, grants and support for Black food and agricultural entrepreneurs.",
+      "ownershipRequirement": "specific",
+      "ownershipLabel": "Black ownership",
+      "ownershipNote": "Black-owned food/agricultural businesses with community and ecological impact.",
+      "controlNote": "Loan/grant structures; not a conventional PE buyout fund.",
+      "acquisitionNote": "Acquisition financing not explicitly established.",
+      "diverseFocus": true,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm application timing, capital amount, repayment structure and use for purchasing a business.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://www.blackfarmerfund.org/faq"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Food and agriculture only: mapped to agriculture (11), food manufacturing (31-33), food distribution (42) and restaurants (72)."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_cc17",
+      "ref": "CC17",
+      "name": "NDN Fund / NDN Collective",
+      "fund": "Indigenous community and enterprise lending",
+      "category": "Community Credit",
+      "type": "Indigenous impact lender",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "senior_debt"
+      ],
+      "checkMin": 10000,
+      "checkMax": null,
+      "checkNote": "Programs: direct $10\u201350k; predevelopment $50\u2013200k; enterprise $250\u2013500k; larger capital loans $500k\u2013$10m+. No finite overall ceiling.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "No public numeric screen found; underwriting varies.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "Indigenous communities; confirm location and legal-entity eligibility.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Native enterprises and community-development projects; program-specific sectors.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "growth",
+        "working_capital"
+      ],
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Flexible loans for Indigenous businesses and community projects with social, cultural and environmental benefits.",
+      "ownershipRequirement": "specific",
+      "ownershipLabel": "Indigenous or tribal ownership",
+      "ownershipNote": "Indigenous/Native-owned and tribally owned enterprises with mission alignment.",
+      "controlNote": "Debt; product-specific collateral and repayment.",
+      "acquisitionNote": "Potential enterprise acquisition fit; must confirm.",
+      "diverseFocus": true,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm current product availability, geography, ownership test and acquisition eligibility.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://ndncollective.org/lending/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [],
+      "contact": null
+    },
+    {
+      "id": "prov_cc18",
+      "ref": "CC18",
+      "name": "Citizen Potawatomi Community Development Corporation",
+      "fund": "Commercial loans",
+      "category": "Community Credit",
+      "type": "Native CDFI lender",
+      "relevance": "Explicit minority / diverse business focus",
+      "capitalTypes": [
+        "senior_debt"
+      ],
+      "checkMin": 5000,
+      "checkMax": 500000,
+      "checkNote": "Own loans $5k\u2013$500k; larger amounts may be possible through participations.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "No public numeric screen found; underwriting varies.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "OK"
+      ],
+      "geographiesConfirm": [
+        "AL",
+        "AK",
+        "AZ",
+        "AR",
+        "CA",
+        "CO",
+        "CT",
+        "DC",
+        "DE",
+        "FL",
+        "GA",
+        "HI",
+        "ID",
+        "IL",
+        "IN",
+        "IA",
+        "KS",
+        "KY",
+        "LA",
+        "ME",
+        "MD",
+        "MA",
+        "MI",
+        "MN",
+        "MS",
+        "MO",
+        "MT",
+        "NE",
+        "NV",
+        "NH",
+        "NJ",
+        "NM",
+        "NY",
+        "NC",
+        "ND",
+        "OH",
+        "OR",
+        "PA",
+        "RI",
+        "SC",
+        "SD",
+        "TN",
+        "TX",
+        "UT",
+        "VT",
+        "VA",
+        "WA",
+        "WV",
+        "WI",
+        "WY"
+      ],
+      "geographyConfirm": null,
+      "geographyNote": "Native-owned businesses in Oklahoma; Citizen Potawatomi Nation members nationwide.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "Native-owned small businesses across eligible industries.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "real_estate",
+        "equipment",
+        "working_capital"
+      ],
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Commercial property, fixed assets, inventory and working capital.",
+      "ownershipRequirement": "specific",
+      "ownershipLabel": "Native ownership (Citizen Potawatomi Nation members nationwide)",
+      "ownershipNote": "Native ownership / tribal-membership and geographic requirements.",
+      "controlNote": "Debt.",
+      "acquisitionNote": "Business acquisition use not explicitly stated; confirm.",
+      "diverseFocus": true,
+      "status": "Live public strategy/program information; available capital and current intake not independently confirmed.",
+      "nextQuestion": "Confirm proof of eligibility, acquisition use and participation capacity for larger deals.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://cpcdc.org/commercial-loans"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Oklahoma entered; Citizen Potawatomi Nation members are eligible in any state."
+      ],
+      "contact": null
+    },
+    {
+      "id": "prov_vi03",
+      "ref": "VI03",
+      "name": "Hidden Star Capital",
+      "fund": "Hidden Star Equity Fund",
+      "category": "Verify & Indirect",
+      "type": "Growth private equity",
+      "relevance": "Verify \u2014 explicit minority focus",
+      "capitalTypes": [
+        "minority_equity"
+      ],
+      "checkMin": 2000000,
+      "checkMax": 5000000,
+      "checkNote": "Website target initial investment $2\u20135m; a target fundraise does not prove available investment capital.",
+      "ebitdaMin": null,
+      "ebitdaMax": null,
+      "requiresPositiveEbitda": false,
+      "ebitdaNote": "Not disclosed in reviewed public sources; confirm directly.",
+      "revenueMin": null,
+      "revenueMax": null,
+      "revenueNote": "Established/scalable businesses; typical pre-money valuation $7\u201325m is not EBITDA.",
+      "minYears": null,
+      "maxLeverage": null,
+      "geographies": [
+        "National"
+      ],
+      "geographiesConfirm": [],
+      "geographyConfirm": null,
+      "geographyNote": "United States.",
+      "sectorsPreferred": [],
+      "sectorsOnly": false,
+      "sectorsExcluded": [],
+      "industriesNote": "High-growth industries broadly described; specific sector list and exclusions not published.",
+      "exclusionsNote": "Not published in reviewed sources; this does not mean every sector is eligible.",
+      "useOfFunds": [
+        "growth"
+      ],
+      "useOfFundsConfirm": [
+        "acquisition"
+      ],
+      "strategyNote": "Back established, scalable, high-growth businesses led by women and minority entrepreneurs.",
+      "ownershipRequirement": "minority_or_women",
+      "ownershipLabel": null,
+      "ownershipNote": "Women- and minority-led businesses.",
+      "controlNote": "Equity; control/non-control terms not published.",
+      "acquisitionNote": "Growth focus; acquisition/ETA appetite not verified.",
+      "diverseFocus": true,
+      "status": "Current fund page has target terms; independent evidence of final close/deployable capital not established.",
+      "nextQuestion": "Confirm first/final close, actual available capital, current deals and EBITDA expectations.",
+      "sourceQuality": "Official firm / program source",
+      "sources": [
+        "https://hiddenstarcapital.com/fund-summary-details/",
+        "https://hiddenstarcapital.com/about/"
+      ],
+      "researchChecked": "2026-10-30",
+      "interpretations": [
+        "Listed as a research lead: deployable capital not verified."
+      ],
+      "contact": null
     }
   ]
 }

@@ -12,6 +12,7 @@ import {
   margin,
   money,
   pct,
+  range,
   shortDate,
 } from "@/lib/format";
 import { matchProviders, type ProviderMatch } from "@/lib/matching";
@@ -24,6 +25,8 @@ export const dynamic = "force-dynamic";
 
 const STATUSES = Object.keys(STATUS_LABELS) as Status[];
 
+const OUTCOME_ICON = { pass: "✓", fail: "✕", confirm: "?" } as const;
+
 function MatchCard({
   m,
   submissionId,
@@ -33,14 +36,16 @@ function MatchCard({
   submissionId: string;
   introducedAt?: string;
 }) {
-  const misses = m.requirements.filter((r) => !r.passed);
+  const p = m.provider;
+  const fails = m.requirements.filter((r) => r.outcome === "fail");
+  const met = m.requirements.filter((r) => r.outcome === "pass").length;
   return (
     <div className="match">
       <div className="match-top">
         <div>
-          <h3><Link href={`/team/providers/${m.provider.id}`}>{m.provider.name}</Link></h3>
+          <h3><Link href={`/team/providers/${p.id}`}>{p.name}</Link></h3>
           <div className="muted">
-            {m.provider.type} · {money(m.provider.checkMin)} to {money(m.provider.checkMax)}
+            {p.fund} · {p.type} · {range(p.checkMin, p.checkMax) ?? "Check size not published"}
           </div>
         </div>
         <div className="match-score">
@@ -55,26 +60,30 @@ function MatchCard({
         </div>
       </div>
       <div className="why">
-        {misses.map((r) => <span key={r.label} className="tag miss">{r.detail}</span>)}
+        {fails.map((r) => <span key={r.label} className="tag miss">{r.detail}</span>)}
+        {m.toConfirm.map((r) => <span key={r.label} className="tag confirm">{r.label}: {r.detail}</span>)}
         {m.reasons.map((r) => <span key={r} className="tag ok">{r}</span>)}
       </div>
       <details className="req">
-        <summary>Requirements checked ({m.requirements.length - misses.length} of {m.requirements.length} met)</summary>
+        <summary>
+          Requirements: {met} met{m.toConfirm.length > 0 && `, ${m.toConfirm.length} to confirm`}
+          {fails.length > 0 && `, ${fails.length} not met`}
+        </summary>
         <ul>
           {m.requirements.map((r) => (
-            <li key={r.label} className={r.passed ? "req-ok" : "req-miss"}>
-              {r.passed ? "✓" : "✕"} <strong>{r.label}:</strong> {r.detail}
+            <li key={r.label} className={`req-${r.outcome}`}>
+              {OUTCOME_ICON[r.outcome]} <strong>{r.label}:</strong> {r.detail}
             </li>
           ))}
         </ul>
       </details>
       {m.eligible && (
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
-          <span className="muted">{m.provider.contact.name} · {m.provider.contact.email}</span>
+        <div className="match-foot">
+          <span className="muted">Ask first: {p.nextQuestion}</span>
           {introducedAt ? (
             <span className="badge introduced">Introduced {shortDate(introducedAt)}</span>
           ) : (
-            <form action={introduce.bind(null, submissionId, m.provider.id)}>
+            <form action={introduce.bind(null, submissionId, p.id)}>
               <button className="btn btn-secondary btn-sm">Log introduction</button>
             </form>
           )}
@@ -91,7 +100,7 @@ export default async function SubmissionPage({ params }: { params: Promise<{ id:
 
   const fit = scoreSubmission(s);
   const providers = listProviders();
-  const { matches, nearMisses } = matchProviders(s, providers);
+  const { matches, confirmed, possible, nearMisses } = matchProviders(s, providers);
   const f = s.financials;
   const g = growth(f.revenueLTM, f.revenuePrior);
   const introduced = new Map(s.introductions.map((i) => [i.providerId, i.at]));
@@ -152,15 +161,24 @@ export default async function SubmissionPage({ params }: { params: Promise<{ id:
           <div className="card panel">
             <div className="panel-head">
               <h2>Matched capital providers</h2>
-              <span className="muted">{matches.length} eligible of {providers.length}</span>
+              <span className="muted">{confirmed.length} confirmed · {possible.length} possible · {providers.length} checked</span>
             </div>
             {matches.length === 0 && <p className="empty">No provider meets every requirement for this deal as submitted.</p>}
-            {matches.map((m) => (
+            {confirmed.length > 0 && (
+              <h3 className="group-head">Meets every published criterion <span className="muted">({confirmed.length})</span></h3>
+            )}
+            {confirmed.map((m) => (
+              <MatchCard key={m.provider.id} m={m} submissionId={s.id} introducedAt={introduced.get(m.provider.id)} />
+            ))}
+            {possible.length > 0 && (
+              <h3 className="group-head">Possible, confirm first <span className="muted">({possible.length}; some criteria unpublished or not checkable from the form)</span></h3>
+            )}
+            {possible.map((m) => (
               <MatchCard key={m.provider.id} m={m} submissionId={s.id} introducedAt={introduced.get(m.provider.id)} />
             ))}
             {nearMisses.length > 0 && (
               <>
-                <h3 style={{ fontSize: 14, margin: "22px 0 10px" }}>Near misses <span className="muted">(one requirement short; could work if the deal is resized)</span></h3>
+                <h3 className="group-head">Near misses <span className="muted">(one requirement short; could work if the deal is resized)</span></h3>
                 {nearMisses.map((m) => <MatchCard key={m.provider.id} m={m} submissionId={s.id} />)}
               </>
             )}

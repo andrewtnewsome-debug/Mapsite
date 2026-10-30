@@ -94,7 +94,7 @@ export default async function Dashboard({
               <th>Industry (NAICS)</th>
               <th className="num">Raise</th>
               <th>Top match</th>
-              <th className="num">Matches</th>
+              <th className="num">Confirmed matches</th>
               <th>Status</th>
               <th>Submitted</th>
             </tr>
@@ -117,8 +117,12 @@ export default async function Dashboard({
                 </td>
                 <td style={{ fontSize: 13 }}>
                   {match.matches[0] ? match.matches[0].provider.name : <span className="muted">No eligible provider</span>}
+                  {match.matches[0] && match.matches[0].toConfirm.length > 0 && <div className="muted">To confirm</div>}
                 </td>
-                <td className="num">{match.matches.length}</td>
+                <td className="num">
+                  {match.confirmed.length}
+                  {match.possible.length > 0 && <div className="muted">+{match.possible.length} possible</div>}
+                </td>
                 <td><StatusBadge status={s.status} /></td>
                 <td className="muted">{shortDate(s.createdAt)}</td>
               </tr>

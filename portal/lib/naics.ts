@@ -24,7 +24,7 @@ const TABLE: NaicsEntry[] = [
   { code: "621111", title: "Offices of Physicians (except Mental Health Specialists)", keywords: ["physician practice", "primary care", "medical practice"] },
   { code: "621210", title: "Offices of Dentists", keywords: ["dental", "dentist", "orthodont"] },
   { code: "624410", title: "Child Day Care Services", keywords: ["child care", "childcare", "early learning", "preschool", "daycare"] },
-  { code: "611710", title: "Educational Support Services", keywords: ["tutoring", "test prep", "educational support"] },
+  { code: "611710", title: "Educational Support Services", keywords: ["tutoring", "test prep", "educational support", "school districts", "student recruitment", "absenteeism"] },
   { code: "541512", title: "Computer Systems Design Services", keywords: ["managed services", "msp", "it services", "cybersecurity", "systems integration"] },
   { code: "541511", title: "Custom Computer Programming Services", keywords: ["software development", "custom software", "app development"] },
   { code: "541330", title: "Engineering Services", keywords: ["engineering firm", "civil engineering", "engineering services"] },

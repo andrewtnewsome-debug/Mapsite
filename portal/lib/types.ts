@@ -88,39 +88,68 @@ export type SubmissionInput = Omit<
   "id" | "createdAt" | "status" | "naics" | "ai" | "notes" | "introductions"
 >;
 
-export type ProviderType =
-  | "Bank"
-  | "SBA Lender"
-  | "CDFI"
-  | "Private Credit"
-  | "Specialty Lender"
-  | "Mezzanine Fund"
-  | "Private Equity"
-  | "Search Fund Investor"
-  | "Family Office";
+export type OwnershipRequirement = "none" | "minority" | "minority_or_women" | "specific";
 
+/**
+ * A capital provider profile. Dollar bounds are null when the provider hasn't published them:
+ * null means "unknown, confirm directly", never zero or unlimited.
+ */
 export interface Provider {
   id: string;
+  /** Row ID in the research workbook, e.g. "AG04". */
+  ref: string;
   name: string;
-  type: ProviderType;
+  fund: string;
+  category: string;
+  type: string;
+  relevance: string;
   capitalTypes: CapitalType[];
-  checkMin: number;
-  checkMax: number;
-  minEbitda: number;
-  minRevenue: number;
+  checkMin: number | null;
+  checkMax: number | null;
+  checkNote: string;
+  ebitdaMin: number | null;
+  ebitdaMax: number | null;
+  requiresPositiveEbitda: boolean;
+  ebitdaNote: string;
+  revenueMin: number | null;
+  revenueMax: number | null;
+  revenueNote: string;
+  minYears: number | null;
   /** Max pro forma total debt / EBITDA. Only applied to debt requests. */
   maxLeverage: number | null;
   /** "National" or two-letter state codes. */
   geographies: string[];
+  /** States that may be served but aren't confirmed (e.g. "parts of surrounding states"); matching flags them to confirm. */
+  geographiesConfirm: string[];
+  /** A location rule the submission can't answer (e.g. Opportunity Zone); always "confirm". */
+  geographyConfirm: string | null;
+  geographyNote: string;
   /** NAICS sector keys, e.g. "23", "31-33", "62". */
   sectorsPreferred: string[];
   /** When true, only deals in sectorsPreferred qualify. */
   sectorsOnly: boolean;
   sectorsExcluded: string[];
+  industriesNote: string;
+  exclusionsNote: string;
   useOfFunds: UseOfFunds[];
+  /** Uses that may be allowed but aren't published; matching flags them to confirm. */
+  useOfFundsConfirm: UseOfFunds[];
+  strategyNote: string;
+  ownershipRequirement: OwnershipRequirement;
+  /** For "specific": the group the provider serves, e.g. "Native American or tribal ownership". */
+  ownershipLabel: string | null;
+  ownershipNote: string;
+  controlNote: string;
+  acquisitionNote: string;
   diverseFocus: boolean;
-  contact: { name: string; email: string };
-  notes: string;
+  status: string;
+  nextQuestion: string;
+  sourceQuality: string;
+  sources: string[];
+  researchChecked: string | null;
+  /** How the prose criteria were turned into matching rules. */
+  interpretations: string[];
+  contact: { name: string; email: string } | null;
 }
 
 export interface Db {

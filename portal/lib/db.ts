@@ -23,8 +23,8 @@ function enrich(input: SubmissionInput, at: Date): Pick<Submission, "naics" | "a
 }
 
 function load(): Db {
+  const seed = JSON.parse(readFileSync(SEED_PATH, "utf8")) as { submissions: SeedSubmission[]; providers: Provider[] };
   if (!existsSync(DB_PATH)) {
-    const seed = JSON.parse(readFileSync(SEED_PATH, "utf8")) as { submissions: SeedSubmission[]; providers: Provider[] };
     const db: Db = {
       providers: seed.providers,
       submissions: seed.submissions.map((s) => ({
@@ -35,7 +35,9 @@ function load(): Db {
     save(db);
     return db;
   }
-  return JSON.parse(readFileSync(DB_PATH, "utf8")) as Db;
+  // Providers always come from seed.json (written by scripts/import_providers.py); only submissions persist here.
+  const saved = JSON.parse(readFileSync(DB_PATH, "utf8")) as Db;
+  return { ...saved, providers: seed.providers };
 }
 
 function save(db: Db) {

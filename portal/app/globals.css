@@ -178,7 +178,7 @@ table.data a.name:hover { color: var(--green-dark); }
 .badge.Strong, .badge.Excellent, .badge.closed { background: var(--green-tint); color: var(--green-dark); }
 .badge.Moderate, .badge.Good, .badge.in_review { background: var(--amber-tint); color: var(--amber); }
 .badge.Low, .badge.declined { background: var(--red-tint); color: var(--red); }
-.badge.Possible, .badge.new { background: var(--blue-tint); color: var(--blue); }
+.badge.Possible, .badge.Fair, .badge.new { background: var(--blue-tint); color: var(--blue); }
 .badge.introduced { background: #efe9f7; color: #6a4a9c; }
 .badge.ai { background: #f1efe8; color: #7a6a3a; font-weight: 500; }
 
@@ -223,8 +223,13 @@ table.data a.name:hover { color: var(--green-dark); }
 .match-score strong { font-size: 20px; }
 details.req summary { cursor: pointer; font-size: 12.5px; color: var(--gray-2); }
 details.req ul { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 4px; font-size: 12.5px; }
-.req-ok { color: var(--green-dark); }
-.req-miss { color: var(--red); }
+.req-pass { color: var(--green-dark); }
+.req-fail { color: var(--red); }
+.req-confirm { color: var(--amber); }
+.tag.confirm { background: var(--amber-tint); border-color: #f1dfb8; color: var(--amber); }
+.tag.confirm::before { content: "? "; font-weight: 700; }
+.match-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.match-foot .muted { flex: 1 1 260px; }
 
 .status-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .status-buttons button { justify-content: flex-start; }
@@ -244,6 +249,12 @@ details.req ul { list-style: none; padding: 0; margin: 8px 0 0; display: grid; g
 .crit { display: grid; grid-template-columns: 110px 1fr; gap: 6px 10px; font-size: 13px; }
 .crit dt { color: var(--gray-3); }
 .crit dd { margin: 0; }
+.group-head { font-size: 14px; margin: 18px 0 10px; }
+.group-head:first-of-type { margin-top: 0; }
+.prose-list { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 13px; color: var(--gray-2); }
+.source-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 12.5px; overflow-wrap: anywhere; }
+.crit dd { min-width: 0; overflow-wrap: anywhere; }
+.crit .note { display: block; color: var(--gray-3); font-size: 12px; margin-top: 2px; }
 .empty { padding: 28px; text-align: center; color: var(--gray-3); font-size: 14px; }
 
 @media (max-width: 900px) {

@@ -36,11 +36,15 @@ export const STATUS_LABELS: Record<Status, string> = {
 };
 
 export const SECTOR_LABELS: Record<string, string> = {
+  "11": "Agriculture & food production",
+  "22": "Utilities & energy services",
   "23": "Construction",
   "31-33": "Manufacturing",
   "42": "Wholesale trade",
   "44-45": "Retail trade",
   "48-49": "Transportation & warehousing",
+  "51": "Information & software",
+  "52": "Finance",
   "53": "Real estate",
   "54": "Professional services",
   "56": "Admin & facility services",
@@ -57,6 +61,20 @@ export const US_STATES = [
   "WV", "WI", "WY",
 ];
 
+/** "National", "OH, IN, KY", or "All states except FL, TX" for long lists. */
+export function stateList(states: string[]): string {
+  if (states.includes("National")) return "National";
+  if (states.length > US_STATES.length - 10) {
+    return `All states except ${US_STATES.filter((s) => !states.includes(s)).join(", ")}`;
+  }
+  return states.join(", ");
+}
+
+/** Lowercases only the first letter, so "SBA 7(a) loan" stays intact mid-sentence. */
+export function lowerFirst(text: string): string {
+  return text.charAt(0).toLowerCase() + text.slice(1);
+}
+
 /** $14.2M, $850K */
 export function money(n: number): string {
   const abs = Math.abs(n);
@@ -71,6 +89,14 @@ export function money(n: number): string {
 
 export function pct(n: number, digits = 0): string {
   return `${n.toFixed(digits)}%`;
+}
+
+/** "$1M to $10M", "Up to $350K", "$2M and up", or null when nothing is published. */
+export function range(min: number | null, max: number | null): string | null {
+  if (min !== null && max !== null) return `${money(min)} to ${money(max)}`;
+  if (max !== null) return `Up to ${money(max)}`;
+  if (min !== null) return `${money(min)} and up`;
+  return null;
 }
 
 export function multiple(n: number): string {

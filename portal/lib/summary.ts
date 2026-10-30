@@ -37,7 +37,7 @@ export function draftSummary(s: SubmissionInput, naics: NaicsResult, now = new D
   if (f.topCustomerPct <= 15) highlights.push(`Diversified customer base; largest customer is ${pct(f.topCustomerPct)} of revenue.`);
   if (f.ebitdaLTM >= 2_000_000) highlights.push(`EBITDA scale of ${money(f.ebitdaLTM)} opens the institutional lender and sponsor market.`);
 
-  if (g !== null && g < 0) risks.push(`Revenue declined ${pct(Math.abs(g), 1)} YoY; lenders will ask what drove the drop.`);
+  if (g !== null && g < 0) risks.push(`Revenue declined ${pct(Math.abs(g), 1)} YoY; capital providers will ask what drove the drop.`);
   if (m < 8) risks.push(`Thin ${pct(m, 1)} margin leaves limited cushion for debt service.`);
   if (f.topCustomerPct >= 25) risks.push(`Customer concentration: top customer is ${pct(f.topCustomerPct)} of revenue.`);
   if (f.ebitdaLTM < 500_000) risks.push(`Sub-$500K EBITDA narrows the field to SBA, CDFI, and specialty lenders.`);

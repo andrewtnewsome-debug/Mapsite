@@ -2,15 +2,26 @@ import Link from "next/link";
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import { listProviders } from "@/lib/db";
-import { money } from "@/lib/format";
+import { CAPITAL_TYPE_LABELS, money, range } from "@/lib/format";
+import type { CapitalType } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
 export default function Home() {
   const providers = listProviders();
-  const minCheck = Math.min(...providers.map((p) => p.checkMin));
-  const maxCheck = Math.max(...providers.map((p) => p.checkMax));
+  const mins = providers.flatMap((p) => (p.checkMin === null ? [] : [p.checkMin]));
+  const maxes = providers.flatMap((p) => (p.checkMax === null ? [] : [p.checkMax]));
   const mission = providers.filter((p) => p.diverseFocus).length;
+  const byType = (Object.keys(CAPITAL_TYPE_LABELS) as CapitalType[]).map((t) => {
+    const offering = providers.filter((p) => p.capitalTypes.includes(t));
+    const lo = offering.flatMap((p) => (p.checkMin === null ? [] : [p.checkMin]));
+    const hi = offering.flatMap((p) => (p.checkMax === null ? [] : [p.checkMax]));
+    return {
+      t,
+      count: offering.length,
+      span: range(lo.length ? Math.min(...lo) : null, hi.length ? Math.max(...hi) : null),
+    };
+  }).filter((x) => x.count > 0);
 
   return (
     <>
@@ -35,11 +46,11 @@ export default function Home() {
           <div className="hero-panel">
             <h3>Capital we arrange</h3>
             <ul className="capital-list">
-              <li>Senior term loans <span>$1M to $25M</span></li>
-              <li>SBA 7(a) loans <span>up to $5M</span></li>
-              <li>Mezzanine &amp; unitranche <span>$3M to $40M</span></li>
-              <li>Growth &amp; minority equity <span>$2M to $10M</span></li>
-              <li>Majority recaps &amp; buyouts <span>$5M to $30M</span></li>
+              {byType.map(({ t, count, span }) => (
+                <li key={t}>
+                  {CAPITAL_TYPE_LABELS[t]} <span>{count} partners{span ? ` · ${span}` : ""}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -69,7 +80,7 @@ export default function Home() {
           </div>
           <div className="stats-row">
             <div className="stat-big"><strong>{providers.length}</strong><span>Capital partners in our network</span></div>
-            <div className="stat-big"><strong>{money(minCheck)} to {money(maxCheck)}</strong><span>Range of check sizes</span></div>
+            <div className="stat-big"><strong>{money(Math.min(...mins))} to {money(Math.max(...maxes))}</strong><span>Published check sizes</span></div>
             <div className="stat-big"><strong>{mission}</strong><span>Partners with a mandate for minority-owned businesses</span></div>
             <div className="stat-big"><strong>5 days</strong><span>Target time to first review</span></div>
           </div>
