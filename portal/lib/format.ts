@@ -70,9 +70,9 @@ export function stateList(states: string[]): string {
   return states.join(", ");
 }
 
-/** Lowercases only the first letter, so "SBA 7(a) loan" stays intact mid-sentence. */
+/** Lowercases the first letter for use mid-sentence, leaving acronyms ("SBA 7(a) loan") intact. */
 export function lowerFirst(text: string): string {
-  return text.charAt(0).toLowerCase() + text.slice(1);
+  return /^[A-Z]{2}/.test(text) ? text : text.charAt(0).toLowerCase() + text.slice(1);
 }
 
 /** $14.2M, $850K */

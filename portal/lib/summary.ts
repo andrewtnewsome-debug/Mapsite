@@ -1,5 +1,6 @@
-import { CAPITAL_TYPE_LABELS, TIMELINE_LABELS, USE_OF_FUNDS_LABELS, growth, margin, money, pct } from "./format";
-import type { AiSummary, NaicsResult, SubmissionInput } from "./types";
+import { CAPITAL_TYPE_LABELS, TIMELINE_LABELS, USE_OF_FUNDS_LABELS, growth, lowerFirst, margin, money, pct } from "./format";
+import { underwriting } from "./scoring";
+import type { AiSummary, CimExtraction, NaicsResult, SubmissionInput } from "./types";
 
 /**
  * PLACEHOLDER for the Claude deal summary. Writes a templated analyst-style
@@ -15,18 +16,12 @@ export function draftSummary(s: SubmissionInput, naics: NaicsResult, now = new D
   const growthPhrase =
     g === null ? "" : g >= 0 ? `, up ${pct(g, 1)} year over year` : `, down ${pct(Math.abs(g), 1)} year over year`;
 
-  const ownership = [
-    s.ownership.diverseOwned ? "The company is minority-owned" : "The company is not minority-owned",
-    s.ownership.ownerOperator ? "and is run day to day by its owner." : "and is managed by a non-owner team.",
-  ].join(" ");
-
   const summary =
     `${s.company.name} is a ${s.company.city}, ${s.company.state}-based business in ${industry} ` +
     `(NAICS ${naics.code}) with roughly ${s.company.employees} employees and ${years} years of operating history. ` +
     `Over the last twelve months it generated ${money(f.revenueLTM)} of revenue${growthPhrase}, and ${money(f.ebitdaLTM)} of EBITDA ` +
-    `(a ${pct(m, 1)} margin). Management is seeking ${money(s.deal.amount)} of ${CAPITAL_TYPE_LABELS[s.deal.capitalType].toLowerCase()} ` +
-    `for ${USE_OF_FUNDS_LABELS[s.deal.useOfFunds].toLowerCase()}, with a target close ${TIMELINE_LABELS[s.deal.timeline].toLowerCase()}. ` +
-    ownership;
+    `(a ${pct(m, 1)} margin). ` +
+    raiseSentence(s);
 
   const highlights: string[] = [];
   const risks: string[] = [];
@@ -41,11 +36,48 @@ export function draftSummary(s: SubmissionInput, naics: NaicsResult, now = new D
   if (m < 8) risks.push(`Thin ${pct(m, 1)} margin leaves limited cushion for debt service.`);
   if (f.topCustomerPct >= 25) risks.push(`Customer concentration: top customer is ${pct(f.topCustomerPct)} of revenue.`);
   if (f.ebitdaLTM < 500_000) risks.push(`Sub-$500K EBITDA narrows the field to SBA, CDFI, and specialty lenders.`);
-  if (s.deal.amount > 4 * Math.max(f.ebitdaLTM, 1)) risks.push(`Ask is large relative to cash flow (${(s.deal.amount / Math.max(f.ebitdaLTM, 1)).toFixed(1)}x EBITDA).`);
+  // Judge the ask against the cash flow lenders will underwrite: combined for an add-on.
+  const cashFlow = Math.max(underwriting(s).ebitdaLTM, 1);
+  if (s.deal.amount > 4 * cashFlow) risks.push(`Ask is large relative to cash flow (${(s.deal.amount / cashFlow).toFixed(1)}x EBITDA).`);
   if (years < 5) risks.push(`Limited operating history (${years} years).`);
 
   if (highlights.length === 0) highlights.push("No standout strengths identified from the submitted figures.");
   if (risks.length === 0) risks.push("No material risks flagged from the submitted figures.");
 
   return { summary, highlights, risks, generatedAt: now.toISOString(), model: "placeholder" };
+}
+
+/** The ask, who is behind it, and who will own the business. Shared by the placeholder and the CIM summary. */
+function raiseSentence(s: SubmissionInput): string {
+  const capital = `${money(s.deal.amount)} of ${lowerFirst(CAPITAL_TYPE_LABELS[s.deal.capitalType])}`;
+  const timing = `with a target close ${TIMELINE_LABELS[s.deal.timeline].toLowerCase()}`;
+  if (s.deal.useOfFunds !== "acquisition") {
+    return (
+      `Management is seeking ${capital} for ${USE_OF_FUNDS_LABELS[s.deal.useOfFunds].toLowerCase()}, ${timing}. ` +
+      (s.ownership.diverseOwned ? "The company is minority-owned" : "The company is not minority-owned") +
+      (s.ownership.ownerOperator ? " and is run day to day by its owner." : " and is managed by a non-owner team.")
+    );
+  }
+  const a = s.acquirer;
+  const price = s.deal.purchasePrice ? ` at a ${money(s.deal.purchasePrice)} purchase price` : "";
+  const buyer = a?.ownsBusiness && a.current
+    ? `The buyer owns ${a.current.name} (${money(a.current.revenueLTM)} revenue, ${money(a.current.ebitdaLTM)} EBITDA)` +
+      (a.combine ? " and plans to combine the two businesses." : " and will run the acquisition as a separate company.")
+    : "The buyer is a first-time acquirer.";
+  const after = s.ownership.diverseOwned ? "After closing the business will be minority-owned" : "After closing the business will not be minority-owned";
+  return (
+    `The buyer is seeking ${capital} to fund the acquisition${price}, ${timing}. ${buyer} ` +
+    `${after}${s.ownership.ownerOperator ? " and run day to day by its owner." : "."}`
+  );
+}
+
+/** The deal summary when Claude has read a CIM: Claude's own summary, facts and risks, plus the ask from the form. */
+export function summaryFromCim(s: SubmissionInput, cim: CimExtraction, now = new Date()): AiSummary {
+  return {
+    summary: `${cim.summary} ${raiseSentence(s)}`.trim(),
+    highlights: cim.keyFacts.length ? cim.keyFacts : ["The CIM did not surface standout strengths."],
+    risks: cim.risks.length ? cim.risks : ["No risks were flagged from the CIM."],
+    generatedAt: now.toISOString(),
+    model: "claude",
+  };
 }

@@ -106,6 +106,7 @@ export default async function Dashboard({
                 <td>
                   <Link href={`/team/submissions/${s.id}`} className="name">{s.company.name}</Link>
                   <div className="muted">{s.company.city}, {s.company.state}</div>
+                  {s.acquirer && <div className="muted">Buyer: {s.acquirer.current?.name ?? "first-time buyer"}{s.acquirer.combine ? " (add-on)" : ""}</div>}
                 </td>
                 <td>
                   <div style={{ fontSize: 13 }}>{s.naics.title.replace(/\s*\(.*\)$/, "")}</div>

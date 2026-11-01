@@ -23,7 +23,8 @@ export interface NaicsResult {
   code: string;
   title: string;
   sector: string;
-  confidence: number;
+  /** Null when Claude assigned the code from a CIM rather than the keyword placeholder. */
+  confidence: number | null;
   rationale: string;
   alternates: { code: string; title: string }[];
 }
@@ -33,7 +34,8 @@ export interface AiSummary {
   highlights: string[];
   risks: string[];
   generatedAt: string;
-  model: "placeholder";
+  /** "claude": written by Claude from an uploaded CIM. "placeholder": templated from the form. */
+  model: "placeholder" | "claude";
 }
 
 export interface Note {
@@ -45,6 +47,66 @@ export interface Note {
 export interface Introduction {
   providerId: string;
   at: string;
+}
+
+/** The buyer's existing company, asked only when the buyer already owns one. */
+export interface CurrentBusiness {
+  name: string;
+  website: string;
+  city: string;
+  state: string;
+  yearFounded: number;
+  employees: number;
+  description: string;
+  revenueLTM: number;
+  revenuePrior: number;
+  ebitdaLTM: number;
+  existingDebt: number;
+  /** The buyer's stake in it, 0 to 100. */
+  ownershipPct: number;
+}
+
+/** Who is buying, for acquisition raises. */
+export interface Acquirer {
+  ownsBusiness: boolean;
+  current: CurrentBusiness | null;
+  /** The acquired business will be combined with the current one (an add-on), so it is underwritten on combined figures. */
+  combine: boolean;
+  background: string;
+}
+
+/** What Claude read out of an uploaded CIM. Every value is null when the document doesn't state it. */
+export interface CimExtraction {
+  fileName: string;
+  pageCount: number | null;
+  /** Pages actually read, when the document was longer than one request allows. */
+  pagesRead: number | null;
+  extractedAt: string;
+  values: {
+    companyName: string | null;
+    website: string | null;
+    city: string | null;
+    state: string | null;
+    yearFounded: number | null;
+    employees: number | null;
+    description: string | null;
+    revenueLTM: number | null;
+    revenuePrior: number | null;
+    ebitdaLTM: number | null;
+    topCustomerPct: number | null;
+    existingDebt: number | null;
+    askingPrice: number | null;
+    sellerNote: number | null;
+  };
+  /** Which period or measure each figure is, e.g. "Adj. EBITDA, LTM Jun-26". */
+  labels: { revenueLTM: string | null; revenuePrior: string | null; ebitdaLTM: string | null };
+  sources: { field: string; page: number | null; quote: string }[];
+  naics: { code: string; title: string; rationale: string } | null;
+  reasonForSale: string | null;
+  summary: string;
+  keyFacts: string[];
+  risks: string[];
+  notFound: string[];
 }
 
 export interface Submission {
@@ -68,6 +130,10 @@ export interface Submission {
     useOfFunds: UseOfFunds;
     timeline: Timeline;
     details: string;
+    /** Acquisitions only. */
+    purchasePrice?: number | null;
+    sellerNote?: number | null;
+    buyerEquity?: number | null;
   };
   financials: {
     revenueLTM: number;
@@ -76,6 +142,9 @@ export interface Submission {
     topCustomerPct: number;
     existingDebt: number;
   };
+  /** Acquisitions only. When set, `company` and `financials` describe the business being acquired. */
+  acquirer?: Acquirer | null;
+  cim?: CimExtraction | null;
   naics: NaicsResult;
   ai: AiSummary;
   notes: Note[];

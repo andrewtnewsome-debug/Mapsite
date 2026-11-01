@@ -268,3 +268,42 @@ details.req ul { list-style: none; padding: 0; margin: 8px 0 0; display: grid; g
   .site-nav .hide-sm { display: none; }
   .form-card { padding: 22px; }
 }
+
+/* ── Acquisitions, buyer and CIM ── */
+.sample-li { margin-top: 12px; }
+.deal-details { margin-top: 16px; font-size: 14px; color: var(--gray-2); }
+.naics-title { font-weight: 600; font-size: 14px; margin: 2px 0 8px; }
+.small-gray { font-size: 13px; color: var(--gray-2); margin-top: 8px; }
+.small { font-size: 13px; }
+.basis-note { margin: -2px 0 6px; font-size: 12px; }
+.cim-upload { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; align-items: center; border: 1px dashed #c9d8c4; background: var(--green-tint); border-radius: 10px; padding: 14px 16px; margin-bottom: 22px; }
+.cim-upload p { font-size: 13px; color: var(--gray-2); margin-top: 2px; }
+.cim-upload .cim-status { grid-column: 1 / -1; margin: 0; font-size: 13px; }
+.cim-status.reading { color: var(--blue); }
+.cim-status.done { color: var(--green-dark); }
+.cim-status.error { color: var(--red); }
+.cim-pick { cursor: pointer; white-space: nowrap; }
+.help.from-cim { color: var(--green-dark); font-weight: 500; }
+.toggle { display: inline-flex; border: 1px solid #d5d8d3; border-radius: 8px; overflow: hidden; width: fit-content; max-width: 100%; flex-wrap: wrap; }
+.toggle-opt { display: flex; align-items: center; gap: 8px; padding: 10px 16px; font-size: 14px; font-weight: 500; cursor: pointer; background: #fff; }
+.toggle-opt + .toggle-opt { border-left: 1px solid #d5d8d3; }
+.toggle-opt.on { background: var(--green-tint); color: var(--green-dark); }
+.toggle-opt input { accent-color: var(--green); margin: 0; }
+.sub-block { border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; background: #fbfcfa; }
+.sub-block h3 { font-size: 15px; margin-bottom: 12px; }
+.terms { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); display: grid; gap: 8px; }
+.terms h3 { font-size: 14px; }
+table.mini { width: 100%; border-collapse: collapse; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+table.mini td { padding: 5px 0; border-bottom: 1px solid var(--line); }
+table.mini td.num { text-align: right; padding-left: 12px; white-space: nowrap; }
+table.mini tr.total td { font-weight: 600; }
+.buyer-name { font-size: 14px; }
+.combined { margin-top: 14px; padding: 12px 14px; border-radius: 8px; background: var(--green-tint); display: grid; gap: 10px; font-size: 13px; color: var(--green-dark); }
+.diffs { background: var(--amber-tint); border: 1px solid #f1dfb8; border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 12px; color: #7a5413; }
+.diffs ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+.badge.ai-real { background: #e8f0fb; color: #2f5f9f; }
+.source-quotes { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 6px; font-size: 12.5px; color: var(--gray-2); }
+.source-quotes q { font-style: italic; }
+@media (max-width: 600px) {
+  .cim-upload { grid-template-columns: 1fr; }
+}

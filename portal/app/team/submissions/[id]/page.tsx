@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import { getSubmission, listProviders } from "@/lib/db";
 import {
   CAPITAL_TYPE_LABELS,
-  SECTOR_LABELS,
   STATUS_LABELS,
   TIMELINE_LABELS,
   USE_OF_FUNDS_LABELS,
@@ -19,6 +18,7 @@ import { matchProviders, type ProviderMatch } from "@/lib/matching";
 import { scoreSubmission } from "@/lib/scoring";
 import type { Status } from "@/lib/types";
 import { introduce, postNote, updateStatus } from "../../actions";
+import { AcquisitionTerms, BuyerPanel, CimPanel, IndustryPanel, SummaryPanel } from "../../../components/DealPanels";
 import { ScoreRing, StatusBadge } from "../../ui";
 
 export const dynamic = "force-dynamic";
@@ -112,6 +112,7 @@ export default async function SubmissionPage({ params }: { params: Promise<{ id:
           <div className="crumb"><Link href="/team">Submissions</Link> / {s.company.name}</div>
           <h1>{s.company.name}</h1>
           <p>
+            {s.acquirer && <>Acquisition by {s.acquirer.current?.name ?? "a first-time buyer"} · </>}
             {s.company.city}, {s.company.state} · Founded {s.company.yearFounded} · {s.company.employees} employees ·
             Submitted {shortDate(s.createdAt)}
           </p>
@@ -130,33 +131,18 @@ export default async function SubmissionPage({ params }: { params: Promise<{ id:
               <div><span>Amount</span><strong>{money(s.deal.amount)}</strong></div>
               <div><span>Type</span><strong>{CAPITAL_TYPE_LABELS[s.deal.capitalType]}</strong></div>
               <div><span>Use of funds</span><strong>{USE_OF_FUNDS_LABELS[s.deal.useOfFunds]}</strong></div>
-              <div><span>Revenue (LTM)</span><strong>{money(f.revenueLTM)}</strong></div>
-              <div><span>EBITDA (LTM)</span><strong>{money(f.ebitdaLTM)} <span className="muted">{pct(margin(f.revenueLTM, f.ebitdaLTM), 1)}</span></strong></div>
+              <div><span>{s.acquirer ? "Target revenue (LTM)" : "Revenue (LTM)"}</span><strong>{money(f.revenueLTM)}</strong></div>
+              <div><span>{s.acquirer ? "Target EBITDA (LTM)" : "EBITDA (LTM)"}</span><strong>{money(f.ebitdaLTM)} <span className="muted">{pct(margin(f.revenueLTM, f.ebitdaLTM), 1)}</span></strong></div>
               <div><span>Revenue growth</span><strong>{g === null ? "—" : `${g >= 0 ? "+" : ""}${pct(g, 1)}`}</strong></div>
             </div>
-            {s.deal.details && <p style={{ marginTop: 16, fontSize: 14, color: "var(--gray-2)" }}>{s.deal.details}</p>}
+            {s.deal.details && <p className="deal-details">{s.deal.details}</p>}
+            <AcquisitionTerms s={s} />
           </div>
 
-          <div className="card panel">
-            <div className="panel-head">
-              <h2>Deal summary</h2>
-              <span className="badge ai">AI draft · placeholder</span>
-            </div>
-            <p className="summary-text">{s.ai.summary}</p>
-            <div className="two-col">
-              <div>
-                <h4 className="h-good">Highlights</h4>
-                <ul>{s.ai.highlights.map((h) => <li key={h}>{h}</li>)}</ul>
-              </div>
-              <div>
-                <h4 className="h-risk">Watch items</h4>
-                <ul>{s.ai.risks.map((h) => <li key={h}>{h}</li>)}</ul>
-              </div>
-            </div>
-            <p className="placeholder-note">
-              Placeholder text built from the submitted fields. In Phase 1 Claude writes this summary. Generated {dateTime(s.ai.generatedAt)}.
-            </p>
-          </div>
+          <BuyerPanel s={s} />
+          <CimPanel s={s} />
+
+          <SummaryPanel s={s} />
 
           <div className="card panel">
             <div className="panel-head">
@@ -194,6 +180,7 @@ export default async function SubmissionPage({ params }: { params: Promise<{ id:
                 <span className={`badge ${fit.tier}`}>{fit.tier} fit</span>
               </div>
             </div>
+            <p className="muted basis-note">Scored on {fit.basis.label}.</p>
             {fit.factors.map((x) => (
               <div className="factor" key={x.key}>
                 <span className="f-label">{x.label}</span>
@@ -204,23 +191,7 @@ export default async function SubmissionPage({ params }: { params: Promise<{ id:
             ))}
           </div>
 
-          <div className="card panel">
-            <div className="panel-head">
-              <h2>Industry</h2>
-              <span className="badge ai">AI draft · placeholder</span>
-            </div>
-            <div className="naics-code">{s.naics.code}</div>
-            <div style={{ fontWeight: 600, fontSize: 14, margin: "2px 0 8px" }}>{s.naics.title}</div>
-            <div className="muted" style={{ marginBottom: 8 }}>
-              Sector: {SECTOR_LABELS[s.naics.sector] ?? s.naics.sector} · Confidence {Math.round(s.naics.confidence * 100)}%
-            </div>
-            <p style={{ fontSize: 13, color: "var(--gray-2)" }}>{s.naics.rationale}</p>
-            {s.naics.alternates.length > 0 && (
-              <p className="muted" style={{ marginTop: 8 }}>
-                Also considered: {s.naics.alternates.map((a) => a.code).join(", ")}
-              </p>
-            )}
-          </div>
+          <IndustryPanel s={s} />
 
           <div className="card panel">
             <div className="panel-head"><h2>Status</h2></div>

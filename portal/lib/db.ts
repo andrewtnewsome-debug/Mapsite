@@ -2,8 +2,7 @@ import "server-only";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
-import { classifyNaics } from "./naics";
-import { draftSummary } from "./summary";
+import { enrichSubmission } from "./enrich";
 import type { Db, Note, Provider, Status, Submission, SubmissionInput } from "./types";
 
 /**
@@ -17,11 +16,6 @@ const SEED_PATH = join(DATA_DIR, "seed.json");
 
 type SeedSubmission = SubmissionInput & Pick<Submission, "id" | "createdAt" | "status" | "notes" | "introductions">;
 
-function enrich(input: SubmissionInput, at: Date): Pick<Submission, "naics" | "ai"> {
-  const naics = classifyNaics(input.company.name, input.company.description);
-  return { naics, ai: draftSummary(input, naics, at) };
-}
-
 function load(): Db {
   const seed = JSON.parse(readFileSync(SEED_PATH, "utf8")) as { submissions: SeedSubmission[]; providers: Provider[] };
   if (!existsSync(DB_PATH)) {
@@ -29,7 +23,7 @@ function load(): Db {
       providers: seed.providers,
       submissions: seed.submissions.map((s) => ({
         ...s,
-        ...enrich(s, new Date(new Date(s.createdAt).getTime() + 90_000)),
+        ...enrichSubmission(s, new Date(new Date(s.createdAt).getTime() + 90_000)),
       })),
     };
     save(db);
@@ -70,7 +64,7 @@ export function createSubmission(input: SubmissionInput): Submission {
     status: "new",
     notes: [],
     introductions: [],
-    ...enrich(input, now),
+    ...enrichSubmission(input, now),
   };
   db.submissions.push(submission);
   save(db);

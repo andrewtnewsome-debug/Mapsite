@@ -13,6 +13,43 @@ export interface FitScore {
   total: number;
   tier: "Strong" | "Moderate" | "Low";
   factors: FitFactor[];
+  basis: Underwriting;
+}
+
+/** The figures a capital provider underwrites. */
+export interface Underwriting {
+  revenueLTM: number;
+  revenuePrior: number;
+  ebitdaLTM: number;
+  existingDebt: number;
+  /** "combined": an add-on acquisition, judged on the buyer's business plus the target. */
+  basis: "single" | "combined";
+  /** Short phrase for the UI, e.g. "combined with Crescent HVAC & Plumbing". */
+  label: string;
+}
+
+export function underwriting(s: Pick<Submission, "financials" | "acquirer" | "deal">): Underwriting {
+  const f = s.financials;
+  const a = s.acquirer;
+  if (a?.ownsBusiness && a.combine && a.current) {
+    const c = a.current;
+    return {
+      revenueLTM: f.revenueLTM + c.revenueLTM,
+      revenuePrior: f.revenuePrior + c.revenuePrior,
+      ebitdaLTM: f.ebitdaLTM + c.ebitdaLTM,
+      existingDebt: f.existingDebt + c.existingDebt,
+      basis: "combined",
+      label: `combined with ${c.name}`,
+    };
+  }
+  return {
+    revenueLTM: f.revenueLTM,
+    revenuePrior: f.revenuePrior,
+    ebitdaLTM: f.ebitdaLTM,
+    existingDebt: f.existingDebt,
+    basis: "single",
+    label: s.deal.useOfFunds === "acquisition" ? "the business being acquired" : "the company",
+  };
 }
 
 /** Points for the first threshold the value meets (thresholds in descending order). */
@@ -27,17 +64,19 @@ export function isDebtRequest(s: Submission): boolean {
 
 /** Total debt / EBITDA after this raise. A refinance replaces existing debt rather than adding to it. */
 export function proFormaLeverage(s: Submission): number | null {
-  if (s.financials.ebitdaLTM <= 0) return null;
-  const debt =
-    s.deal.useOfFunds === "refinance"
-      ? Math.max(s.deal.amount, s.financials.existingDebt)
-      : s.financials.existingDebt + s.deal.amount;
-  return debt / s.financials.ebitdaLTM;
+  const u = underwriting(s);
+  if (u.ebitdaLTM <= 0) return null;
+  const debt = s.deal.useOfFunds === "refinance" ? Math.max(s.deal.amount, u.existingDebt) : u.existingDebt + s.deal.amount;
+  return debt / u.ebitdaLTM;
 }
 
 export function scoreSubmission(s: Submission, now = new Date()): FitScore {
-  const { revenueLTM, revenuePrior, ebitdaLTM, topCustomerPct } = s.financials;
+  const u = underwriting(s);
+  const { revenueLTM, revenuePrior, ebitdaLTM } = u;
+  // Concentration is the target's own: the buyer's customer mix isn't asked.
+  const { topCustomerPct } = s.financials;
   const factors: FitFactor[] = [];
+  const both = u.basis === "combined" ? " combined" : "";
 
   factors.push({
     key: "scale",
@@ -50,7 +89,7 @@ export function scoreSubmission(s: Submission, now = new Date()): FitScore {
       [250_000, 7],
       [1, 2],
     ]),
-    detail: `${money(ebitdaLTM)} EBITDA. Sweet spot is $1M+.`,
+    detail: `${money(ebitdaLTM)}${both} EBITDA. Sweet spot is $1M+.`,
   });
 
   const m = margin(revenueLTM, ebitdaLTM);
@@ -64,7 +103,7 @@ export function scoreSubmission(s: Submission, now = new Date()): FitScore {
       [7, 7],
       [0.01, 3],
     ]),
-    detail: `${pct(m, 1)} margin on ${money(revenueLTM)} revenue.`,
+    detail: `${pct(m, 1)} margin on ${money(revenueLTM)}${both} revenue.`,
   });
 
   const g = growth(revenueLTM, revenuePrior);
@@ -152,5 +191,5 @@ export function scoreSubmission(s: Submission, now = new Date()): FitScore {
   });
 
   const total = factors.reduce((sum, f) => sum + f.points, 0);
-  return { total, tier: total >= 75 ? "Strong" : total >= 55 ? "Moderate" : "Low", factors };
+  return { total, tier: total >= 75 ? "Strong" : total >= 55 ? "Moderate" : "Low", factors, basis: u };
 }

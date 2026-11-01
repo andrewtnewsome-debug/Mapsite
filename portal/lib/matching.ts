@@ -1,5 +1,5 @@
 import { CAPITAL_TYPE_LABELS, SECTOR_LABELS, USE_OF_FUNDS_LABELS, lowerFirst, money, multiple } from "./format";
-import { isDebtRequest, proFormaLeverage } from "./scoring";
+import { isDebtRequest, proFormaLeverage, underwriting } from "./scoring";
 import type { Provider, Submission } from "./types";
 
 /** pass: meets the published rule. fail: breaks it. confirm: not published or can't be checked from the submission. */
@@ -25,18 +25,20 @@ export interface ProviderMatch {
 }
 
 /** Checks a value against bounds that may be unpublished. */
-function bounded(label: string, value: number, min: number | null, max: number | null, what: string): Criterion {
+function bounded(label: string, value: number, min: number | null, max: number | null, what: string, qualifier = ""): Criterion {
+  const shownValue = `${money(value)}${qualifier}`;
   if (min === null && max === null) return { label, outcome: "confirm", detail: `No ${what} range published` };
-  if (min !== null && value < min) return { label, outcome: "fail", detail: `${money(value)} is below their ${money(min)} ${what} minimum` };
-  if (max !== null && value > max) return { label, outcome: "fail", detail: `${money(value)} is above their ${money(max)} ${what} maximum` };
+  if (min !== null && value < min) return { label, outcome: "fail", detail: `${shownValue} is below their ${money(min)} ${what} minimum` };
+  if (max !== null && value > max) return { label, outcome: "fail", detail: `${shownValue} is above their ${money(max)} ${what} maximum` };
   const shown = min !== null && max !== null ? `${money(min)} to ${money(max)}` : min !== null ? `${money(min)} and up` : `up to ${money(max!)}`;
-  return { label, outcome: "pass", detail: `${money(value)} fits their ${shown} ${what} range` };
+  return { label, outcome: "pass", detail: `${shownValue} fits their ${shown} ${what} range` };
 }
 
 export function evaluateProvider(s: Submission, p: Provider, now = new Date()): ProviderMatch {
   const sector = s.naics.sector;
   const sectorName = SECTOR_LABELS[sector] ?? sector;
-  const f = s.financials;
+  const f = underwriting(s);
+  const q = f.basis === "combined" ? " combined" : "";
   const lev = proFormaLeverage(s);
   const use = s.deal.useOfFunds;
   const useLabel = USE_OF_FUNDS_LABELS[use].toLowerCase();
@@ -54,12 +56,12 @@ export function evaluateProvider(s: Submission, p: Provider, now = new Date()): 
   } else if (p.ebitdaMin === null && p.ebitdaMax === null && p.requiresPositiveEbitda) {
     requirements.push({ label: "EBITDA", outcome: "pass", detail: "Positive EBITDA, as required" });
   } else {
-    requirements.push(bounded("EBITDA", f.ebitdaLTM, p.ebitdaMin, p.ebitdaMax, "EBITDA"));
+    requirements.push(bounded("EBITDA", f.ebitdaLTM, p.ebitdaMin, p.ebitdaMax, "EBITDA", q));
   }
 
   // Revenue and operating history are only checked where a screen is published.
   if (p.revenueMin !== null || p.revenueMax !== null) {
-    requirements.push(bounded("Revenue", f.revenueLTM, p.revenueMin, p.revenueMax, "revenue"));
+    requirements.push(bounded("Revenue", f.revenueLTM, p.revenueMin, p.revenueMax, "revenue", q));
   }
   if (p.minYears !== null) {
     const years = now.getFullYear() - s.company.yearFounded;
@@ -117,12 +119,9 @@ export function evaluateProvider(s: Submission, p: Provider, now = new Date()): 
         : { label: "Ownership", outcome: "confirm", detail: "Requires minority or women ownership; qualifies only if women-owned" },
     );
   } else if (p.ownershipRequirement === "specific") {
+    // Labels name groups ("Native American or tribal ownership"), so keep their capitals.
     const who = p.ownershipLabel ?? "a specific ownership group";
-    requirements.push(
-      diverse
-        ? { label: "Ownership", outcome: "confirm", detail: `Requires ${who.charAt(0).toLowerCase()}${who.slice(1)}` }
-        : { label: "Ownership", outcome: "fail", detail: `Requires ${who.charAt(0).toLowerCase()}${who.slice(1)}` },
-    );
+    requirements.push({ label: "Ownership", outcome: diverse ? "confirm" : "fail", detail: `Requires ${who}` });
   }
 
   if (isDebtRequest(s) && p.maxLeverage !== null) {

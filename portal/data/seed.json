@@ -6,18 +6,18 @@
       "status": "new",
       "contact": {
         "name": "Marcus Bell",
-        "title": "Owner & President",
+        "title": "Owner & President, Crescent HVAC & Plumbing",
         "email": "marcus@crescenthvac.example",
         "phone": "(704) 555-0142"
       },
       "company": {
-        "name": "Crescent HVAC & Plumbing",
-        "website": "crescenthvac.example",
-        "city": "Charlotte",
-        "state": "NC",
-        "yearFounded": 2004,
-        "employees": 62,
-        "description": "Residential and light commercial HVAC and plumbing service, repair, and replacement across the Charlotte metro. Roughly 45% of revenue comes from recurring maintenance agreements with 6,800 members."
+        "name": "Palmetto Comfort Systems",
+        "website": "palmettocomfort.example",
+        "city": "Rock Hill",
+        "state": "SC",
+        "yearFounded": 1991,
+        "employees": 34,
+        "description": "Residential HVAC and plumbing service and replacement company serving York County, SC. About 2,100 homeowners are on annual maintenance agreements."
       },
       "ownership": {
         "diverseOwned": true,
@@ -28,17 +28,39 @@
         "capitalType": "senior_debt",
         "useOfFunds": "acquisition",
         "timeline": "0-3",
-        "details": "Acquiring a retiring competitor in Rock Hill, SC ($1.1M EBITDA) for $5.0M. Seller has agreed to a 10% seller note; seeking senior debt to fund the balance and refinance our existing term loan."
+        "details": "Founder of Palmetto is retiring with no successor. Signed LOI at $5.0M (4.5x EBITDA) with a 10% seller note; seeking senior debt for the balance plus refinancing Crescent's existing term loan.",
+        "purchasePrice": 5000000,
+        "sellerNote": 500000,
+        "buyerEquity": 0
       },
       "financials": {
-        "revenueLTM": 14200000,
-        "revenuePrior": 12100000,
-        "ebitdaLTM": 2300000,
-        "topCustomerPct": 6,
-        "existingDebt": 900000
+        "revenueLTM": 6800000,
+        "revenuePrior": 6400000,
+        "ebitdaLTM": 1100000,
+        "topCustomerPct": 3,
+        "existingDebt": 0
       },
       "notes": [],
-      "introductions": []
+      "introductions": [],
+      "acquirer": {
+        "ownsBusiness": true,
+        "current": {
+          "name": "Crescent HVAC & Plumbing",
+          "website": "crescenthvac.example",
+          "city": "Charlotte",
+          "state": "NC",
+          "yearFounded": 2004,
+          "employees": 62,
+          "description": "Residential and light commercial HVAC and plumbing service, repair, and replacement across the Charlotte metro. Roughly 45% of revenue comes from recurring maintenance agreements with 6,800 members.",
+          "revenueLTM": 14200000,
+          "revenuePrior": 12100000,
+          "ebitdaLTM": 2300000,
+          "existingDebt": 900000,
+          "ownershipPct": 100
+        },
+        "combine": true,
+        "background": "Marcus Bell founded Crescent in 2004 after ten years as a licensed HVAC technician and service manager; this would be Crescent's second acquisition."
+      }
     },
     {
       "id": "sub_seed02",
@@ -108,7 +130,10 @@
         "capitalType": "senior_debt",
         "useOfFunds": "acquisition",
         "timeline": "0-3",
-        "details": "Signed LOI to acquire 100% of the company at $11.5M (5.3x). Equity from search investors and a 15% seller note; senior debt for the remainder."
+        "details": "Signed LOI to acquire 100% of the company at $11.5M (5.3x). Equity from search investors and a 15% seller note; senior debt for the remainder.",
+        "purchasePrice": 11500000,
+        "sellerNote": 1725000,
+        "buyerEquity": 2775000
       },
       "financials": {
         "revenueLTM": 11500000,
@@ -129,7 +154,13 @@
           "providerId": "prov_ag11",
           "at": "2026-10-26T16:30:00.000Z"
         }
-      ]
+      ],
+      "acquirer": {
+        "ownsBusiness": false,
+        "current": null,
+        "combine": false,
+        "background": "Andre Whitfield spent nine years in operations at an aerospace components manufacturer, most recently as plant manager; backed by a group of eleven search fund investors."
+      }
     },
     {
       "id": "sub_seed04",

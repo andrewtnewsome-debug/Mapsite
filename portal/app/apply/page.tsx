@@ -1,6 +1,6 @@
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
-import ApplyForm from "./ApplyForm";
+import ApplyFormConnected from "./ApplyFormConnected";
 
 export const metadata = { title: "Submit your raise | MAP Lab Center" };
 
@@ -9,7 +9,7 @@ export default function ApplyPage() {
     <>
       <SiteHeader />
       <div className="container">
-        <ApplyForm />
+        <ApplyFormConnected />
       </div>
       <SiteFooter />
     </>
