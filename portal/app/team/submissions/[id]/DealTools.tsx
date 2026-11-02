@@ -7,6 +7,7 @@ import type { ProviderMatch } from "@/lib/matching";
 import type { Submission } from "@/lib/types";
 
 const loadJsPdf = async () => (await import("jspdf")).jsPDF;
+const loadDocx = () => import("docx");
 
 async function logoDataUrl() {
   const blob = await (await fetch("/maplab-logo.png")).blob();
@@ -36,6 +37,7 @@ export function NextOnePager({ s, aiEnabled }: { s: Submission; aiEnabled: boole
         }
       : null,
     loadJsPdf,
+    loadDocx,
     logoSrc: "/maplab-logo.png",
     logoDataUrl,
     saveFile,

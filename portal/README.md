@@ -36,7 +36,7 @@ explains that CIM reading isn't connected and the form works by hand. The instru
 
 On each deal page, **Lender one-pager** builds the MAP Lab Center teaser in the format of the
 `mlc-one-pager` skill: capital-ask banner, Company Overview, Financial Highlights, two charts, and the
-confidentiality line. It downloads as a one-page PDF (`lib/onepagerPdf.ts`).
+confidentiality line. It downloads as a one-page PDF (`lib/onepagerPdf.ts`) or an editable Word file (`lib/onepagerDocx.ts`).
 - **Blind teaser** (on by default) uses a code name and scrubs names, websites, cities, counties and the
   state (`lib/anonymize.ts`). Read it once before sending; scrubbing catches the common cases, not everything.
 - **Write with Claude** (needs `ANTHROPIC_API_KEY`) rewrites the text in the skill's style. Charts always

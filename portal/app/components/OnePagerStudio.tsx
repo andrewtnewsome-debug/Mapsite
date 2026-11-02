@@ -2,9 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { jsPDF } from "jspdf";
+import type * as Docx from "docx";
 import { defaultCodeName, leaksIdentity } from "@/lib/anonymize";
 import { applyClaudeText, draftOnePager, noDash, onePagerPrompt } from "@/lib/onepager";
 import { buildOnePagerPdf, onePagerFileName } from "@/lib/onepagerPdf";
+import { buildOnePagerDocx, onePagerWordName } from "@/lib/onepagerDocx";
+import { chartSvg } from "@/lib/chartSvg";
 import { dateTime } from "@/lib/format";
 import type { OnePager, OnePagerChart, Submission } from "@/lib/types";
 
@@ -16,71 +19,15 @@ export interface OnePagerEnv {
   /** Asks Claude for the one-pager text; resolves with the parsed JSON reply. Null hides the button. */
   writeWithClaude: ((s: Submission, opts: { blind: boolean; codeName: string }, prompt: string) => Promise<unknown>) | null;
   loadJsPdf: () => Promise<typeof jsPDF>;
+  loadDocx: () => Promise<typeof Docx>;
   logoSrc: string;
   logoDataUrl: () => Promise<string | null>;
   saveFile: (filename: string, blob: Blob) => Promise<void>;
   persist: (p: OnePager) => void | Promise<void>;
 }
 
-const GREEN = "#56a446";
-const GRAY = "#414141";
-const GRAY_MID = "#7f7f7f";
-const PALETTE = [GREEN, GRAY, "#8cc57e", GRAY_MID];
-
 function ChartSvg({ chart }: { chart: OnePagerChart }) {
-  const w = 250;
-  const h = 190;
-  const bars = chart.series.filter((s) => s.kind === "bar");
-  const lines = chart.series.filter((s) => s.kind === "line");
-  const legend = chart.series.length > 1;
-  const top = 34;
-  const bottom = h - (legend ? 32 : 18);
-  const plotH = bottom - top;
-  const slot = w / chart.categories.length;
-  const maxBar = Math.max(1, ...bars.flatMap((s) => s.values)) * (lines.length ? 1.55 : 1.18);
-  const groupW = slot * 0.72;
-  const barW = groupW / Math.max(bars.length, 1);
-  const fmt = (v: number, k: string) => (k === "pct" ? `${v}%` : k === "dollar" ? `$${v.toLocaleString("en-US")}` : v.toLocaleString("en-US"));
-  return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="op-chart" role="img" aria-label={chart.title}>
-      <text x={w / 2} y={12} textAnchor="middle" fontSize="10.5" fontWeight="700" fill={GRAY}>{chart.title}</text>
-      {[1, 2, 3].map((i) => <line key={i} x1={0} x2={w} y1={bottom - (plotH * i) / 4} y2={bottom - (plotH * i) / 4} stroke="#bfbfbf" strokeWidth={0.4} />)}
-      <line x1={0} x2={w} y1={bottom} y2={bottom} stroke="#bfbfbf" strokeWidth={0.8} />
-      {bars.map((s, si) =>
-        s.values.map((v, ci) => {
-          const bh = (Math.max(v, 0) / maxBar) * plotH;
-          const bx = ci * slot + (slot - groupW) / 2 + si * barW;
-          return (
-            <g key={`${si}-${ci}`}>
-              <rect x={bx} y={bottom - bh} width={barW * 0.92} height={bh} fill={PALETTE[si % PALETTE.length]} />
-              <text x={bx + (barW * 0.92) / 2} y={bottom - bh - 3} textAnchor="middle" fontSize="7.5" fill={GRAY}>{fmt(v, s.fmt)}</text>
-            </g>
-          );
-        }),
-      )}
-      {lines.map((s, li) => {
-        const hi = Math.max(1, ...s.values);
-        const pts = s.values.map((v, ci) => [ci * slot + slot / 2, top + 10 + plotH * 0.3 * (1 - Math.max(v, 0) / hi)]);
-        return (
-          <g key={`l${li}`}>
-            <polyline points={pts.map((p) => p.join(",")).join(" ")} fill="none" stroke={GRAY_MID} strokeWidth={1.6} />
-            {pts.map(([px, py], i) => (
-              <g key={i}>
-                <circle cx={px} cy={py} r={2.4} fill={GRAY_MID} />
-                <text x={px} y={py - 6} textAnchor="middle" fontSize="7" fill={GRAY_MID}>{fmt(s.values[i], s.fmt)}</text>
-              </g>
-            ))}
-          </g>
-        );
-      })}
-      {chart.categories.map((c, ci) => <text key={c} x={ci * slot + slot / 2} y={bottom + 11} textAnchor="middle" fontSize="8.5" fill={GRAY}>{c}</text>)}
-      {legend && (
-        <text x={w / 2} y={bottom + 25} textAnchor="middle" fontSize="7.5" fill={GRAY}>
-          {chart.series.map((s, i) => `${i ? "   " : ""}${s.kind === "line" ? "—" : "■"} ${s.name}`).join("")}
-        </text>
-      )}
-    </svg>
-  );
+  return <div className="op-chart" role="img" aria-label={chart.title} dangerouslySetInnerHTML={{ __html: chartSvg(chart) }} />;
 }
 
 /** An on-screen replica of the PDF page, scaled to fit its container. */
@@ -126,7 +73,7 @@ export default function OnePagerStudio({ s, env }: { s: Submission; env: OnePage
   const [open, setOpen] = useState(false);
   const [p, setP] = useState<OnePager>(() => s.onePager ?? draftOnePager(s, { blind: true }));
   const [codeName, setCodeName] = useState(() => s.onePager?.codeName ?? defaultCodeName(s));
-  const [busy, setBusy] = useState<"" | "claude" | "pdf">("");
+  const [busy, setBusy] = useState<"" | "claude" | "pdf" | "word">("");
   const [message, setMessage] = useState<{ tone: "ok" | "error" | "info"; text: string } | null>(null);
   const saved = s.onePager;
 
@@ -168,14 +115,16 @@ export default function OnePagerStudio({ s, env }: { s: Submission; env: OnePage
     }
   }
 
-  async function download(which: OnePager) {
-    setBusy("pdf");
+  async function download(which: OnePager, format: "pdf" | "word" = "pdf") {
+    setBusy(format);
+    const name = format === "pdf" ? onePagerFileName(which) : onePagerWordName(which);
     try {
-      const blob = await buildOnePagerPdf(await env.loadJsPdf(), which, await env.logoDataUrl());
-      await env.saveFile(onePagerFileName(which), blob);
-      setMessage({ tone: "ok", text: `Saved ${onePagerFileName(which)}.` });
+      const logo = await env.logoDataUrl();
+      const blob = format === "pdf" ? await buildOnePagerPdf(await env.loadJsPdf(), which, logo) : await buildOnePagerDocx(await env.loadDocx(), which, logo);
+      await env.saveFile(name, blob);
+      setMessage({ tone: "ok", text: `Saved ${name}.` });
     } catch (e) {
-      setMessage({ tone: "error", text: e instanceof Error ? e.message : "The PDF couldn't be saved." });
+      setMessage({ tone: "error", text: e instanceof Error ? e.message : `The ${format === "pdf" ? "PDF" : "Word file"} couldn't be saved.` });
     } finally {
       setBusy("");
     }
@@ -205,6 +154,7 @@ export default function OnePagerStudio({ s, env }: { s: Submission; env: OnePage
         <div className="op-actions">
           <button type="button" className="btn btn-primary btn-sm" onClick={() => setOpen(true)}>{saved ? "Edit one-pager" : "Create one-pager"}</button>
           {saved && <button type="button" className="btn btn-secondary btn-sm" disabled={busy === "pdf"} onClick={() => download(saved)}>{busy === "pdf" ? "Making PDF…" : "Download PDF"}</button>}
+          {saved && <button type="button" className="btn btn-secondary btn-sm" disabled={busy === "word"} onClick={() => download(saved, "word")}>{busy === "word" ? "Making Word file…" : "Download Word"}</button>}
         </div>
         {message && <p className={`op-msg ${message.tone}`}>{message.text}</p>}
       </div>
@@ -238,6 +188,7 @@ export default function OnePagerStudio({ s, env }: { s: Submission; env: OnePage
         <button type="button" className="btn btn-secondary btn-sm" disabled={!!busy} onClick={() => rebuild(p.blind)}>Rebuild from deal data</button>
         <button type="button" className="btn btn-secondary btn-sm" disabled={!!busy} onClick={save}>Save</button>
         <button type="button" className="btn btn-secondary btn-sm" disabled={!!busy} onClick={() => download(p)}>{busy === "pdf" ? "Making PDF…" : "Download PDF"}</button>
+        <button type="button" className="btn btn-secondary btn-sm" disabled={!!busy} onClick={() => download(p, "word")}>{busy === "word" ? "Making Word file…" : "Download Word"}</button>
       </div>
       {message && <p className={`op-msg ${message.tone}`} role="status">{message.text}</p>}
       {leaks && <p className="op-msg error">This text may still identify the company. Check the name, owners and places before sending.</p>}
