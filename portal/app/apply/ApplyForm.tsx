@@ -86,10 +86,12 @@ function OptionSelect({ name, options, onChange }: { name: string; options: Reco
 }
 
 function CimUpload({ read, onRead, what, acquisition }: { read: ReadCim; onRead: (cim: CimExtraction) => void; what: string; acquisition: boolean }) {
-  const [state, setState] = useState<{ phase: "idle" | "reading" | "done" | "error"; message: string }>({ phase: "idle", message: "" });
+  const [state, setState] = useState<{ phase: "idle" | "reading" | "done" | "error"; message: string; detail?: string }>({ phase: "idle", message: "" });
+  const [lastFile, setLastFile] = useState<File | null>(null);
 
-  async function pick(file: File | undefined) {
+  async function pick(file: File | undefined | null) {
     if (!file) return;
+    setLastFile(file);
     setState({ phase: "reading", message: "Uploading…" });
     try {
       const cim = await read(file, (message) => setState({ phase: "reading", message }));
@@ -99,12 +101,13 @@ function CimUpload({ read, onRead, what, acquisition }: { read: ReadCim; onRead:
         phase: "done",
         message:
           `Filled ${found} field${found === 1 ? "" : "s"} from ${cim.fileName}` +
-          (cim.pagesRead && cim.pageCount && cim.pagesRead < cim.pageCount ? ` (read the first ${cim.pagesRead} of ${cim.pageCount} pages)` : "") +
+          (cim.pagesRead && cim.pageCount && cim.pagesRead < cim.pageCount ? ` (read ${cim.pagesRead} of ${cim.pageCount} pages)` : "") +
           ". Check each one before you continue." +
           (cim.notFound.length ? ` Not in the document: ${cim.notFound.slice(0, 6).join(", ")}.` : ""),
       });
     } catch (e) {
-      setState({ phase: "error", message: e instanceof Error ? e.message : String(e) });
+      const detail = (e as { detail?: unknown })?.detail;
+      setState({ phase: "error", message: e instanceof Error ? e.message : String(e), detail: typeof detail === "string" && detail ? detail : undefined });
     }
   }
 
@@ -125,6 +128,12 @@ function CimUpload({ read, onRead, what, acquisition }: { read: ReadCim; onRead:
         />
       </label>
       {state.message && <p className={`cim-status ${state.phase}`} role="status">{state.message}</p>}
+      {state.phase === "error" && lastFile && (
+        <div className="cim-retry">
+          <button type="button" className="btn btn-primary btn-sm" onClick={() => pick(lastFile)}>Try again with {lastFile.name}</button>
+          {state.detail && <span className="muted">Details: {state.detail}</span>}
+        </div>
+      )}
     </div>
   );
 }

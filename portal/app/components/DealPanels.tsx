@@ -108,7 +108,7 @@ export function CimPanel({ s }: { s: Submission }) {
       <p className="muted">
         {cim.fileName}
         {cim.pageCount ? ` · ${cim.pageCount} pages` : ""}
-        {cim.pagesRead && cim.pageCount && cim.pagesRead < cim.pageCount ? ` (first ${cim.pagesRead} read)` : ""}
+        {cim.pagesRead && cim.pageCount && cim.pagesRead < cim.pageCount ? ` (${cim.pagesRead} most relevant read)` : ""}
         {` · ${dateTime(cim.extractedAt)}`}
       </p>
       {diffs.length > 0 && (
