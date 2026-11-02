@@ -3,7 +3,7 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { enrichSubmission } from "./enrich";
-import type { Db, Note, Provider, Status, Submission, SubmissionInput } from "./types";
+import type { Db, Note, OnePager, Provider, Status, Submission, SubmissionInput } from "./types";
 
 /**
  * Local JSON "database" for the prototype. Phase 1 swaps this module for Supabase;
@@ -96,5 +96,11 @@ export function logIntroduction(id: string, providerId: string) {
     if (s.introductions.some((i) => i.providerId === providerId)) return;
     s.introductions.push({ providerId, at: new Date().toISOString() });
     if (s.status === "new" || s.status === "in_review") s.status = "introduced";
+  });
+}
+
+export function saveOnePager(id: string, onePager: OnePager) {
+  updateSubmission(id, (s) => {
+    s.onePager = onePager;
   });
 }

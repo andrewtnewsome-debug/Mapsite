@@ -108,6 +108,7 @@ function rebuildRaw(x: Partial<CimExtraction>): Record<string, unknown> {
     financials: { revenueLTM: v.revenueLTM, revenuePrior: v.revenuePrior, ebitdaLTM: v.ebitdaLTM, topCustomerPct: v.topCustomerPct, existingDebt: v.existingDebt },
     deal: { askingPrice: v.askingPrice, sellerNote: v.sellerNote, reasonForSale: x.reasonForSale },
     labels: x.labels,
+    history: x.history,
     naics: x.naics,
     sources: x.sources,
     summary: x.summary,

@@ -32,6 +32,19 @@ The deal page then shows the CIM findings and flags any figure the applicant cha
 This needs an API key: create `portal/.env.local` with `ANTHROPIC_API_KEY=...` and restart. Without it the upload
 explains that CIM reading isn't connected and the form works by hand. The instructions Claude follows are in `lib/cim.ts`.
 
+## Lender one-pager and intro emails
+
+On each deal page, **Lender one-pager** builds the MAP Lab Center teaser in the format of the
+`mlc-one-pager` skill: capital-ask banner, Company Overview, Financial Highlights, two charts, and the
+confidentiality line. It downloads as a one-page PDF (`lib/onepagerPdf.ts`).
+- **Blind teaser** (on by default) uses a code name and scrubs names, websites, cities, counties and the
+  state (`lib/anonymize.ts`). Read it once before sending; scrubbing catches the common cases, not everything.
+- **Write with Claude** (needs `ANTHROPIC_API_KEY`) rewrites the text in the skill's style. Charts always
+  come from reported figures only, never from Claude.
+- Each matched provider has **Draft intro email**: an anonymized email built only from structured facts,
+  with questions for anything the provider hasn't published (`lib/intro.ts`). Copy it or open it in your
+  email app; the claude.ai link version can also save it to Gmail drafts with the blind one-pager attached.
+
 ## Real vs. placeholder
 
 - **Real (rules):** fit scoring (`lib/scoring.ts`) and provider matching (`lib/matching.ts`).

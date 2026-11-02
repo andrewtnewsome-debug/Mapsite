@@ -19,6 +19,8 @@ import { scoreSubmission } from "@/lib/scoring";
 import type { Status } from "@/lib/types";
 import { introduce, postNote, updateStatus } from "../../actions";
 import { AcquisitionTerms, BuyerPanel, CimPanel, IndustryPanel, SummaryPanel } from "../../../components/DealPanels";
+import { NextIntroEmail, NextOnePager } from "./DealTools";
+import type { Submission } from "@/lib/types";
 import { ScoreRing, StatusBadge } from "../../ui";
 
 export const dynamic = "force-dynamic";
@@ -29,13 +31,14 @@ const OUTCOME_ICON = { pass: "✓", fail: "✕", confirm: "?" } as const;
 
 function MatchCard({
   m,
-  submissionId,
+  s,
   introducedAt,
 }: {
   m: ProviderMatch;
-  submissionId: string;
+  s: Submission;
   introducedAt?: string;
 }) {
+  const submissionId = s.id;
   const p = m.provider;
   const fails = m.requirements.filter((r) => r.outcome === "fail");
   const met = m.requirements.filter((r) => r.outcome === "pass").length;
@@ -80,13 +83,16 @@ function MatchCard({
       {m.eligible && (
         <div className="match-foot">
           <span className="muted">Ask first: {p.nextQuestion}</span>
-          {introducedAt ? (
-            <span className="badge introduced">Introduced {shortDate(introducedAt)}</span>
-          ) : (
-            <form action={introduce.bind(null, submissionId, p.id)}>
-              <button className="btn btn-secondary btn-sm">Log introduction</button>
-            </form>
-          )}
+          <div className="match-buttons">
+            <NextIntroEmail s={s} m={m} />
+            {introducedAt ? (
+              <span className="badge introduced">Introduced {shortDate(introducedAt)}</span>
+            ) : (
+              <form action={introduce.bind(null, submissionId, p.id)}>
+                <button className="btn btn-secondary btn-sm">Log introduction</button>
+              </form>
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -118,6 +124,10 @@ export default async function SubmissionPage({ params }: { params: Promise<{ id:
           </p>
         </div>
         <StatusBadge status={s.status} />
+      </div>
+
+      <div className="op-band">
+        <NextOnePager s={s} aiEnabled={!!process.env.ANTHROPIC_API_KEY} />
       </div>
 
       <div className="detail-grid">
@@ -154,18 +164,18 @@ export default async function SubmissionPage({ params }: { params: Promise<{ id:
               <h3 className="group-head">Meets every published criterion <span className="muted">({confirmed.length})</span></h3>
             )}
             {confirmed.map((m) => (
-              <MatchCard key={m.provider.id} m={m} submissionId={s.id} introducedAt={introduced.get(m.provider.id)} />
+              <MatchCard key={m.provider.id} m={m} s={s} introducedAt={introduced.get(m.provider.id)} />
             ))}
             {possible.length > 0 && (
               <h3 className="group-head">Possible, confirm first <span className="muted">({possible.length}; some criteria unpublished or not checkable from the form)</span></h3>
             )}
             {possible.map((m) => (
-              <MatchCard key={m.provider.id} m={m} submissionId={s.id} introducedAt={introduced.get(m.provider.id)} />
+              <MatchCard key={m.provider.id} m={m} s={s} introducedAt={introduced.get(m.provider.id)} />
             ))}
             {nearMisses.length > 0 && (
               <>
                 <h3 className="group-head">Near misses <span className="muted">(one requirement short; could work if the deal is resized)</span></h3>
-                {nearMisses.map((m) => <MatchCard key={m.provider.id} m={m} submissionId={s.id} />)}
+                {nearMisses.map((m) => <MatchCard key={m.provider.id} m={m} s={s} />)}
               </>
             )}
           </div>

@@ -20,6 +20,7 @@ Reply with only one JSON object, no other text, in exactly this shape:
     "topCustomerPct": number | null, "existingDebt": number | null
   },
   "labels": { "revenueLTM": string | null, "revenuePrior": string | null, "ebitdaLTM": string | null },
+  "history": [ { "period": string, "revenue": number | null, "ebitda": number | null, "projected": boolean } ],
   "deal": { "askingPrice": number | null, "sellerNote": number | null, "reasonForSale": string | null },
   "naics": { "code": string, "title": string, "rationale": string } | null,
   "sources": [ { "field": string, "page": number | null, "quote": string } ],
@@ -35,6 +36,7 @@ Rules:
 - revenueLTM: the most recent trailing-twelve-month (LTM/TTM) revenue if shown, otherwise the most recent full fiscal year of actual results. revenuePrior: the comparable twelve months one year earlier if shown; otherwise the most recent full fiscal year before revenueLTM (when revenueLTM is itself a fiscal year, the year before it). Say which in labels.revenuePrior.
 - ebitdaLTM: the same period as revenueLTM. Prefer Adjusted EBITDA as presented by the seller. If only SDE or owner earnings is given, use that.
 - labels: name the period and measure of each figure, e.g. "LTM Jun-26", "FY2025", "Adj. EBITDA, LTM Jun-26", "SDE, FY2025".
+- history: every period in the document's main historical financial table, oldest first, using its own period labels (e.g. "FY2024", "2025A", "LTM Sep-26"), with revenue and Adjusted EBITDA (or the EBITDA measure used for ebitdaLTM). Include projected or budget periods only if shown, with "projected": true. Empty array if there is no table.
 - topCustomerPct: the largest single customer's share of revenue, 0 to 100, for the same period when available.
 - existingDebt: total debt outstanding if stated. askingPrice and sellerNote only if the document states them.
 - employees: full-time employees. state: two-letter US state code of the headquarters. yearFounded: four-digit year.
@@ -112,6 +114,15 @@ export function normalizeCim(
       sellerNote: num(d.sellerNote, 0),
     },
     labels: { revenueLTM: str(l.revenueLTM, 60), revenuePrior: str(l.revenuePrior, 60), ebitdaLTM: str(l.ebitdaLTM, 60) },
+    history: (Array.isArray(r.history) ? r.history : [])
+      .map((x) => obj(x))
+      .flatMap((x) => {
+        const period = str(x.period, 24);
+        const revenue = num(x.revenue, 0);
+        const ebitda = num(x.ebitda);
+        return period && (revenue !== null || ebitda !== null) ? [{ period, revenue, ebitda, projected: x.projected === true }] : [];
+      })
+      .slice(0, 8),
     sources: (Array.isArray(r.sources) ? r.sources : [])
       .map((x) => obj(x))
       .flatMap((x) => (str(x.field, 40) ? [{ field: str(x.field, 40)!, page: num(x.page, 1, 5000), quote: str(x.quote, 200) ?? "" }] : []))

@@ -100,6 +100,8 @@ export interface CimExtraction {
   };
   /** Which period or measure each figure is, e.g. "Adj. EBITDA, LTM Jun-26". */
   labels: { revenueLTM: string | null; revenuePrior: string | null; ebitdaLTM: string | null };
+  /** The CIM's historical financial table, oldest first, for one-pager charts. Projected periods are flagged. */
+  history?: { period: string; revenue: number | null; ebitda: number | null; projected: boolean }[];
   sources: { field: string; page: number | null; quote: string }[];
   naics: { code: string; title: string; rationale: string } | null;
   reasonForSale: string | null;
@@ -107,6 +109,31 @@ export interface CimExtraction {
   keyFacts: string[];
   risks: string[];
   notFound: string[];
+}
+
+/** A lender teaser in the MLC one-pager format (mirrors the mlc-one-pager skill's content schema). */
+export interface OnePagerChart {
+  title: string;
+  type: "bar" | "combo";
+  categories: string[];
+  series: { name: string; values: number[]; kind: "bar" | "line"; fmt: "num" | "pct" | "dollar"; axis?: "secondary" }[];
+}
+
+export interface OnePager {
+  /** Hide the company's identity behind codeName. */
+  blind: boolean;
+  codeName: string;
+  /** What the teaser calls the company: its name, or the code name when blind. */
+  displayName: string;
+  capitalAsk: string;
+  overview: string[];
+  highlights: { bold: string; text: string }[];
+  charts: OnePagerChart[];
+  footnotes: string[];
+  disclaimer: string;
+  /** "claude" when Claude wrote the text; "template" when built from the deal data. */
+  writtenBy: "claude" | "template";
+  savedAt: string;
 }
 
 export interface Submission {
@@ -145,6 +172,8 @@ export interface Submission {
   /** Acquisitions only. When set, `company` and `financials` describe the business being acquired. */
   acquirer?: Acquirer | null;
   cim?: CimExtraction | null;
+  /** The lender one-pager as last saved by the team. */
+  onePager?: OnePager | null;
   naics: NaicsResult;
   ai: AiSummary;
   notes: Note[];
@@ -154,7 +183,7 @@ export interface Submission {
 /** The fields an applicant fills in; NAICS and the summary are added on intake. */
 export type SubmissionInput = Omit<
   Submission,
-  "id" | "createdAt" | "status" | "naics" | "ai" | "notes" | "introductions"
+  "id" | "createdAt" | "status" | "naics" | "ai" | "notes" | "introductions" | "onePager"
 >;
 
 export type OwnershipRequirement = "none" | "minority" | "minority_or_women" | "specific";

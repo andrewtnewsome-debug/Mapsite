@@ -1,8 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { addNote, logIntroduction, setStatus } from "@/lib/db";
-import type { Status } from "@/lib/types";
+import { addNote, logIntroduction, saveOnePager, setStatus } from "@/lib/db";
+import type { OnePager, Status } from "@/lib/types";
 
 export async function updateStatus(id: string, status: Status) {
   setStatus(id, status);
@@ -21,4 +21,9 @@ export async function introduce(id: string, providerId: string) {
   logIntroduction(id, providerId);
   revalidatePath(`/team/submissions/${id}`);
   revalidatePath("/team");
+}
+
+export async function persistOnePager(id: string, onePager: OnePager) {
+  saveOnePager(id, onePager);
+  revalidatePath(`/team/submissions/${id}`);
 }
