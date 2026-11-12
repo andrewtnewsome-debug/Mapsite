@@ -344,3 +344,56 @@ table.mini tr.total td { font-weight: 600; }
 .match-buttons:has(.intro) { flex: 1 1 100%; }
 .match-buttons .intro { flex: 1 1 100%; }
 .op-band { margin-bottom: 20px; }
+
+/* ── Simplicity pass ── */
+.step-label { display: none; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--green-dark); margin-bottom: 10px; }
+.restored { font-size: 13px; background: var(--green-tint); color: var(--green-dark); border-radius: 8px; padding: 8px 12px; margin-bottom: 16px; }
+.demo-fill { font-size: 12px; color: var(--gray-3); }
+@media (max-width: 900px) {
+  .step-label { display: block; }
+  .stepper li.sample-li { margin-left: auto; padding: 0; }
+}
+.status-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.status-row .chip { font: inherit; font-size: 13px; cursor: pointer; }
+.status-row .chip.active.new { background: var(--blue); border-color: var(--blue); }
+.status-row .chip.active.in_review { background: var(--amber); border-color: var(--amber); }
+.status-row .chip.active.introduced { background: #6a4a9c; border-color: #6a4a9c; }
+.status-row .chip.active.closed { background: var(--green-dark); border-color: var(--green-dark); }
+.status-row .chip.active.declined { background: var(--red); border-color: var(--red); }
+.next-steps { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--green); border-radius: 10px; padding: 14px 18px; margin-bottom: 20px; display: grid; gap: 8px; }
+.next-steps ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 13px; font-weight: 600; color: var(--gray-3); }
+.next-steps li { display: flex; align-items: center; gap: 8px; }
+.next-steps .dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); display: inline-flex; align-items: center; justify-content: center; font-size: 11px; }
+.next-steps li.done { color: var(--gray-2); }
+.next-steps li.done .dot { background: var(--green); border-color: var(--green); color: #fff; }
+.next-steps li.now { color: var(--gray); }
+.next-steps li.now .dot { border-color: var(--green); color: var(--green-dark); }
+.next-steps p { font-size: 14px; }
+details.group { margin-top: 16px; }
+details.group > summary { cursor: pointer; font-size: 14px; font-weight: 600; padding: 6px 0; }
+details.group > summary .muted { font-weight: 400; }
+details.group[open] > summary { margin-bottom: 8px; }
+.search { margin-bottom: 12px; }
+.search input { width: 100%; max-width: 460px; font: inherit; font-size: 14px; padding: 9px 12px; border: 1px solid #d5d8d3; border-radius: 8px; background: #fff; color: var(--gray); }
+.search input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(86, 164, 70, 0.16); }
+@media (max-width: 700px) {
+  .tiles { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .tile { padding: 12px 14px; }
+  .tile .value { font-size: 21px; }
+  .search input { max-width: none; }
+  /* The deals table becomes one compact card per deal: score, company, status, then raise and matches. */
+  table.deals thead { display: none; }
+  table.deals, table.deals tbody { display: block; }
+  table.deals tr { display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  table.deals tr:last-child { border-bottom: 0; }
+  table.deals td { padding: 0; border: 0; }
+  table.deals td:nth-child(1) { grid-row: 1 / span 2; }
+  table.deals td:nth-child(2) { grid-column: 2; }
+  table.deals td:nth-child(7) { grid-column: 3; grid-row: 1; justify-self: end; }
+  table.deals td:nth-child(4) { grid-column: 2; grid-row: 2; text-align: left; display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }
+  table.deals td:nth-child(6) { grid-column: 3; grid-row: 2; font-size: 12px; color: var(--gray-2); }
+  table.deals td:nth-child(6)::after { content: " confirmed"; }
+  table.deals td:nth-child(6) .muted { display: none; }
+  table.deals td:nth-child(3), table.deals td:nth-child(5), table.deals td:nth-child(8) { display: none; }
+  table.deals td.empty { grid-column: 1 / -1; display: block; }
+}

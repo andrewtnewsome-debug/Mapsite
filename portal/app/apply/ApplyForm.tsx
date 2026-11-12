@@ -57,12 +57,46 @@ const SAMPLE: Record<string, string | boolean> = {
 };
 
 const fs = { border: 0, padding: 0, margin: 0, minWidth: 0 };
+
+// An unfinished form is kept in this browser so a refresh or dropped connection doesn't lose it.
+const DRAFT_KEY = "maplab-apply-draft-v1";
+function readDraft(): Record<string, string> | null {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    return raw ? (JSON.parse(raw) as Record<string, string>) : null;
+  } catch {
+    return null;
+  }
+}
+function writeDraft(values: Record<string, string> | null) {
+  try {
+    if (values) localStorage.setItem(DRAFT_KEY, JSON.stringify(values));
+    else localStorage.removeItem(DRAFT_KEY);
+  } catch {
+    // Storage unavailable: the form still works, just without the safety net.
+  }
+}
 const MONEY = "[0-9.,$ kKmM]+";
 
 function MoneyInput({ name, placeholder, required = true, negative = false }: { name: string; placeholder: string; required?: boolean; negative?: boolean }) {
   return (
     <div className="money">
-      <input id={name} name={name} type="text" inputMode="decimal" placeholder={placeholder} required={required} pattern={negative ? `-?${MONEY}` : MONEY} />
+      <input
+        id={name}
+        name={name}
+        type="text"
+        inputMode="decimal"
+        placeholder={placeholder}
+        required={required}
+        pattern={negative ? `-?${MONEY}` : MONEY}
+        onInput={(e) => {
+          const el = e.currentTarget;
+          // Add commas as digits are typed, but only at the end so mid-number edits keep their place.
+          if (el.selectionStart !== el.value.length || !/^-?[\d,]+$/.test(el.value)) return;
+          const digits = el.value.replace(/\D/g, "");
+          el.value = (el.value.startsWith("-") ? "-" : "") + Number(digits).toLocaleString("en-US");
+        }}
+      />
     </div>
   );
 }
@@ -149,6 +183,35 @@ export default function ApplyForm({ onSubmit, readCim }: { onSubmit: (fd: FormDa
   const formRef = useRef<HTMLFormElement>(null);
   const stepRefs = useRef<(HTMLFieldSetElement | null)[]>([]);
 
+  const [restored, setRestored] = useState(false);
+
+  // Bring back an unfinished form once, after the first render.
+  useEffect(() => {
+    const draft = readDraft();
+    if (!draft || !draft.amount && !draft.companyName && !draft.useOfFunds) return;
+    setUseOfFunds((draft.useOfFunds as UseOfFunds) ?? "");
+    setOwns(draft.ownsBusiness === "yes" || draft.ownsBusiness === "no" ? draft.ownsBusiness : "");
+    setPendingFill({ values: draft, onlyEmpty: false });
+    setRestored(true);
+  }, []);
+
+  function saveDraft() {
+    if (!formRef.current) return;
+    const fd = new FormData(formRef.current);
+    fd.delete("cimJson");
+    writeDraft(Object.fromEntries(Array.from(fd.entries()).map(([k, v]) => [k, String(v)])));
+  }
+
+  function startOver() {
+    writeDraft(null);
+    formRef.current?.reset();
+    setUseOfFunds("");
+    setOwns("");
+    setCim(null);
+    setStep(0);
+    setRestored(false);
+  }
+
   const acq = useOfFunds === "acquisition";
   const steps = ["The raise", acq ? "About you" : "Your company", acq ? "Business you're buying" : "Financials", "Contact & review"];
   const last = steps.length - 1;
@@ -207,6 +270,7 @@ export default function ApplyForm({ onSubmit, readCim }: { onSubmit: (fd: FormDa
     if (!stepIsValid(step) || submitting) return;
     setSubmitting(true);
     try {
+      writeDraft(null);
       await onSubmit(new FormData(e.currentTarget));
     } finally {
       setSubmitting(false);
@@ -288,11 +352,17 @@ export default function ApplyForm({ onSubmit, readCim }: { onSubmit: (fd: FormDa
           </li>
         ))}
         <li className="sample-li">
-          <button type="button" className="btn btn-secondary btn-sm" onClick={fillSample}>Fill sample answers</button>
+          <button type="button" className="link-quiet demo-fill" onClick={fillSample}>Demo: Fill sample answers</button>
         </li>
       </ol>
 
-      <form ref={formRef} onSubmit={submit} className="card form-card" noValidate>
+      <form ref={formRef} onSubmit={submit} onInput={saveDraft} onChange={saveDraft} className="card form-card" noValidate>
+        <p className="step-label">Step {step + 1} of {steps.length} · {steps[step]}</p>
+        {restored && (
+          <p className="restored" role="status">
+            We brought back your unfinished answers. <button type="button" className="link-quiet" onClick={startOver}>Start over</button>
+          </p>
+        )}
         {cim && <input type="hidden" name="cimJson" value={JSON.stringify(cim)} />}
 
         <fieldset ref={(el) => { stepRefs.current[0] = el; }} hidden={step !== 0} style={fs}>

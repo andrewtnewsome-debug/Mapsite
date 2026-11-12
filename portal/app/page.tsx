@@ -48,7 +48,7 @@ export default function Home() {
             <ul className="capital-list">
               {byType.map(({ t, count, span }) => (
                 <li key={t}>
-                  {CAPITAL_TYPE_LABELS[t]} <span>{count} partners{span ? ` · ${span}` : ""}</span>
+                  {CAPITAL_TYPE_LABELS[t]} <span>{count} {count === 1 ? "partner" : "partners"}</span>
                 </li>
               ))}
             </ul>
@@ -80,7 +80,7 @@ export default function Home() {
           </div>
           <div className="stats-row">
             <div className="stat-big"><strong>{providers.length}</strong><span>Capital partners in our network</span></div>
-            <div className="stat-big"><strong>{money(Math.min(...mins))} to {money(Math.max(...maxes))}</strong><span>Published check sizes</span></div>
+            <div className="stat-big"><strong>{byType.length}</strong><span>Kinds of capital, from SBA loans to majority equity</span></div>
             <div className="stat-big"><strong>{mission}</strong><span>Partners with a mandate for minority-owned businesses</span></div>
             <div className="stat-big"><strong>5 days</strong><span>Target time to first review</span></div>
           </div>

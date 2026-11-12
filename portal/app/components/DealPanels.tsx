@@ -190,3 +190,32 @@ export function IndustryPanel({ s }: { s: Submission }) {
     </div>
   );
 }
+
+/** The three things the team does with a deal, with what's done and what's next. */
+export function NextSteps({ s, confirmed, possible }: { s: Submission; confirmed: number; possible: number }) {
+  if (s.status === "declined" || s.status === "closed") return null;
+  const steps = [
+    { label: "Review", done: s.status !== "new", hint: "Check the figures and fit score, then set the status to In review." },
+    { label: "One-pager", done: !!s.onePager, hint: "Create and save the lender one-pager below." },
+    {
+      label: "Introductions",
+      done: s.introductions.length > 0,
+      hint: confirmed + possible === 0
+        ? "No provider fits as submitted. Near misses show what would need to change."
+        : `Draft intro emails to the ${confirmed || possible} ${confirmed ? "confirmed" : "possible"} match${(confirmed || possible) === 1 ? "" : "es"}, then log each one.`,
+    },
+  ];
+  const next = steps.findIndex((x) => !x.done);
+  return (
+    <div className="next-steps">
+      <ol>
+        {steps.map((x, i) => (
+          <li key={x.label} className={x.done ? "done" : i === next ? "now" : ""}>
+            <span className="dot">{x.done ? "\u2713" : i + 1}</span>{x.label}
+          </li>
+        ))}
+      </ol>
+      <p>{next === -1 ? `Introduced to ${s.introductions.length} provider${s.introductions.length === 1 ? "" : "s"}. Record replies in Team notes, and mark the deal Closed or Declined when it resolves.` : `Next: ${steps[next].hint}`}</p>
+    </div>
+  );
+}

@@ -13,9 +13,10 @@ const FILTERS: (Status | "all")[] = ["all", "new", "in_review", "introduced", "c
 export default async function Dashboard({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; sort?: string }>;
+  searchParams: Promise<{ status?: string; sort?: string; q?: string }>;
 }) {
-  const { status = "all", sort = "date" } = await searchParams;
+  const { status = "all", sort = "date", q: query = "" } = await searchParams;
+  const q = query.trim().toLowerCase();
   const providers = listProviders();
   const all = listSubmissions().map((s) => ({
     s,
@@ -25,6 +26,7 @@ export default async function Dashboard({
 
   const rows = all
     .filter((r) => status === "all" || r.s.status === status)
+    .filter((r) => !q || [r.s.company.name, r.s.company.city, r.s.naics.title, r.s.acquirer?.current?.name ?? ""].join(" ").toLowerCase().includes(q))
     .sort((a, b) => (sort === "score" ? b.fit.total - a.fit.total : b.s.createdAt.localeCompare(a.s.createdAt)));
 
   const open = all.filter((r) => r.s.status === "new" || r.s.status === "in_review");
@@ -33,7 +35,7 @@ export default async function Dashboard({
   const requested = open.reduce((n, r) => n + r.s.deal.amount, 0);
   const count = (f: Status | "all") => (f === "all" ? all.length : all.filter((r) => r.s.status === f).length);
   const qs = (next: Record<string, string>) => {
-    const p = new URLSearchParams({ status, sort, ...next });
+    const p = new URLSearchParams({ status, sort, ...(query ? { q: query } : {}), ...next });
     return `/team?${p.toString()}`;
   };
 
@@ -44,7 +46,7 @@ export default async function Dashboard({
           <h1>Submissions</h1>
           <p>Every inbound raise, scored for fit and matched against the capital provider network.</p>
         </div>
-        <Link href="/apply" className="btn btn-secondary btn-sm">+ New test submission</Link>
+        <Link href="/apply" className="btn btn-primary btn-sm" style={{ color: "#fff" }}>+ Add a deal</Link>
       </div>
 
       <div className="tiles">
@@ -70,6 +72,11 @@ export default async function Dashboard({
         </div>
       </div>
 
+      <form className="search" action="/team" role="search">
+        <input type="hidden" name="status" value={status} />
+        <input type="hidden" name="sort" value={sort} />
+        <input type="search" name="q" defaultValue={query} placeholder="Search deals by company, buyer, city or industry" aria-label="Search deals" />
+      </form>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
         <div className="filters">
           {FILTERS.map((f) => (
@@ -86,7 +93,7 @@ export default async function Dashboard({
       </div>
 
       <div className="card table-wrap" style={{ marginBottom: 64 }}>
-        <table className="data">
+        <table className="data deals">
           <thead>
             <tr>
               <th>Fit</th>
@@ -129,7 +136,7 @@ export default async function Dashboard({
               </tr>
             ))}
             {rows.length === 0 && (
-              <tr><td colSpan={8} className="empty">No submissions with this status.</td></tr>
+              <tr><td colSpan={8} className="empty">No deals match.</td></tr>
             )}
           </tbody>
         </table>

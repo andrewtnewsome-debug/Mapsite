@@ -5,11 +5,12 @@ import { evaluateProvider } from "@/lib/matching";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProvidersPage({ searchParams }: { searchParams: Promise<{ group?: string }> }) {
-  const { group = "all" } = await searchParams;
+export default async function ProvidersPage({ searchParams }: { searchParams: Promise<{ group?: string; q?: string }> }) {
+  const { group = "all", q: query = "" } = await searchParams;
+  const q = query.trim().toLowerCase();
   const all = listProviders();
   const groups = [...new Set(all.map((p) => p.category))];
-  const providers = all.filter((p) => group === "all" || p.category === group);
+  const providers = all.filter((p) => (group === "all" || p.category === group) && (!q || [p.name, p.fund, p.type, p.ref].join(" ").toLowerCase().includes(q)));
   const open = listSubmissions().filter((s) => s.status === "new" || s.status === "in_review");
 
   return (
@@ -23,6 +24,10 @@ export default async function ProvidersPage({ searchParams }: { searchParams: Pr
           </p>
         </div>
       </div>
+      <form className="search" action="/team/providers" role="search">
+        {group !== "all" && <input type="hidden" name="group" value={group} />}
+        <input type="search" name="q" defaultValue={query} placeholder="Search providers by name, fund or type" aria-label="Search providers" />
+      </form>
       <div className="filters">
         <Link href="/team/providers" className={`chip ${group === "all" ? "active" : ""}`}>
           All<span className="n">{all.length}</span>

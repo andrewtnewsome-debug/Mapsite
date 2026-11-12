@@ -66,3 +66,9 @@ confidentiality line. It downloads as a one-page PDF (`lib/onepagerPdf.ts`) or a
 - Changes you make are saved to `data/db.json`, which is created on first run.
 - `npm run reset-data` deletes it so the next page load starts fresh from the seed.
 - All storage goes through `lib/db.ts`; that is the one file that changes when Supabase is connected.
+
+## The claude.ai link version
+
+`link/` holds the single-file version published as a claude.ai artifact. It reuses the app's form, deal
+panels, rules and styles; only the page shell (`link/src`) differs. Build it with `npm run build-link`.
+Confidential deals for the private link go in `link/src/private-deals.json`, which is git-ignored.

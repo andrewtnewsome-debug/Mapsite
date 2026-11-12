@@ -4,3 +4,6 @@ next-env.d.ts
 *.tsbuildinfo
 # Local prototype database, recreated from data/seed.json on first run
 data/db.json
+# Private-link build: confidential deals and the built page stay out of the repo
+link/src/private-deals.json
+link/maplab-portal.html

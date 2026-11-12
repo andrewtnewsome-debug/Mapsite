@@ -18,10 +18,10 @@ import { matchProviders, type ProviderMatch } from "@/lib/matching";
 import { scoreSubmission } from "@/lib/scoring";
 import type { Status } from "@/lib/types";
 import { introduce, postNote, updateStatus } from "../../actions";
-import { AcquisitionTerms, BuyerPanel, CimPanel, IndustryPanel, SummaryPanel } from "../../../components/DealPanels";
+import { AcquisitionTerms, BuyerPanel, CimPanel, IndustryPanel, NextSteps, SummaryPanel } from "../../../components/DealPanels";
 import { NextIntroEmail, NextOnePager } from "./DealTools";
 import type { Submission } from "@/lib/types";
-import { ScoreRing, StatusBadge } from "../../ui";
+import { ScoreRing } from "../../ui";
 
 export const dynamic = "force-dynamic";
 
@@ -123,8 +123,16 @@ export default async function SubmissionPage({ params }: { params: Promise<{ id:
             Submitted {shortDate(s.createdAt)}
           </p>
         </div>
-        <StatusBadge status={s.status} />
+        <div className="status-row" aria-label="Status">
+          {STATUSES.map((st) => (
+            <form key={st} action={updateStatus.bind(null, s.id, st)}>
+              <button className={`chip ${s.status === st ? `active ${st}` : ""}`}>{STATUS_LABELS[st]}</button>
+            </form>
+          ))}
+        </div>
       </div>
+
+      <NextSteps s={s} confirmed={confirmed.length} possible={possible.length} />
 
       <div className="op-band">
         <NextOnePager s={s} aiEnabled={!!process.env.ANTHROPIC_API_KEY} />
@@ -167,16 +175,16 @@ export default async function SubmissionPage({ params }: { params: Promise<{ id:
               <MatchCard key={m.provider.id} m={m} s={s} introducedAt={introduced.get(m.provider.id)} />
             ))}
             {possible.length > 0 && (
-              <h3 className="group-head">Possible, confirm first <span className="muted">({possible.length}; some criteria unpublished or not checkable from the form)</span></h3>
+              <details className="group" open={confirmed.length === 0}>
+                <summary>Possible, confirm first <span className="muted">({possible.length}; some criteria unpublished or not checkable from the form)</span></summary>
+                {possible.map((m) => <MatchCard key={m.provider.id} m={m} s={s} introducedAt={introduced.get(m.provider.id)} />)}
+              </details>
             )}
-            {possible.map((m) => (
-              <MatchCard key={m.provider.id} m={m} s={s} introducedAt={introduced.get(m.provider.id)} />
-            ))}
             {nearMisses.length > 0 && (
-              <>
-                <h3 className="group-head">Near misses <span className="muted">(one requirement short; could work if the deal is resized)</span></h3>
+              <details className="group">
+                <summary>Near misses <span className="muted">({nearMisses.length}; one requirement short, could work if the deal is resized)</span></summary>
                 {nearMisses.map((m) => <MatchCard key={m.provider.id} m={m} s={s} />)}
-              </>
+              </details>
             )}
           </div>
         </div>
@@ -202,19 +210,6 @@ export default async function SubmissionPage({ params }: { params: Promise<{ id:
           </div>
 
           <IndustryPanel s={s} />
-
-          <div className="card panel">
-            <div className="panel-head"><h2>Status</h2></div>
-            <div className="status-buttons">
-              {STATUSES.map((st) => (
-                <form key={st} action={updateStatus.bind(null, s.id, st)}>
-                  <button className={`btn btn-secondary btn-sm ${s.status === st ? "current" : ""}`} style={{ width: "100%" }}>
-                    {STATUS_LABELS[st]}
-                  </button>
-                </form>
-              ))}
-            </div>
-          </div>
 
           <div className="card panel">
             <div className="panel-head"><h2>Contact</h2></div>
