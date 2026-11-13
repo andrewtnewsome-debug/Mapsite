@@ -93,7 +93,9 @@ function movableLocalDeals(): Submission[] {
 // ── Start-up ──
 
 function startLocal() {
-  submissions = readLocal() ?? sampleDeals();
+  const saved = readLocal();
+  // Keep the browser's saved deals, and add any sample or private deal published since it last saved.
+  submissions = saved ? [...saved, ...sampleDeals().filter((d) => !saved.some((x) => x.id === d.id))] : sampleDeals();
   setStatusFields({ mode: "local", loading: false });
 }
 
