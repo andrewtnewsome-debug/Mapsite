@@ -1,6 +1,7 @@
-// Builds the single-file version of the portal that is published as a claude.ai artifact.
-//   node link/build.mjs [output.html]     (run from the portal folder)
-// It reuses the app's own form, deal panels, rules and styles; only the page shell in link/src differs.
+// Builds a single-file page published as a claude.ai artifact (run from the portal folder):
+//   node link/build.mjs [output.html]               the applicant portal with its team view
+//   node link/build.mjs --app=tool [output.html]    Capital Match, the internal CIM-to-lenders tool
+// Both reuse the app's own rules and styles; only the page shells in link/src differ.
 import { build } from "esbuild";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -8,14 +9,19 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const portal = resolve(here, "..");
-const out = resolve(process.argv[2] ?? join(here, "maplab-portal.html"));
+const args = process.argv.slice(2);
+const tool = args.includes("--app=tool");
+const app = tool
+  ? { entry: join(here, "src", "tool", "app.tsx"), css: "tool.css", title: "MAPlab Capital Match", file: "capital-match.html" }
+  : { entry: join(here, "src", "app.tsx"), css: "extra.css", title: "MAP Lab Capital Portal", file: "maplab-portal.html" };
+const out = resolve(args.find((a) => !a.startsWith("--")) ?? join(here, app.file));
 const shim = (name) => join(here, "src", name);
 
 const privateDeals = join(here, "src", "private-deals.json");
 if (!existsSync(privateDeals)) writeFileSync(privateDeals, "[]\n");
 
 const result = await build({
-  entryPoints: [join(here, "src", "app.tsx")],
+  entryPoints: [app.entry],
   bundle: true, write: false, format: "iife", target: "es2020", minify: true,
   jsx: "transform", jsxFactory: "React.createElement", jsxFragment: "React.Fragment",
   loader: { ".json": "json" },
@@ -32,8 +38,8 @@ const result = await build({
 });
 const js = result.outputFiles[0].text.replace(/<\/script/gi, "<\\/script");
 const logo = "data:image/png;base64," + readFileSync(join(portal, "public", "maplab-logo.png")).toString("base64");
-const css = readFileSync(join(portal, "app", "globals.css"), "utf8") + "\n" + readFileSync(join(here, "extra.css"), "utf8");
-const html = `<title>MAP Lab Capital Portal</title>
+const css = readFileSync(join(portal, "app", "globals.css"), "utf8") + "\n" + readFileSync(join(here, app.css), "utf8");
+const html = `<title>${app.title}</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

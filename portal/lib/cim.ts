@@ -61,20 +61,20 @@ export function parseJsonReply(text: string): unknown {
   return null;
 }
 
-function obj(v: unknown): Record<string, unknown> {
+export function obj(v: unknown): Record<string, unknown> {
   return v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : {};
 }
 
-function str(v: unknown, max = 600): string | null {
+export function str(v: unknown, max = 600): string | null {
   return typeof v === "string" && v.trim() ? v.trim().slice(0, max) : null;
 }
 
-function num(v: unknown, min = -Infinity, max = Infinity): number | null {
+export function num(v: unknown, min = -Infinity, max = Infinity): number | null {
   const n = typeof v === "number" ? v : typeof v === "string" ? Number(v.replace(/[$,%\s]/g, "")) : NaN;
   return Number.isFinite(n) && n >= min && n <= max ? Math.round(n) : null;
 }
 
-function list(v: unknown, max: number): string[] {
+export function list(v: unknown, max: number): string[] {
   return Array.isArray(v) ? v.flatMap((x) => (str(x, 300) ? [str(x, 300)!] : [])).slice(0, max) : [];
 }
 

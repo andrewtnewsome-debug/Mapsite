@@ -8,7 +8,8 @@
     "start": "next start -p 3000",
     "reset-data": "node scripts/reset-data.mjs",
     "typecheck": "tsc --noEmit",
-    "build-link": "node link/build.mjs"
+    "build-link": "node link/build.mjs",
+    "build-tool": "node link/build.mjs --app=tool"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",

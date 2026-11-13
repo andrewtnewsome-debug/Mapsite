@@ -7,3 +7,4 @@ data/db.json
 # Private-link build: confidential deals and the built page stay out of the repo
 link/src/private-deals.json
 link/maplab-portal.html
+link/capital-match.html
