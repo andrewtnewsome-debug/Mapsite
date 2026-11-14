@@ -585,7 +585,7 @@ export const DEALS: Deal[] = [
       "Stable labor relations across union and non-union sites",
     ],
     seeking:
-      "Minority investor (up to 40%) with facility services or business services experience. Majority ownership must remain minority-owned to preserve NMSDC MBE certification.",
+      "Minority investor (up to 40%) with facility services or business services experience. Majority ownership must remain minority-owned to preserve the company's MBE certification.",
     companyName: "Pacific Crest Facility Services",
     city: "Commerce",
     createdAt: "2026-08-30T16:00:00.000Z",

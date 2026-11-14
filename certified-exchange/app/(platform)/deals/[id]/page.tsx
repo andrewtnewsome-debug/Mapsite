@@ -212,7 +212,7 @@ export default function DealDetailPage() {
           </div>
         </div>
 
-        <dl className="grid grid-cols-2 border-t border-slate-200 bg-slate-50/60 sm:grid-cols-3 lg:grid-cols-6">
+        <dl className="grid grid-cols-2 gap-px border-t border-slate-200 bg-slate-200 sm:grid-cols-3 lg:grid-cols-6">
           <Metric label="Revenue (FY2025)" value={money(deal.revenue)} sub={`${growth >= 0 ? "+" : ""}${pct(growth)} YoY`} />
           <Metric label="Adj. EBITDA" value={money(deal.ebitda)} sub={`${pct(margin(deal.ebitda, deal.revenue))} margin`} />
           <Metric label="Asking valuation" value={deal.askingValuation ? money(deal.askingValuation) : "Open"} sub={deal.askingValuation ? `${(deal.askingValuation / deal.ebitda).toFixed(1)}x adj. EBITDA` : "Not specified"} />
@@ -462,7 +462,7 @@ export default function DealDetailPage() {
 
 function Metric({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="border-r border-b border-slate-200 px-5 py-3 last:border-r-0 lg:border-b-0">
+    <div className="bg-slate-50 px-5 py-3">
       <dt className="text-[10.5px] font-medium uppercase tracking-wide text-slate-500">{label}</dt>
       <dd className="mt-0.5 text-[17px] font-semibold tabular-nums text-slate-900">{value}</dd>
       {sub && <dd className="text-[12px] tabular-nums text-slate-500">{sub}</dd>}

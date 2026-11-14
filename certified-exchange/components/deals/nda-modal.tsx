@@ -182,7 +182,8 @@ export function SignedNdaDialog({ open, onClose, nda }: { open: boolean; onClose
           <Button
             variant="outline"
             onClick={() => window.print()}
-            title="Prints this page. TODO: generate a signed PDF copy for download."
+            // TODO(documents): generate a signed, tamper-evident PDF copy for download.
+            title="Print or save this agreement as PDF"
           >
             Print copy
           </Button>

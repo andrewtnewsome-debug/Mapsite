@@ -1,3 +1,4 @@
+import { brand } from "@/config/brand";
 import type { DealStatus, DealType } from "./types";
 
 export const DEAL_TYPE_LABEL: Record<DealType, string> = {
@@ -52,7 +53,7 @@ export const YEARS_OPTIONS = [
 
 /** Certification filter options. "MBE" matches every listing. */
 export const CERT_FILTERS = [
-  { id: "MBE", label: "NMSDC MBE" },
+  { id: "MBE", label: `${brand.sponsor.short} MBE` },
   { id: "WBE", label: "Dual MBE / WBE" },
   { id: "DBE", label: "DBE" },
   { id: "8(a)", label: "SBA 8(a)" },
@@ -80,6 +81,3 @@ export const TIMELINE_OPTIONS = [
   "IOI within 60 days",
   "Exploratory: 90+ days",
 ];
-
-export const SALES_SEEKING_HINT =
-  "Describe the partner, structure and role you want after the transaction. Investors see this in the teaser.";
