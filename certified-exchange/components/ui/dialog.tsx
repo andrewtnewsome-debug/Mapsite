@@ -25,6 +25,18 @@ export function Dialog({
   labelledBy?: string;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // Make everything outside the dialog inert while it is open (true modal semantics).
+  useEffect(() => {
+    if (!open) return;
+    const root = rootRef.current;
+    const siblings = Array.from(document.body.children).filter(
+      (el): el is HTMLElement => el instanceof HTMLElement && el !== root && !el.hasAttribute("inert"),
+    );
+    siblings.forEach((el) => el.setAttribute("inert", ""));
+    return () => siblings.forEach((el) => el.removeAttribute("inert"));
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -65,7 +77,7 @@ export function Dialog({
   if (!open || typeof document === "undefined") return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-6">
+    <div ref={rootRef} className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-6">
       <div className="absolute inset-0 bg-slate-950/45 backdrop-blur-[1px]" onClick={onClose} aria-hidden />
       <div
         ref={panelRef}
