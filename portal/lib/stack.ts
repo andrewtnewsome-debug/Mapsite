@@ -181,6 +181,39 @@ export function newDeal(input: DealInput, by: string | null, now = new Date()): 
   };
 }
 
+/**
+ * Fills in anything a stored deal is missing (an older or hand-loaded record), so one incomplete
+ * record can't break the page. Returns null when there isn't enough to show at all.
+ */
+export function completeDeal(raw: unknown): Deal | null {
+  const d = (raw && typeof raw === "object" ? raw : {}) as Partial<Deal>;
+  if (typeof d.id !== "string" || !d.company || !d.financials) return null;
+  const now = new Date().toISOString();
+  const pieces = Array.isArray(d.pieces) ? d.pieces.filter((p) => p && typeof p.amount === "number" && p.type in PIECE_LABELS) : [];
+  const base = {
+    kind: d.kind === "raise" ? "raise" : "acquisition",
+    company: { name: "Unnamed company", website: "", city: "", state: "", yearFounded: new Date().getFullYear(), employees: 0, description: "", ...(d.company as Partial<Deal["company"]>) },
+    financials: { revenueLTM: 0, revenuePrior: 0, ebitdaLTM: 0, topCustomerPct: 0, existingDebt: 0, ...(d.financials as Partial<Deal["financials"]>) },
+    diverseOwned: d.diverseOwned === true,
+    useOfFunds: d.useOfFunds ?? (d.kind === "raise" ? "growth" : "acquisition"),
+    purchasePrice: typeof d.purchasePrice === "number" ? d.purchasePrice : null,
+    pieces: pieces.length ? pieces : [{ id: pieceId(), type: "senior_debt", amount: 0 }],
+    details: d.details ?? "",
+    cim: d.cim ?? null,
+  } as DealInput;
+  const insights = d.naics?.sector && d.summary?.summary !== undefined ? { naics: d.naics, summary: d.summary } : dealInsights(base, new Date(d.createdAt ?? now));
+  return {
+    ...base,
+    ...insights,
+    id: d.id,
+    createdAt: d.createdAt ?? now,
+    updatedAt: d.updatedAt ?? d.createdAt ?? now,
+    createdBy: d.createdBy ?? null,
+    notes: Array.isArray(d.notes) ? d.notes : [],
+    outreach: d.outreach && typeof d.outreach === "object" ? d.outreach : {},
+  };
+}
+
 /** A deal saved by the earlier portal (the Hallmark and Thor records), turned into a tool deal. */
 export function dealFromSubmission(s: Submission): Deal {
   const acquisition = s.deal.useOfFunds === "acquisition";

@@ -1,6 +1,6 @@
 import seed from "portal/data/seed.json";
 import type { Provider } from "portal/lib/types";
-import type { Deal } from "portal/lib/stack";
+import { completeDeal, type Deal } from "portal/lib/stack";
 
 /**
  * Where the internal matching tool keeps its data.
@@ -61,7 +61,7 @@ function readLocal() {
     const raw = localStorage.getItem(LOCAL_KEY);
     if (!raw) return;
     const d = JSON.parse(raw) as { deals?: Deal[]; lenders?: LenderRecord[] };
-    deals = d.deals ?? [];
+    deals = (d.deals ?? []).flatMap((b) => completeDeal(b) ?? []);
     lenderDocs = new Map((d.lenders ?? []).map((l) => [l.provider.id, l]));
   } catch {
     // Nothing saved, or storage blocked.
@@ -106,7 +106,7 @@ async function start() {
   const bodies = (snap: QuerySnap) => snap.docs.flatMap((d) => (d.exists && d.data() ? [clone(d.data()!)] : []));
 
   shared.collection("deals").onSnapshot((snap) => {
-    deals = bodies(snap) as unknown as Deal[];
+    deals = bodies(snap).flatMap((b) => completeDeal(b) ?? []);
     arrived("deals", snap.metadata.fromCache);
   }, failed);
   shared.collection("lenders").onSnapshot((snap) => {

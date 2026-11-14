@@ -1090,6 +1090,26 @@ function LenderForm({ id }: { id: string | null }) {
 }
 
 // ── App ──
+/** If a page fails to draw, say so and offer a way out, instead of leaving the screen blank. */
+class Boundary extends React.Component<{ children: React.ReactNode; resetKey: string }, { error: Error | null }> {
+  state = { error: null as Error | null };
+  static getDerivedStateFromError(error: Error) { return { error }; }
+  componentDidUpdate(prev: { resetKey: string }) { if (prev.resetKey !== this.props.resetKey && this.state.error) this.setState({ error: null }); }
+  render() {
+    if (!this.state.error) return this.props.children;
+    return (
+      <div className="container page">
+        <div className="card empty-state">
+          <h2>This page couldn&apos;t be shown</h2>
+          <p>Something in the saved data didn&apos;t look the way the page expected. Other pages still work.</p>
+          <a className="btn btn-primary" href="#lenders">Go to lenders</a>
+          <p className="muted small">Details for Claude: {this.state.error.message}</p>
+        </div>
+      </div>
+    );
+  }
+}
+
 function App() {
   const [hash, setHash] = useState(location.hash);
   const [, setVersion] = useState(0);
@@ -1114,7 +1134,7 @@ function App() {
     <>
       <Header tab={tab} />
       <Notice />
-      <main>{page}</main>
+      <main><Boundary resetKey={h}>{page}</Boundary></main>
     </>
   );
 }
