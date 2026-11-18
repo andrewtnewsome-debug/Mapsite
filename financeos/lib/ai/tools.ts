@@ -422,6 +422,10 @@ function expenseTool(ds: FinancialDataset): ToolResult {
     facts: [
       fact(`Total expenses ${monthLabel(e.month, "long")}`, totalLast, "currency"),
       fact(`Total expenses ${monthLabel(e.priorMonth, "long")}`, totalPrior, "currency"),
+      fact("Total expense change", roundTo(totalLast - totalPrior), "currency"),
+      ...(totalLast - totalPrior > 0
+        ? increases.slice(0, 3).map((c) => fact(`${c.account} share of the total expense increase`, c.changeVsPrior / (totalLast - totalPrior), "percent"))
+        : []),
       ...increases.flatMap((c) => [fact(`${c.account} ${monthLabel(e.month, "long")}`, c.lastMonth, "currency"), fact(`${c.account} ${monthLabel(e.priorMonth, "long")}`, c.priorMonth, "currency"), fact(`${c.account} change`, c.changeVsPrior, "currency"), fact(`${c.account} change %`, c.pctVsPrior, "percent")]),
       ...driverFacts,
     ],
