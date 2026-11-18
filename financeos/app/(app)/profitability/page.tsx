@@ -114,6 +114,7 @@ export default async function ProfitabilityPage() {
                   <THead>
                     <TR className="hover:bg-transparent">
                       <TH>Account</TH>
+                      <TH className="hidden md:table-cell">Type</TH>
                       <TH numeric>{monthLabel(exp.month)}</TH>
                       <TH numeric>{monthLabel(exp.priorMonth)}</TH>
                       <TH numeric>Change</TH>
@@ -124,17 +125,15 @@ export default async function ProfitabilityPage() {
                   <TBody>
                     {exp.changes.map((c) => (
                       <TR key={`${c.category}-${c.account}`}>
-                        <TD>
-                          <span className="font-medium">{c.account}</span>
-                          <span className="ml-2 text-[12px] text-text-3">{PNL_CATEGORY_LABELS[c.category]}</span>
-                        </TD>
+                        <TD className="whitespace-nowrap font-medium">{c.account}</TD>
+                        <TD className="hidden whitespace-nowrap text-[12px] text-text-3 md:table-cell">{PNL_CATEGORY_LABELS[c.category]}</TD>
                         <TD numeric>{formatCurrency(c.lastMonth)}</TD>
                         <TD numeric className="text-text-2">{formatCurrency(c.priorMonth)}</TD>
                         <TD numeric className={c.changeVsPrior > 0 ? "text-text" : "text-text-2"}>
                           {formatCurrency(c.changeVsPrior)} <span className="text-text-3">({formatSignedPercent(c.pctVsPrior)})</span>
                         </TD>
                         <TD numeric className="text-text-2">{formatSignedPercent(c.pctVsBaseline)}</TD>
-                        <TD>{c.significant ? <Badge tone="warning">Significant increase</Badge> : null}</TD>
+                        <TD>{c.significant ? <Badge tone="warning">Flagged</Badge> : null}</TD>
                       </TR>
                     ))}
                   </TBody>
