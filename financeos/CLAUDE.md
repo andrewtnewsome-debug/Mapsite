@@ -48,6 +48,9 @@ FinanceOS is an AI finance employee for small and lower-middle-market businesses
 - **QuickBooks snapshot**: sync once, read locally (fast pages, consistent numbers, no API calls per page view).
 - **Dev binding to 127.0.0.1** plus `proxy.ts` host check; the connect route redirects to the redirect-URI origin so the state cookie matches the callback host.
 - **Next.js telemetry disabled** through `scripts/next.mjs` (cross-platform env injection).
+- **Thinking models**: tested with real `qwen3:4b` (Ollama 0.40.16). It is the Qwen3-4B 2507 *thinking* build: `think:false` is ignored and reasoning leaks into `content` ending with a bare `</think>`. `lib/ai/ollama.ts` reads `/api/show` → `thinking.values` per model: sends `think:false` when allowed, otherwise the lowest level (`true`), and Ollama then returns reasoning in `message.thinking`, which is discarded. `stripReasoning()` cleans any orphan `</think>` from final answers. The chat shows a "reasoning" status and elapsed timer. `qwen3:4b-instruct` answers directly (no thinking) and is much faster on CPU.
+- **Budgets** are drafted from prior-year actuals per account (monthly pattern kept, growth applied), one budget per data-source scope for the current fiscal year (`.data/budgets.json`).
+- **Data checks** (`lib/finance/reconcile.ts`) reconcile A/R, A/P, cash, cash flow, YTD net income and QuickBooks report totals (captured at sync as `sourceTotals`).
 
 ## Commands
 `npm run dev` · `npm run build` / `npm start` · `npm test` · `npm run typecheck` · `npm run lint` · `npm run check` · `npm run clean` · `npm run reset-local-data`
@@ -55,12 +58,13 @@ FinanceOS is an AI finance employee for small and lower-middle-market businesses
 ## Completed functionality (as of 2026-11-18)
 - Phase 1: app shell (sidebar, top bar with source switcher, alerts, theme), Overview, AR (aging, filters, priorities, CSV, QBO reconciliation), Cash Flow (history + interactive 13-week forecast with scenarios, saved assumptions, CSV), Profitability, Financial Reports (P&L/BS/CF/AR aging/ratios, month/quarter/year, prior period/year, CSV, printable management summary + optional AI commentary), AI CFO (streaming chat, verified-data panel, follow-ups, session history, fallback), QuickBooks sandbox integration (OAuth, encrypted tokens, refresh, sync, disconnect, parsers), Settings.
 - Phase 2: Collections assistant (drafts, approval-based follow-up list, optional AI polish), Invoice assistant (rules + optional AI parsing, editable drafts), Insights page.
+- Round 2 (2026-11-18): real-model testing and thinking-model handling; `npm run eval:ai` (resumable, scored report in `.data/eval/`); AI uses saved forecast assumptions and budgets; vendor-level expense drivers from bills; Budget vs Actual page + `budget_variance` tool; data checks in Settings; upcoming vendor payments; amount-free QuickBooks report-structure download; self-verifying parent-account parsing; stale-data alerts; axe-core audit with zero WCAG 2.1 AA violations in both themes.
 - Phase 3 groundwork: tenant/user/role context and permissions, audit log, per-company scoping of stored data, provider-agnostic model; `PRODUCT_ROADMAP.md`.
-- 130 automated tests; production build clean; smoke-tested all pages (desktop + mobile, light + dark) in Chromium.
+- 146 automated tests; production build clean; smoke-tested all pages (desktop + mobile, light + dark) in Chromium.
 
 ## Known limitations / not yet verified
 - **Live QuickBooks not tested.** The build environment could not reach Intuit hosts, and connecting requires the founder's Intuit login. Parsers are tested against mocked responses shaped like Intuit's. First real sync may reveal report-structure differences (e.g. unusual groups, multi-currency, sub-customers). Check Settings → "Data quality notes" and the AR reconciliation banner after the first sync.
-- **AI CFO not tested with a real model.** Ollama downloads were blocked in the build environment. The pipeline is tested against a protocol-faithful mock server, and the browser UI was exercised with a stand-in server. Answer quality of `qwen3:4b` is unknown; the number guard flags mismatches.
+- **AI CFO tested with real models on a 4-core CPU without a GPU** (see `.data/eval/` reports when re-run; summary in README). `qwen3:4b` answers correctly but slowly because it always reasons first; `qwen3:4b-instruct` is the faster option. Answer quality on other models is untested.
 - **Not run on Windows itself** (built and tested on Linux). Cross-platform precautions are in place; first run on Windows should follow SETUP_GUIDE.md.
 - AR aging uses invoice balances; unapplied payments and credit memos are not netted (flagged as a data-quality note and visible in the reconciliation banner).
 - The forecast excludes owner distributions, taxes, capex and new borrowing unless entered as one-time items. The AI CFO uses default forecast assumptions, not the user's saved ones.
@@ -70,5 +74,5 @@ FinanceOS is an AI finance employee for small and lower-middle-market businesses
 
 ## Suggested next steps
 1. Connect the real QuickBooks sandbox on Windows; compare FinanceOS P&L/BS/AR with QuickBooks' own reports; fix parser edge cases.
-2. Install Ollama + `qwen3:4b`; run the AI question set; build an evaluation harness (question → expected tools → guard pass rate).
-3. Let the AI CFO use saved forecast assumptions; add vendor-level AP analysis and budget vs. actual.
+2. Run `npm run eval:ai` on the founder's own hardware (and with `--model qwen3:4b-instruct`) and review the report.
+3. Monthly budget editing (not just annual), budget import from CSV, and variance commentary in the management summary.
