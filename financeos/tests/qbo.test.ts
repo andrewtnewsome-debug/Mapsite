@@ -369,3 +369,32 @@ describe("report structure diagnostics", () => {
     for (const amount of ["6000", "3915", "1500.00", "2200"]) expect(text).not.toContain(amount);
   });
 });
+
+describe("parent accounts with their own postings", () => {
+  it("includes a section header amount only when header + children equals the section total", () => {
+    const report = JSON.parse(JSON.stringify(fx.pnlReport));
+    // Give "Landscaping Services" (a parent with sub-accounts) a direct posting of 300 in Sep,
+    // shown on its header line, and update the totals QuickBooks would report.
+    const income = report.Rows.Row[0];
+    const parent = income.Rows.Row[1];
+    parent.Header.ColData[1].value = "300.00";
+    parent.Summary.ColData[1].value = "5300.00";
+    income.Summary.ColData[1].value = "6300.00";
+    report.Rows.Row.at(-1).Summary.ColData[1].value = "3500.00";
+    const { months, warnings } = parseProfitAndLoss(report, AS_OF);
+    expect(warnings).toEqual([]);
+    expect(summarizePnl([months[0]]).netIncome).toBe(3500);
+    expect(months[0].lines.find((l) => l.account === "Landscaping Services")?.amount).toBe(300);
+    // October has no header amount: no extra line
+    expect(months[1].lines.some((l) => l.account === "Landscaping Services")).toBe(false);
+  });
+
+  it("ignores header values that are not own postings (e.g. repeated totals)", () => {
+    const report = JSON.parse(JSON.stringify(fx.pnlReport));
+    const parent = report.Rows.Row[0].Rows.Row[1];
+    parent.Header.ColData[1].value = "5000.00"; // equals the section total: not an own posting
+    const { months, warnings } = parseProfitAndLoss(report, AS_OF);
+    expect(warnings).toEqual([]);
+    expect(summarizePnl([months[0]]).netIncome).toBe(3200);
+  });
+});

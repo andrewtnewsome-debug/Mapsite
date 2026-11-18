@@ -38,6 +38,8 @@ export interface Workspace {
   dataset: FinancialDataset | null;
   status: WorkspaceStatus;
   qbo: QboStatus;
+  /** Hours since the dataset was synced (QuickBooks only). */
+  dataAgeHours: number | null;
 }
 
 let demoCache: { date: string; dataset: FinancialDataset } | null = null;
@@ -75,20 +77,21 @@ export const loadWorkspace = cache(async function loadWorkspace(): Promise<Works
   const [settings, qbo] = await Promise.all([getSettings(), getQboStatus()]);
 
   if (settings.activeSource === "demo") {
-    return { source: "demo", dataset: demoDataset(), status: { kind: "ready" }, qbo };
+    return { source: "demo", dataset: demoDataset(), status: { kind: "ready" }, qbo, dataAgeHours: null };
   }
 
   const snapshot = await loadQboSnapshot();
   if (snapshot && qbo.connected && snapshot.company.realmId === qbo.realmId) {
-    return { source: "quickbooks-sandbox", dataset: snapshot, status: { kind: "ready" }, qbo };
+    const synced = snapshot.syncedAt ? Date.parse(snapshot.syncedAt) : NaN;
+    return { source: "quickbooks-sandbox", dataset: snapshot, status: { kind: "ready" }, qbo, dataAgeHours: Number.isFinite(synced) ? (Date.now() - synced) / 3_600_000 : null };
   }
   if (!qbo.configured) {
-    return { source: "quickbooks-sandbox", dataset: null, status: { kind: "qbo-not-configured", problems: qbo.configProblems }, qbo };
+    return { source: "quickbooks-sandbox", dataset: null, status: { kind: "qbo-not-configured", problems: qbo.configProblems }, qbo, dataAgeHours: null };
   }
   if (!qbo.connected) {
-    return { source: "quickbooks-sandbox", dataset: null, status: { kind: "qbo-not-connected" }, qbo };
+    return { source: "quickbooks-sandbox", dataset: null, status: { kind: "qbo-not-connected" }, qbo, dataAgeHours: null };
   }
-  return { source: "quickbooks-sandbox", dataset: null, status: { kind: "qbo-not-synced", lastError: qbo.lastError }, qbo };
+  return { source: "quickbooks-sandbox", dataset: null, status: { kind: "qbo-not-synced", lastError: qbo.lastError }, qbo, dataAgeHours: null };
 });
 
 /** For API routes: the active dataset or null. */

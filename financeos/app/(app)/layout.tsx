@@ -14,7 +14,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         Skip to content
       </a>
       <Sidebar />
-      <div className="lg:pl-60">
+      <div className="lg:pl-60 print:pl-0">
         <Topbar workspace={workspace} notifications={notifications} />
         <main id="main" className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
           {children}

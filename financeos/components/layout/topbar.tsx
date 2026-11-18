@@ -13,7 +13,7 @@ export function Topbar({ workspace, notifications }: { workspace: Workspace; not
   const syncText = ds
     ? ds.source === "demo"
       ? "Demo data generated locally"
-      : `Last synced ${formatTimestamp(ds.syncedAt)}`
+      : `Last synced ${formatTimestamp(ds.syncedAt)}${workspace.dataAgeHours != null && workspace.dataAgeHours >= 24 ? " (more than a day ago)" : ""}`
     : workspace.source === "quickbooks-sandbox"
       ? workspace.qbo.lastSyncAt
         ? `Last synced ${formatTimestamp(workspace.qbo.lastSyncAt)}`

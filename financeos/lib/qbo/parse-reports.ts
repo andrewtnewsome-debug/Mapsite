@@ -69,22 +69,64 @@ interface Leaf {
 }
 
 /** Walk a report tree and collect data rows with their ancestor groups (outermost first). */
-export function collectLeaves(rows: QboRow[] | undefined, groups: string[] = []): Leaf[] {
-  const out: Leaf[] = [];
+/** Values per column of a row's direct contribution (data row values, or a nested section's total). */
+function addInto(acc: number[], values: (number | null)[]): void {
+  values.forEach((v, i) => {
+    if (i > 0 && v != null) acc[i] = (acc[i] ?? 0) + v;
+  });
+}
+
+interface Collected {
+  leaves: Leaf[];
+  /** Column totals of everything collected at this level (for verifying section headers). */
+  totals: number[];
+}
+
+function collect(rows: QboRow[] | undefined, groups: string[]): Collected {
+  const leaves: Leaf[] = [];
+  const totals: number[] = [];
   for (const row of rows ?? []) {
     const g = row.group ? [...groups, row.group] : groups;
     if (row.ColData && (row.type === "Data" || !row.Rows)) {
-      out.push({ label: (row.ColData[0]?.value ?? "").trim(), values: row.ColData.map((c) => parseAmount(c.value)), groups: g });
+      const values = row.ColData.map((c) => parseAmount(c.value));
+      leaves.push({ label: (row.ColData[0]?.value ?? "").trim(), values, groups: g });
+      addInto(totals, values);
       continue;
     }
+    const headerValues = row.Header?.ColData?.map((c) => parseAmount(c.value)) ?? [];
+    const headerHasAmounts = headerValues.slice(1).some((v) => v != null && v !== 0);
     if (row.Rows?.Row?.length) {
-      out.push(...collectLeaves(row.Rows.Row, g));
-    } else if (row.Header?.ColData && row.Header.ColData.slice(1).some((c) => parseAmount(c.value) != null)) {
+      const inner = collect(row.Rows.Row, g);
+      leaves.push(...inner.leaves);
+      addInto(totals, inner.totals);
+      if (headerHasAmounts) {
+        // A parent account with its own postings shows them on its header line. Include a header
+        // amount only where header + children equals QuickBooks' own section total for that column.
+        const summary = row.Summary?.ColData?.map((c) => parseAmount(c.value)) ?? [];
+        const own = headerValues.map((v, i) => {
+          if (i === 0 || v == null) return null;
+          const children = inner.totals[i] ?? 0;
+          const total = summary[i];
+          if (total == null) return null;
+          return Math.abs(children + v - total) < 0.01 && Math.abs(children - total) >= 0.01 ? v : null;
+        });
+        if (own.some((v) => v != null)) {
+          leaves.push({ label: (row.Header?.ColData?.[0]?.value ?? "").trim(), values: own, groups: g });
+          addInto(totals, own);
+        }
+      }
+    } else if (headerHasAmounts) {
       // A collapsed section whose header carries the amounts.
-      out.push({ label: (row.Header.ColData[0]?.value ?? "").trim(), values: row.Header.ColData.map((c) => parseAmount(c.value)), groups: g });
+      leaves.push({ label: (row.Header?.ColData?.[0]?.value ?? "").trim(), values: headerValues, groups: g });
+      addInto(totals, headerValues);
     }
   }
-  return out;
+  return { leaves, totals };
+}
+
+/** Walk a report tree and collect data rows with their ancestor groups (outermost first). */
+export function collectLeaves(rows: QboRow[] | undefined, groups: string[] = []): Leaf[] {
+  return collect(rows, groups).leaves;
 }
 
 /** Find a Summary row by group anywhere in the tree. */
