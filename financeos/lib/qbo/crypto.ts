@@ -75,3 +75,9 @@ export async function decryptJson<T>(blob: unknown): Promise<T> {
   const text = Buffer.concat([decipher.update(Buffer.from(b.data, "base64")), decipher.final()]).toString("utf8");
   return JSON.parse(text) as T;
 }
+
+/** Derives a purpose-specific secret (e.g. for signing OAuth state) from the encryption key. */
+export async function deriveSecret(purpose: string): Promise<Buffer> {
+  const { createHmac } = await import("node:crypto");
+  return createHmac("sha256", await getKey()).update(`financeos:${purpose}`).digest();
+}
