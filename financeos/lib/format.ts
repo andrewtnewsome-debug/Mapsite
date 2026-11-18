@@ -31,7 +31,10 @@ export function formatCurrencyCompact(value: number | null | undefined, currency
   const abs = Math.abs(value);
   const sign = value < 0 ? "-" : "";
   const symbol = currency === "USD" ? "$" : `${currency} `;
-  if (abs >= 1_000_000) return `${sign}${symbol}${(abs / 1_000_000).toFixed(abs >= 10_000_000 ? 1 : 2)}M`;
+  if (abs >= 1_000_000) {
+    const m = (abs / 1_000_000).toFixed(abs >= 10_000_000 ? 1 : 2).replace(/\.?0+$/, "");
+    return `${sign}${symbol}${m}M`;
+  }
   if (abs >= 10_000) return `${sign}${symbol}${Math.round(abs / 1_000)}K`;
   return formatCurrency(value, { currency });
 }

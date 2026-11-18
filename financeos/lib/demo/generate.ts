@@ -63,7 +63,7 @@ const PREPAID_EXPENSES = 46_000;
 const ACCRUED_PAYROLL = 58_000;
 const COMMON_STOCK = 10_000;
 const OPENING = {
-  cash: 680_000,
+  cash: 760_000,
   fixedAssetsGross: 1_180_000,
   accumulatedDepreciation: -655_000,
   loanBalance: 396_000,
@@ -310,7 +310,7 @@ export function buildDemoDataset(asOfDate: string, options: DemoOptions = {}): F
   }
   billDrafts.sort((a, b) => (a.txnDate === b.txnDate ? a.vendorId.localeCompare(b.vendorId) : a.txnDate < b.txnDate ? -1 : 1));
   // One bill held back by the business (unpaid and past due) for a realistic AP picture.
-  const heldBackTarget = addDays(asOfDate, -42);
+  const heldBackTarget = addDays(asOfDate, -58);
   let heldBackIndex = -1;
   let bestGap = Infinity;
   billDrafts.forEach((b, i) => {

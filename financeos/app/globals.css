@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * FinanceOS design tokens.
+ * Neutral warm-gray chrome, near-black primary actions, one accent blue.
+ * Chart series and status colors come from a validated data-viz palette
+ * (categorical slots 1-3 pass all-pairs color-vision checks in both modes).
+ */
+:root {
+  color-scheme: light;
+  --bg: #f6f6f3;
+  --surface: #ffffff;
+  --surface-2: #f2f2ef;
+  --surface-3: #e9e9e5;
+  --border: #e4e3de;
+  --border-strong: #d3d2cb;
+  --text: #121211;
+  --text-2: #52514e;
+  --text-3: #858480;
+  --primary: #121211;
+  --primary-fg: #ffffff;
+  --accent: #2a78d6;
+  --accent-soft: #e8f1fc;
+  --ring: #2a78d6;
+
+  /* status (never used for chart series) */
+  --good: #0ca30c;
+  --good-text: #006300;
+  --good-soft: #e7f6e7;
+  --warning: #fab219;
+  --warning-text: #8a5a00;
+  --warning-soft: #fff4dc;
+  --serious: #ec835a;
+  --serious-text: #a2431c;
+  --serious-soft: #fdeee7;
+  --critical: #d03b3b;
+  --critical-text: #b3261e;
+  --critical-soft: #fbe9e9;
+
+  /* chart */
+  --chart-surface: #ffffff;
+  --chart-grid: #e9e8e2;
+  --chart-axis: #c3c2b7;
+  --chart-muted: #898781;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-1-wash: rgba(42, 120, 214, 0.1);
+  --age-1: #86b6ef;
+  --age-2: #5598e7;
+  --age-3: #2a78d6;
+  --age-4: #1c5cab;
+  --age-5: #0d366b;
+
+  --shadow-card: 0 1px 2px rgba(18, 18, 17, 0.04), 0 1px 1px rgba(18, 18, 17, 0.02);
+  --shadow-pop: 0 12px 32px -8px rgba(18, 18, 17, 0.18), 0 2px 6px rgba(18, 18, 17, 0.06);
+}
+
+.dark {
+  color-scheme: dark;
+  --bg: #0f0f0e;
+  --surface: #18181a;
+  --surface-2: #202022;
+  --surface-3: #2a2a2c;
+  --border: #2a2a2c;
+  --border-strong: #3a3a3c;
+  --text: #f0efec;
+  --text-2: #c3c2b7;
+  --text-3: #8e8d87;
+  --primary: #f0efec;
+  --primary-fg: #121211;
+  --accent: #3987e5;
+  --accent-soft: #17263a;
+  --ring: #3987e5;
+
+  --good: #0ca30c;
+  --good-text: #3dbf3d;
+  --good-soft: #13261a;
+  --warning: #fab219;
+  --warning-text: #fab219;
+  --warning-soft: #2c2412;
+  --serious: #ec835a;
+  --serious-text: #ec835a;
+  --serious-soft: #2e1c15;
+  --critical: #e66767;
+  --critical-text: #ef8080;
+  --critical-soft: #2f1718;
+
+  --chart-surface: #18181a;
+  --chart-grid: #2c2c2a;
+  --chart-axis: #3d3d3a;
+  --chart-muted: #898781;
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-1-wash: rgba(57, 135, 229, 0.14);
+  --age-1: #184f95;
+  --age-2: #256abf;
+  --age-3: #3987e5;
+  --age-4: #6da7ec;
+  --age-5: #b7d3f6;
+
+  --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.02);
+  --shadow-pop: 0 12px 32px -8px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+@theme inline {
+  --font-sans: "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-ring: var(--ring);
+  --color-good: var(--good);
+  --color-good-text: var(--good-text);
+  --color-good-soft: var(--good-soft);
+  --color-warning: var(--warning);
+  --color-warning-text: var(--warning-text);
+  --color-warning-soft: var(--warning-soft);
+  --color-serious: var(--serious);
+  --color-serious-text: var(--serious-text);
+  --color-serious-soft: var(--serious-soft);
+  --color-critical: var(--critical);
+  --color-critical-text: var(--critical-text);
+  --color-critical-soft: var(--critical-soft);
+  --color-series-1: var(--series-1);
+  --color-series-2: var(--series-2);
+  --color-series-3: var(--series-3);
+  --shadow-card: var(--shadow-card);
+  --shadow-pop: var(--shadow-pop);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    background: var(--accent-soft);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+/* Columns of figures align; standalone hero numbers keep proportional figures. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.recharts-wrapper:focus,
+.recharts-surface:focus {
+  outline: none;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
