@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, MessageSquareText } from "lucide-react";
+import { ArrowRight, CalendarClock, MessageSquareText } from "lucide-react";
 import { CashHistoryChart, RankedBars, RevenueExpensesChart } from "@/components/charts/charts";
 import { Delta } from "@/components/finance/delta";
 import { NoData } from "@/components/finance/no-data";
@@ -62,11 +62,18 @@ export default async function OverviewPage() {
           </span>
         }
         actions={
-          <Button asChild variant="primary">
-            <Link href="/ai-cfo">
-              <MessageSquareText /> Ask the AI CFO
-            </Link>
-          </Button>
+          <>
+            <Button asChild>
+              <Link href={`/ai-cfo?q=${encodeURIComponent("Give me a weekly CFO briefing.")}`}>
+                <CalendarClock /> Weekly briefing
+              </Link>
+            </Button>
+            <Button asChild variant="primary">
+              <Link href="/ai-cfo">
+                <MessageSquareText /> Ask the AI CFO
+              </Link>
+            </Button>
+          </>
         }
       />
 

@@ -93,8 +93,30 @@ async function main() {
   const aiMode = status.running && status.modelInstalled;
   console.log(`FinanceOS AI evaluation · demo company as of ${asOf} · ${aiMode ? `model ${cfg.model} (Ollama ${status.version})` : `NO MODEL (${status.error ?? `model ${cfg.model} not installed`}) - deterministic mode`}`);
 
-  const rows: { q: string; routing: boolean; mode: string; ms: number; checked: number; unverified: string[]; grounded: boolean | null; tools: string; answer: string; error: string | null }[] = [];
-  for (const c of CASES.slice(0, limit)) {
+  type Row = { q: string; routing: boolean; mode: string; ms: number; checked: number; unverified: string[]; grounded: boolean | null; tools: string; answer: string; error: string | null };
+  const rows: Row[] = [];
+  // Progress is saved after every question so an interrupted run can be resumed with --resume.
+  const dir = path.join(process.cwd(), ".data", "eval");
+  fs.mkdirSync(dir, { recursive: true });
+  const progressFile = path.join(dir, `progress-${cfg.model.replace(/[^a-z0-9.-]+/gi, "_")}.jsonl`);
+  const completed = new Map<string, Row>();
+  if (process.argv.includes("--resume") && fs.existsSync(progressFile)) {
+    for (const line of fs.readFileSync(progressFile, "utf8").split("\n").filter(Boolean)) {
+      const r = JSON.parse(line) as Row;
+      completed.set(r.q, r);
+    }
+    console.log(`Resuming: ${completed.size} question(s) already answered.`);
+  } else if (fs.existsSync(progressFile)) {
+    fs.rmSync(progressFile);
+  }
+  const only = arg("only")?.split(",").map((n) => Number(n.trim()) - 1);
+  const selected = (only ? CASES.filter((_, i) => only.includes(i)) : CASES).slice(0, limit);
+  for (const c of selected) {
+    const previous = completed.get(c.question);
+    if (previous) {
+      rows.push(previous);
+      continue;
+    }
     const started = Date.now();
     const events: ChatEvent[] = [];
     let error: string | null = null;
@@ -121,6 +143,7 @@ async function main() {
       error: error ?? errEvent?.message ?? null,
     };
     rows.push(row);
+    fs.appendFileSync(progressFile, `${JSON.stringify(row)}\n`, "utf8");
     console.log(`${row.routing ? "PASS" : "FAIL"} route | ${row.mode.padEnd(13)} | ${String(ms).padStart(6)} ms | figures ${row.checked - row.unverified.length}/${row.checked}${row.unverified.length ? ` UNVERIFIED: ${row.unverified.join(" ")}` : ""}${row.grounded === false ? " | KEY FIGURE MISSING" : ""} | ${c.question}`);
     if (row.error) console.log(`      error: ${row.error}`);
   }
@@ -139,8 +162,6 @@ async function main() {
   };
   console.log("\nSummary:", JSON.stringify(summary, null, 2));
 
-  const dir = path.join(process.cwd(), ".data", "eval");
-  fs.mkdirSync(dir, { recursive: true });
   const file = path.join(dir, `ai-eval-${new Date().toISOString().replace(/[:.]/g, "-")}.md`);
   const md = [
     `# FinanceOS AI evaluation`,
