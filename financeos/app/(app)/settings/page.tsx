@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Notice } from "@/components/ui/states";
 import { Table, TableWrap, TBody, TD, TH, THead, TR } from "@/components/ui/table";
-import { DEFAULT_OLLAMA_MODEL, getOllamaStatus } from "@/lib/ai/ollama";
+import { DEFAULT_OLLAMA_MODEL, getOllamaStatus, modelThinkingMode } from "@/lib/ai/ollama";
 import { formatTimestamp } from "@/lib/format";
 import { resolveOllamaConfig } from "@/lib/server/ai-config";
 import { recentAuditEvents } from "@/lib/server/audit";
@@ -34,6 +34,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
   const callback = typeof sp.qbo === "string" ? CALLBACK_MESSAGES[sp.qbo] : undefined;
   const { config, error } = await resolveOllamaConfig();
   const ollama = config ? await getOllamaStatus(config) : null;
+  const thinkingMode = config && ollama?.modelInstalled ? await modelThinkingMode(config) : null;
   const events = await recentAuditEvents(15);
 
   return (
@@ -110,6 +111,15 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
               </Notice>
             ) : null}
             <QboActions configured={q.configured} connected={q.connected} />
+            {q.lastSyncAt ? (
+              <p className="text-[12px] text-text-3">
+                Troubleshooting:{" "}
+                <a className="font-medium text-accent hover:underline" href="/api/qbo/structure" download>
+                  download the report structure
+                </a>{" "}
+                from the last sync. It lists report sections and row labels without any amounts.
+              </p>
+            ) : null}
             <p className="text-[12px] text-text-3">
               FinanceOS only reads data (accounts, customers, vendors, invoices, bills, payments and reports). It never creates, edits or deletes anything in QuickBooks. Tokens are encrypted on this computer and never sent to the browser.
             </p>
@@ -120,7 +130,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div className="lg:col-span-1">
-            <AiStatusCard status={ollama} configError={error} />
+            <AiStatusCard status={ollama} configError={error} thinkingMode={thinkingMode} />
           </div>
           <Card className="lg:col-span-2">
             <CardHeader>

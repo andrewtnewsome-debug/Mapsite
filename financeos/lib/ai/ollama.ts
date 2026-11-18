@@ -43,8 +43,8 @@ export function validateOllamaConfig(input: { baseUrl?: string | null; model?: s
   }
   const model = input.model?.trim() || DEFAULT_OLLAMA_MODEL;
   if (!MODEL_NAME.test(model)) throw new OllamaError("The configured model name is not valid.", "bad-config");
-  const seconds = Number(input.timeoutSeconds ?? 180);
-  return { baseUrl, model, timeoutMs: Math.min(900, Math.max(10, Number.isFinite(seconds) ? seconds : 180)) * 1000 };
+  const seconds = Number(input.timeoutSeconds || 300);
+  return { baseUrl, model, timeoutMs: Math.min(900, Math.max(10, Number.isFinite(seconds) ? seconds : 300)) * 1000 };
 }
 
 export interface OllamaModelInfo {
@@ -152,6 +152,14 @@ export async function resolveThinkSetting(cfg: OllamaConfig, fetchImpl: typeof f
   }
   thinkCache.set(key, setting);
   return setting;
+}
+
+export type ThinkingMode = "always" | "optional" | "none";
+
+/** Whether the model always reasons before answering (slow on CPUs), can skip it, or has no reasoning mode. */
+export async function modelThinkingMode(cfg: OllamaConfig, fetchImpl: typeof fetch = fetch): Promise<ThinkingMode> {
+  const s = await resolveThinkSetting(cfg, fetchImpl);
+  return s === undefined ? "none" : s === false ? "optional" : "always";
 }
 
 export function clearThinkCacheForTests(): void {

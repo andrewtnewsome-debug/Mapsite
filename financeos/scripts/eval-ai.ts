@@ -21,6 +21,7 @@ import { getOllamaStatus, validateOllamaConfig } from "../lib/ai/ollama";
 import type { ToolId, ToolResult } from "../lib/ai/tools";
 import { todayLocalIso } from "../lib/domain/dates";
 import { buildDemoDataset } from "../lib/demo/generate";
+import { draftBudgetFromHistory } from "../lib/finance/budget";
 
 interface Case {
   question: string;
@@ -49,6 +50,7 @@ const CASES: Case[] = [
   { question: "How much does Granite Peak owe us?", expect: ["customer_balance"], keyFact: "Granite Peak Properties total owed" },
   { question: "What do we owe our vendors?", expect: ["payables_summary"], keyFact: "Total accounts payable" },
   { question: "Is our balance sheet healthy?", expect: ["financial_ratios"] },
+  { question: "Are we on budget this year?", expect: ["budget_variance"], keyFact: "Year-to-date net income, actual" },
 ];
 
 function arg(name: string): string | undefined {
@@ -86,6 +88,8 @@ async function main() {
   const cfg = validateOllamaConfig({ baseUrl: arg("url") ?? process.env.OLLAMA_BASE_URL, model: arg("model") ?? process.env.OLLAMA_MODEL, timeoutSeconds: arg("timeout") ?? process.env.OLLAMA_TIMEOUT_SECONDS ?? 600 });
   const status = await getOllamaStatus(cfg);
   const dataset = buildDemoDataset(asOf);
+  // A budget drafted from last year's actuals (+8% revenue, +5% costs) so budget questions can be evaluated.
+  const budget = draftBudgetFromHistory(dataset, { income: 0.08, expense: 0.05 });
   const aiMode = status.running && status.modelInstalled;
   console.log(`FinanceOS AI evaluation · demo company as of ${asOf} · ${aiMode ? `model ${cfg.model} (Ollama ${status.version})` : `NO MODEL (${status.error ?? `model ${cfg.model} not installed`}) - deterministic mode`}`);
 
@@ -95,7 +99,7 @@ async function main() {
     const events: ChatEvent[] = [];
     let error: string | null = null;
     try {
-      for await (const e of answerQuestion({ question: c.question, history: [], previousCalls: [], dataset, ollama: cfg })) events.push(e);
+      for await (const e of answerQuestion({ question: c.question, history: [], previousCalls: [], dataset, ollama: cfg, toolContext: { budget } })) events.push(e);
     } catch (err) {
       error = (err as Error).message;
     }

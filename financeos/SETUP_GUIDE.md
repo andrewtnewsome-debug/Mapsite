@@ -88,7 +88,12 @@ FinanceOS uses **Ollama** to run an AI model locally. No account, no API key, no
 4. Reload the **AI CFO** page in FinanceOS. The **Local AI** panel should say **Ready**.
 
 Tips:
-- A computer with 8 GB of RAM or more is recommended. The first answer after starting can take 10–30 seconds while the model loads; later answers are faster. A graphics card makes it much faster but is not required.
+- A computer with 8 GB of RAM or more is recommended. A graphics card makes answers much faster but is not required.
+- **About speed:** `qwen3:4b` is a "reasoning" model: it always thinks before it answers. On a computer without a graphics card, an answer can take **1 to 5 minutes** (FinanceOS shows a timer while it works). For noticeably faster answers, install the same-size model that answers directly:
+  ```
+  ollama pull qwen3:4b-instruct
+  ```
+  then choose it in **Settings → Local AI model**.
 - To use a different installed model, go to **Settings → Local AI model**.
 - Without Ollama, the AI CFO still answers supported questions directly from FinanceOS calculations, and tells you that full AI chat requires Ollama.
 
@@ -152,7 +157,8 @@ Use **Sync now** in Settings to refresh. Use **Disconnect** to delete the stored
 | The page keeps reloading in development mode | Stop FinanceOS (`Ctrl + C`), run `npm run clean`, then `npm run dev`. |
 | AI CFO says "Ollama is not running" | Start the Ollama app from the Start menu, wait a few seconds, reload the page. |
 | AI CFO says the model is not installed | Run `ollama pull qwen3:4b` (or the model chosen in Settings). |
-| AI answers are slow | Normal on computers without a graphics card. Try a smaller model, e.g. `ollama pull qwen3:1.7b`, and select it in Settings. |
+| AI answers are slow | Normal for `qwen3:4b` on computers without a graphics card, because it reasons before answering. Install `qwen3:4b-instruct` (`ollama pull qwen3:4b-instruct`) and select it in Settings. |
+| AI answer says the model "took too long" | Increase `OLLAMA_TIMEOUT_SECONDS` in `.env.local` (e.g. `600`) or switch to `qwen3:4b-instruct`. FinanceOS shows the calculated answer instead. |
 | "Keys not configured" in Settings | Check `.env.local` is in the `financeos` folder (not `.env.local.example`), has no quotes, and restart FinanceOS. |
 | "The security check (OAuth state) failed or expired" | Open FinanceOS at **http://localhost:3000** (not 127.0.0.1), click Connect again, and finish within 10 minutes. |
 | "Intuit rejected the app credentials" | You may have copied Production keys. Use the **Development/Sandbox** Client ID and Secret. |
@@ -170,7 +176,7 @@ Use **Sync now** in Settings to refresh. Use **Disconnect** to delete the stored
 | `INTUIT_ENVIRONMENT` | `sandbox` | Only `sandbox` is allowed in this version |
 | `OLLAMA_MODEL` | `qwen3:4b` | Default local model (can be overridden in Settings) |
 | `OLLAMA_BASE_URL` | `http://127.0.0.1:11434` | Local Ollama address; non-local addresses are refused |
-| `OLLAMA_TIMEOUT_SECONDS` | `180` | Maximum time to wait for an AI answer |
+| `OLLAMA_TIMEOUT_SECONDS` | `300` | Maximum time to wait for an AI answer |
 | `FINANCEOS_ENCRYPTION_KEY` | (generated) | Optional 64-hex-character key for encrypting stored tokens; otherwise generated into `.data/secret.key` |
 | `FINANCEOS_DATA_DIR` | `financeos/.data` | Optional folder for local data |
 | `FINANCEOS_ALLOWED_HOSTS` | (none) | Optional extra host names allowed to reach the app (advanced; leave empty) |

@@ -18,11 +18,12 @@ New here? Follow **[SETUP_GUIDE.md](SETUP_GUIDE.md)** (step-by-step for Windows)
 | **Accounts Receivable** | Aging (Current, 1–30, 31–60, 61–90, 90+), customer balances, unpaid invoice list with filters (customer, aging bucket, status, balance, due date), partial payments, collections priority score, CSV export, reconciliation to the QuickBooks A/R Aging report. |
 | **Cash Flow** | Historical cash by month, operating/investing/financing flows, working capital metrics, and an interactive **13-week forecast** with base/conservative/optimistic scenarios, editable assumptions, one-time items, and minimum-cash warnings. |
 | **Profitability** | Monthly and trailing P&L, margins, net income trend, expense changes with significance flags, revenue concentration. |
+| **Budget vs Actual** | Draft a budget from last year's actuals plus growth assumptions (keeps each account's seasonality), edit annual amounts, and compare actuals for last month, the quarter or year to date with favorable/unfavorable variances. |
 | **Financial Reports** | Profit & Loss, Balance Sheet, Cash Flow Statement, AR Aging, ratios — monthly, quarterly or annual, compared with the prior period or prior year, exportable to CSV. One-click printable **management summary**. |
 | **Collections** | Ranked customers, suggested next actions, reminder email drafts that cite exact invoice numbers and amounts, copy to clipboard, optional AI polishing, a local follow-up list that requires your approval. Never sends email. |
 | **Invoice Assistant** | Describe an invoice in plain English; get an editable draft with computed totals. Never creates invoices in QuickBooks. |
 | **Insights** | Rule-triggered observations that separate **verified facts**, **mathematical forecasts**, **assumptions** and **AI interpretation**. |
-| **Settings** | Switch between Demo Company and QuickBooks Sandbox, connect/sync/disconnect QuickBooks, choose the local model, theme, activity log. |
+| **Settings** | Switch between Demo Company and QuickBooks Sandbox, connect/sync/disconnect QuickBooks, choose the local model, theme, activity log, and **Data checks** that reconcile A/R, A/P, cash, cash flow and net income with each other and with QuickBooks' own report totals. |
 
 A fictional demo company (**Alder Creek Facility Services**, ~$7.5M revenue, commercial facilities services) is built in, so everything works before QuickBooks is connected. Demo data is labeled everywhere and never mixed with sandbox data.
 
@@ -96,6 +97,7 @@ Run inside the `financeos` folder:
 | `npm run check` | Typecheck + lint + tests + production build |
 | `npm run clean` | Delete the Next.js build cache (`.next`) |
 | `npm run reset-local-data` | Delete local data (tokens, snapshot, drafts, settings) |
+| `npm run eval:ai` | Run the AI CFO question set against your local model and write a scored report to `.data/eval/` |
 
 On Windows you can also double-click **`start-financeos.cmd`**.
 

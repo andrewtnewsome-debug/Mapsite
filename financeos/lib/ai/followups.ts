@@ -14,6 +14,7 @@ const FOLLOW_UPS: Record<ToolId, string[]> = {
   payables_summary: ["How much cash do we have?", "Are we going to run out of cash?"],
   financial_ratios: ["What are the biggest financial risks facing the company?", "Give me a weekly CFO briefing."],
   financial_risks: ["Which customers should we prioritize for collections?", "What expenses have increased?", "How much cash will we have in eight weeks?"],
+  budget_variance: ["What expenses have increased?", "How profitable were we last month?", "Are we going to run out of cash?"],
   weekly_briefing: ["Which customers should we prioritize for collections?", "What expenses have increased?", "Are we going to run out of cash?"],
 };
 

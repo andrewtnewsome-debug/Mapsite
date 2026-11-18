@@ -170,3 +170,26 @@ describe("headline metrics", () => {
     expect(s.balances).toBe(true);
   });
 });
+
+describe("expense drivers", () => {
+  it("attributes an account's change to vendors from recorded bills", async () => {
+    const { expenseDrivers } = await import("@/lib/finance/metrics");
+    const { bill } = await import("./helpers/fixtures");
+    const d = emptyDataset({
+      bills: [
+        bill({ vendorName: "Cascade", txnDate: "2026-10-05", totalAmount: 30_000, balance: 0, category: "Subcontractors" }),
+        bill({ vendorName: "Cascade", txnDate: "2026-09-05", totalAmount: 20_000, balance: 0, category: "Subcontractors" }),
+        bill({ vendorName: "TrueLine", txnDate: "2026-10-20", totalAmount: 6_000, balance: 0, category: "Job Expenses:Subcontractors" }),
+        bill({ vendorName: "TrueLine", txnDate: "2026-09-20", totalAmount: 6_000, balance: 0, category: "Subcontractors" }),
+        bill({ vendorName: "Other", txnDate: "2026-10-01", totalAmount: 999, balance: 0, category: "Rent" }),
+      ],
+      coverage: { ...emptyDataset().coverage, bills: true },
+    });
+    const r = expenseDrivers(d, "Subcontractors", "2026-10", "2026-09", 12_000)!;
+    expect(r.billedLastMonth).toBe(36_000);
+    expect(r.billedPriorMonth).toBe(26_000);
+    expect(r.vendors[0]).toMatchObject({ vendorName: "Cascade", change: 10_000 });
+    expect(r.explainedShare).toBeCloseTo(10_000 / 12_000);
+    expect(expenseDrivers(d, "Insurance", "2026-10", "2026-09")).toBeNull();
+  });
+});

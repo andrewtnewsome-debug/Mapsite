@@ -8,6 +8,7 @@ import {
   ReceiptText,
   Send,
   Settings,
+  Target,
   TrendingUp,
   type LucideIcon,
 } from "lucide-react";
@@ -32,6 +33,7 @@ export const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
       { href: "/receivables", label: "Accounts Receivable", icon: ReceiptText },
       { href: "/cash-flow", label: "Cash Flow", icon: ArrowLeftRight },
       { href: "/profitability", label: "Profitability", icon: TrendingUp },
+      { href: "/budget", label: "Budget vs Actual", icon: Target },
       { href: "/reports", label: "Financial Reports", icon: FileChartColumn },
     ],
   },

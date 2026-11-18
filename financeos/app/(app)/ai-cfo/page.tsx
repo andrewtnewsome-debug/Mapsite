@@ -4,7 +4,7 @@ import { NoData } from "@/components/finance/no-data";
 import { PageHeader } from "@/components/finance/page-header";
 import { SourceBadge } from "@/components/layout/source-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getOllamaStatus } from "@/lib/ai/ollama";
+import { getOllamaStatus, modelThinkingMode } from "@/lib/ai/ollama";
 import { SUPPORTED_QUESTIONS } from "@/lib/ai/router";
 import { formatIsoDate } from "@/lib/domain/dates";
 import { resolveOllamaConfig } from "@/lib/server/ai-config";
@@ -17,6 +17,7 @@ export default async function AiCfoPage({ searchParams }: { searchParams: Promis
   const ds = ws.dataset;
   const { config, error } = await resolveOllamaConfig();
   const status = config ? await getOllamaStatus(config) : null;
+  const thinkingMode = config && status?.modelInstalled ? await modelThinkingMode(config) : null;
   const sp = await searchParams;
   const q = typeof sp.q === "string" ? sp.q.slice(0, 1000) : undefined;
 
@@ -38,7 +39,7 @@ export default async function AiCfoPage({ searchParams }: { searchParams: Promis
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
           <AiCfoChat suggestions={SUPPORTED_QUESTIONS.slice(0, 10)} initialQuestion={q} companyName={ds.company.name} asOfLabel={formatIsoDate(ds.asOfDate, "long")} />
           <aside aria-label="Local AI status and help" className="space-y-4 xl:sticky xl:top-20 xl:self-start">
-            <AiStatusCard status={status} configError={error} />
+            <AiStatusCard status={status} configError={error} thinkingMode={thinkingMode} />
             <Card>
               <CardHeader>
                 <CardTitle>How answers work</CardTitle>

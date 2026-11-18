@@ -3,6 +3,7 @@ import { ForecastTool } from "@/components/finance/forecast-tool";
 import { NoData } from "@/components/finance/no-data";
 import { PageHeader } from "@/components/finance/page-header";
 import { StatTile } from "@/components/finance/stat-tile";
+import { UpcomingPayments } from "@/components/finance/upcoming-payments";
 import { SourceBadge } from "@/components/layout/source-badge";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -165,6 +166,10 @@ export default async function CashFlowPage() {
           </CardContent>
         </Card>
       </section>
+
+      <div className="mt-4">
+        <UpcomingPayments dataset={ds} />
+      </div>
 
       <div className="mb-3 mt-10 flex flex-wrap items-center gap-2" id="forecast">
         <Badge tone="accent">Forecast</Badge>

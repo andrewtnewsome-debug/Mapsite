@@ -357,3 +357,15 @@ describe("data checks (reconciliation)", () => {
     expect(c["ar-vs-aging"].difference).toBeCloseTo(1001.07 - 933, 2);
   });
 });
+
+describe("report structure diagnostics", () => {
+  it("describes report shape without any amounts", async () => {
+    const { describeReport } = await import("@/lib/qbo/structure");
+    const d = describeReport("pnl", fx.pnlReport);
+    expect(d.columns.map((c) => c.title)).toEqual(["", "Sep 2026", "Oct 2026", "Nov 1-18, 2026", "Total"]);
+    expect(d.rows.find((r) => r.label === "Landscaping Services")).toMatchObject({ depth: 1, type: "Section", childCount: 2 });
+    expect(d.rows.some((r) => r.group === "NetIncome")).toBe(true);
+    const text = JSON.stringify(d);
+    for (const amount of ["6000", "3915", "1500.00", "2200"]) expect(text).not.toContain(amount);
+  });
+});

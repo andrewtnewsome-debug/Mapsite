@@ -1,9 +1,9 @@
 import { Bot, CheckCircle2, CircleAlert } from "lucide-react";
-import type { OllamaStatus } from "@/lib/ai/ollama";
+import type { OllamaStatus, ThinkingMode } from "@/lib/ai/ollama";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export function AiStatusCard({ status, configError }: { status: OllamaStatus | null; configError: string | null }) {
+export function AiStatusCard({ status, configError, thinkingMode = null }: { status: OllamaStatus | null; configError: string | null; thinkingMode?: ThinkingMode | null }) {
   const ready = Boolean(status?.running && status.modelInstalled);
   return (
     <Card>
@@ -52,7 +52,17 @@ export function AiStatusCard({ status, configError }: { status: OllamaStatus | n
             <p className="mt-2">Until then, supported questions are answered directly from FinanceOS calculations.</p>
           </div>
         ) : (
-          <p className="text-[12px] text-text-3">Questions are answered by your local model using figures FinanceOS calculates. Nothing is sent to an external AI service.</p>
+          <>
+            <p className="text-[12px] text-text-3">Questions are answered by your local model using figures FinanceOS calculates. Nothing is sent to an external AI service.</p>
+            {thinkingMode === "always" ? (
+              <div className="rounded-lg border border-warning/40 bg-warning-soft p-3 text-[12px] leading-relaxed text-text-2">
+                <p className="font-medium text-text">This model always reasons before it answers.</p>
+                <p className="mt-1">
+                  On a computer without a graphics card, answers can take 1 to 5 minutes. For faster answers, run <code className="rounded bg-surface px-1">ollama pull qwen3:4b-instruct</code> and select it in Settings.
+                </p>
+              </div>
+            ) : null}
+          </>
         )}
       </CardContent>
     </Card>

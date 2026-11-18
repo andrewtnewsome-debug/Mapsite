@@ -78,6 +78,7 @@ const RULES: Rule[] = [
   { tool: "ar_over_days", test: [/\bover \d+ days\b/i, /\bolder than\b/i, /\b(more than|over|past) (\d+|thirty|sixty|ninety) days\b/i, /\b\d+\+? days? (old|overdue|past due|late)\b/i] },
   { tool: "top_customers_owed", test: [/\bowe(s)? us the most\b/i, /\b(top|largest|biggest) (\w+ )?(customers|balances|debtors|clients)\b/i, /\bwho owes\b/i, /\bwhich (\w+ )?customers owe\b/i] },
   { tool: "receivables_summary", test: [/\breceivables?\b/i, /\b(a\/r|ar)\b/i, /\boverdue\b/i, /\bpast due\b/i, /\bunpaid invoices\b/i, /\boutstanding invoices\b/i, /\bpercent(age)? of (our )?invoices\b/i, /\bdso\b/i, /\bdays sales\b/i] },
+  { tool: "budget_variance", test: [/\bbudget(ed)?\b/i, /\bon track\b/i, /\b(against|versus|vs\.?) (the )?plan\b/i, /\bahead of plan\b|\bbehind plan\b/i] },
   { tool: "profit_and_loss", test: [/\bprofit(able|ability)?\b/i, /\bnet income\b/i, /\bearn(ed|ings)\b/i, /\bmargins?\b/i, /\bp&l\b|\bp and l\b|\bincome statement\b/i, /\bmake money\b/i, /\brevenue\b.*\b(last|this|in)\b/i, /\bsales\b.*\b(last|this|in)\b/i, /\bhow much did we (make|sell|earn)\b/i] },
   { tool: "expense_changes", test: [/\bexpenses?\b.*\b(increas|ris|grow|up|chang|higher|jump)/i, /\b(increas|ris|grow|chang|higher)\w*\b.*\bexpenses?\b/i, /\bspending\b/i, /\bcosts?\b.*\b(increas|ris|up|higher|chang)/i, /\bwhy (are|is) (our )?(expenses|costs)\b/i, /\bexpenses?\b/i] },
   { tool: "revenue_trend", test: [/\brevenue (trend|growth)\b/i, /\b(is|are) (our )?(revenue|sales) (growing|declining|up|down)\b/i, /\bgrowth\b/i, /\btrend\b/i] },
@@ -130,6 +131,11 @@ export function routeQuestion(question: string, ds: FinancialDataset): RouteResu
     }
   }
 
+  // An explicit budget/plan question is more specific than a general "how are we doing".
+  if (calls.some((c) => c.id === "budget_variance")) {
+    const i = calls.findIndex((c) => c.id === "weekly_briefing");
+    if (i >= 0) calls.splice(i, 1);
+  }
   // Briefings and risk questions already include the components; keep the answer focused.
   if (calls.some((c) => c.id === "weekly_briefing")) {
     return { calls: calls.filter((c) => c.id === "weekly_briefing"), matched: calls.map((c) => c.id) };

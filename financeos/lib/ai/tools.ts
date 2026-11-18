@@ -13,12 +13,14 @@ import { DATA_SOURCE_LABELS } from "@/lib/domain/types";
 import { addDays, addMonths, formatIsoDate, monthLabel, monthOf } from "@/lib/domain/dates";
 import { pctChange, safeDivide, sum } from "@/lib/domain/money";
 import { AGING_BUCKETS, openBillsAsOf } from "@/lib/finance/aging";
+import { budgetVsActual, currentFiscalYear, type Budget } from "@/lib/finance/budget";
 import { deriveForecastDefaults, runAllScenarios, type ForecastAssumptions } from "@/lib/finance/forecast";
 import { generateInsights } from "@/lib/finance/insights";
 import {
   cashPosition,
   EXPENSE_CHANGE_THRESHOLD,
   expenseChanges,
+  expenseDrivers,
   healthIndicators,
   lastClosedMonthComparison,
   overdueTrend,
@@ -76,6 +78,7 @@ export const TOOL_IDS = [
   "financial_ratios",
   "financial_risks",
   "weekly_briefing",
+  "budget_variance",
 ] as const;
 
 export type ToolId = (typeof TOOL_IDS)[number];
@@ -96,6 +99,7 @@ export type ToolParams = z.infer<typeof ToolParamsSchema>;
 /** Extra context tools may use, e.g. the owner's saved forecast assumptions. */
 export interface ToolContext {
   savedForecast?: { savedAt: string; assumptions: ForecastAssumptions } | null;
+  budget?: Budget | null;
 }
 
 export interface ToolCall {
@@ -118,6 +122,7 @@ export const TOOL_DESCRIPTIONS: Record<ToolId, string> = {
   financial_ratios: "Liquidity, margin, efficiency and leverage ratios.",
   financial_risks: "Biggest financial risks: rule-based alerts and health indicators.",
   weekly_briefing: "A weekly CFO briefing combining cash, receivables, profitability, forecast and risks.",
+  budget_variance: "Actual results versus the owner's budget, year to date and last month, with the largest variances.",
 };
 
 const NA = "Not available";
@@ -394,17 +399,40 @@ function expenseTool(ds: FinancialDataset): ToolResult {
   const significant = e.changes.filter((c) => c.significant);
   const totalPrior = sum(e.changes.map((c) => c.priorMonth));
   const totalLast = sum(e.changes.map((c) => c.lastMonth));
+  // Vendor-level drivers for the largest increases, from recorded bills.
+  const drivers = increases
+    .slice(0, 3)
+    .map((c) => expenseDrivers(ds, c.account, e.month, e.priorMonth, c.changeVsPrior))
+    .filter((d): d is NonNullable<typeof d> => d != null && d.vendors.some((v) => v.change !== 0));
+  const driverFacts = drivers.flatMap((d) =>
+    d.vendors
+      .filter((v) => v.change !== 0)
+      .slice(0, 3)
+      .map((v) => fact(`${d.account}: bills from ${v.vendorName}, ${monthLabel(e.month, "long")} vs ${monthLabel(e.priorMonth, "long")}`, `${formatCurrency(v.lastMonth)} vs ${formatCurrency(v.priorMonth)} (change ${formatCurrency(v.change)})`, "text")),
+  );
+  const driverSummary = drivers
+    .map((d) => {
+      const top = d.vendors.filter((v) => v.change > 0).slice(0, 2);
+      return top.length ? `${d.account}: the increase is in bills from ${top.map((v) => `${v.vendorName} (${formatCurrency(v.change)} more)`).join(" and ")}.` : "";
+    })
+    .filter(Boolean)
+    .join(" ");
   return {
     ...base(ds, "expense_changes", `Expense changes, ${monthLabel(e.month, "long")} vs ${monthLabel(e.priorMonth, "long")}`),
     facts: [
       fact(`Total expenses ${monthLabel(e.month, "long")}`, totalLast, "currency"),
       fact(`Total expenses ${monthLabel(e.priorMonth, "long")}`, totalPrior, "currency"),
       ...increases.flatMap((c) => [fact(`${c.account} ${monthLabel(e.month, "long")}`, c.lastMonth, "currency"), fact(`${c.account} ${monthLabel(e.priorMonth, "long")}`, c.priorMonth, "currency"), fact(`${c.account} change`, c.changeVsPrior, "currency"), fact(`${c.account} change %`, c.pctVsPrior, "percent")]),
+      ...driverFacts,
     ],
     table: { columns: ["Account", monthLabel(e.month), monthLabel(e.priorMonth), "Change", "Flagged"], rows: e.changes.slice(0, 8).map((c) => [c.account, formatCurrency(c.lastMonth), formatCurrency(c.priorMonth), `${formatCurrency(c.changeVsPrior)} (${formatSignedPercent(c.pctVsPrior)})`, c.significant ? "Yes" : ""]) },
     assumptions: [`"Significant" means up at least ${formatPercent(EXPENSE_CHANGE_THRESHOLD.pct, 0)} and ${formatCurrency(EXPENSE_CHANGE_THRESHOLD.amount)} versus both the prior month and the prior three-month average.`],
-    notes: ["The accounting data shows how much each expense changed, not why. Causes must be confirmed from the underlying transactions."],
-    summary: `${monthLabel(e.month, "long")} expenses totaled ${formatCurrency(totalLast)} vs ${formatCurrency(totalPrior)} in ${monthLabel(e.priorMonth, "long")}. ${significant.length ? `Significant increases: ${significant.map((c) => `${c.account} up ${formatCurrency(c.changeVsPrior)} (${formatSignedPercent(c.pctVsPrior)})`).join("; ")}.` : "No account met the significant-increase threshold."} Largest increases: ${increases.map((c) => `${c.account} ${formatSignedPercent(c.pctVsPrior)}`).join(", ") || "none"}.`,
+    notes: [
+      drivers.length
+        ? "Vendor-level detail comes from recorded vendor bills coded to each account. It shows where the money went, not the business reason; confirm the reason with the vendor or project."
+        : "The accounting data shows how much each expense changed, not why. Causes must be confirmed from the underlying transactions.",
+    ],
+    summary: `${monthLabel(e.month, "long")} expenses totaled ${formatCurrency(totalLast)} vs ${formatCurrency(totalPrior)} in ${monthLabel(e.priorMonth, "long")}. ${significant.length ? `Significant increases: ${significant.map((c) => `${c.account} up ${formatCurrency(c.changeVsPrior)} (${formatSignedPercent(c.pctVsPrior)})`).join("; ")}.` : "No account met the significant-increase threshold."} Largest increases: ${increases.map((c) => `${c.account} ${formatSignedPercent(c.pctVsPrior)}`).join(", ") || "none"}.${driverSummary ? ` ${driverSummary}` : ""}`,
   };
 }
 
@@ -537,6 +565,40 @@ function briefingTool(ds: FinancialDataset, ctx: ToolContext = {}): ToolResult {
   };
 }
 
+function budgetTool(ds: FinancialDataset, ctx: ToolContext): ToolResult {
+  const fy = currentFiscalYear(ds);
+  const budget = ctx.budget && ctx.budget.startMonth === fy.startMonth ? ctx.budget : null;
+  if (!budget) return unavailable(ds, "budget_variance", "Budget vs actual", `No ${fy.label} budget has been set up. Create one on the Budget vs Actual page.`);
+  const closed = ds.monthlyPnl.filter((m) => !m.isPartial && budget.months.includes(m.month)).map((m) => m.month);
+  if (closed.length === 0) return unavailable(ds, "budget_variance", "Budget vs actual", "No month of this fiscal year has closed yet.");
+  const last = closed[closed.length - 1];
+  const ytd = budgetVsActual(ds, budget, closed);
+  const month = budgetVsActual(ds, budget, [last]);
+  const biggest = [...ytd.rows].filter((r) => r.variance !== 0).sort((a, b) => Math.abs(b.variance) - Math.abs(a.variance)).slice(0, 5);
+  const t = ytd.totals;
+  return {
+    ...base(ds, "budget_variance", `Budget vs actual, ${fy.label} through ${monthLabel(last, "long")}`),
+    facts: [
+      fact("Year-to-date revenue, actual", t.revenueActual, "currency"),
+      fact("Year-to-date revenue, budget", t.revenueBudget, "currency", "assumption"),
+      fact("Year-to-date net income, actual", t.netIncomeActual, "currency"),
+      fact("Year-to-date net income, budget", t.netIncomeBudget, "currency", "assumption"),
+      fact("Year-to-date net income variance", roundTo(t.netIncomeActual - t.netIncomeBudget), "currency"),
+      fact(`${monthLabel(last, "long")} net income, actual`, month.totals.netIncomeActual, "currency"),
+      fact(`${monthLabel(last, "long")} net income, budget`, month.totals.netIncomeBudget, "currency", "assumption"),
+      ...biggest.map((r) => fact(`${r.account} year-to-date variance (${r.favorable ? "favorable" : "unfavorable"})`, r.variance, "currency")),
+    ],
+    table: { columns: ["Account", "Budget YTD", "Actual YTD", "Variance", ""], rows: biggest.map((r) => [r.account, formatCurrency(r.budget), formatCurrency(r.actual), formatCurrency(r.variance), r.favorable ? "Favorable" : "Unfavorable"]) },
+    assumptions: [`The budget is the owner's plan, not recorded data. ${budget.method}`],
+    notes: ["Only closed months are compared."],
+    summary: `Through ${monthLabel(last, "long")}, revenue is ${formatCurrency(t.revenueActual)} against a budget of ${formatCurrency(t.revenueBudget)}, and net income is ${formatCurrency(t.netIncomeActual)} against ${formatCurrency(t.netIncomeBudget)} (${t.netIncomeActual >= t.netIncomeBudget ? "ahead of" : "behind"} budget by ${formatCurrency(Math.abs(t.netIncomeActual - t.netIncomeBudget))}). Largest variances: ${biggest.map((r) => `${r.account} ${formatCurrency(r.variance)} (${r.favorable ? "favorable" : "unfavorable"})`).join("; ")}.`,
+  };
+}
+
+function roundTo(v: number): number {
+  return Math.round(v * 100) / 100;
+}
+
 export function runTool(ds: FinancialDataset, call: ToolCall, ctx: ToolContext = {}): ToolResult {
   const p = ToolParamsSchema.parse(call.params ?? {});
   switch (call.id) {
@@ -568,6 +630,8 @@ export function runTool(ds: FinancialDataset, call: ToolCall, ctx: ToolContext =
       return risksTool(ds, ctx);
     case "weekly_briefing":
       return briefingTool(ds, ctx);
+    case "budget_variance":
+      return budgetTool(ds, ctx);
   }
 }
 

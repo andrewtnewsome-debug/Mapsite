@@ -119,6 +119,15 @@ function DataUsed({ results }: { results: ToolResult[] }) {
   );
 }
 
+function Elapsed() {
+  const [s, setS] = React.useState(0);
+  React.useEffect(() => {
+    const t = setInterval(() => setS((x) => x + 1), 1000);
+    return () => clearInterval(t);
+  }, []);
+  return <span className="tabular">{s}s</span>;
+}
+
 function AssistantBubble({ m, onAsk }: { m: AssistantMsg; onAsk: (q: string) => void }) {
   return (
     <div className="flex gap-3">
@@ -146,7 +155,9 @@ function AssistantBubble({ m, onAsk }: { m: AssistantMsg; onAsk: (q: string) => 
           ) : m.status === "streaming" ? (
             <span className="inline-flex items-center gap-2 text-[13px] text-text-3">
               <Spinner label="Working on it" />
-              {m.statusText ?? "Calculating…"}
+              <span>
+                {m.statusText ?? (m.mode === "ai" ? "Waiting for the local model…" : "Calculating…")} <Elapsed />
+              </span>
             </span>
           ) : null}
           {m.status === "streaming" && m.content ? <span className="ml-0.5 inline-block h-3.5 w-1.5 animate-pulse bg-text-3 align-middle" aria-hidden /> : null}

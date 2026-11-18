@@ -289,3 +289,65 @@ export function balanceSheetSummaryLatest(dataset: FinancialDataset) {
   const snap = dataset.coverage.balanceSheet ? latestBalanceSheet(dataset) : null;
   return snap ? summarizeBalanceSheet(snap) : null;
 }
+
+/* ------------------------------------------------------------------ expense drivers */
+
+export interface VendorDriver {
+  vendorName: string;
+  lastMonth: number;
+  priorMonth: number;
+  change: number;
+  billCount: number;
+}
+
+export interface ExpenseDrivers {
+  account: string;
+  month: string;
+  priorMonth: string;
+  /** Total of vendor bills coded to this account in each month. */
+  billedLastMonth: number;
+  billedPriorMonth: number;
+  /** Share of the account's change explained by vendor bills (0-1), when the account changed. */
+  explainedShare: number | null;
+  vendors: VendorDriver[];
+}
+
+function accountKey(name: string): string {
+  // QuickBooks bill lines use full names like "Job Expenses:Job Materials"; P&L rows use the leaf name.
+  const leaf = name.split(":").pop() ?? name;
+  return leaf.trim().toLowerCase();
+}
+
+/**
+ * Which vendors' bills drive the change in an expense account between two
+ * months. Recorded facts only: it does not explain non-bill expenses
+ * (payroll, card charges, journal entries).
+ */
+export function expenseDrivers(dataset: FinancialDataset, account: string, month: string, priorMonth: string, accountChange: number | null = null): ExpenseDrivers | null {
+  if (!dataset.coverage.bills) return null;
+  const key = accountKey(account);
+  const inMonth = (d: string, m: string) => d.slice(0, 7) === m;
+  const relevant = dataset.bills.filter((b) => b.category && accountKey(b.category) === key && (inMonth(b.txnDate, month) || inMonth(b.txnDate, priorMonth)));
+  if (relevant.length === 0) return null;
+  const by = new Map<string, VendorDriver>();
+  for (const b of relevant) {
+    const v = by.get(b.vendorName) ?? { vendorName: b.vendorName, lastMonth: 0, priorMonth: 0, change: 0, billCount: 0 };
+    if (inMonth(b.txnDate, month)) v.lastMonth = roundCents(v.lastMonth + b.totalAmount);
+    else v.priorMonth = roundCents(v.priorMonth + b.totalAmount);
+    v.billCount += 1;
+    by.set(b.vendorName, v);
+  }
+  const vendors = [...by.values()].map((v) => ({ ...v, change: roundCents(v.lastMonth - v.priorMonth) })).sort((a, b) => Math.abs(b.change) - Math.abs(a.change));
+  const billedLastMonth = sum(vendors.map((v) => v.lastMonth));
+  const billedPriorMonth = sum(vendors.map((v) => v.priorMonth));
+  const billedChange = billedLastMonth - billedPriorMonth;
+  return {
+    account,
+    month,
+    priorMonth,
+    billedLastMonth,
+    billedPriorMonth,
+    explainedShare: accountChange ? Math.max(0, Math.min(1, billedChange / accountChange)) : null,
+    vendors,
+  };
+}

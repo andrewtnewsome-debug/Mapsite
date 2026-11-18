@@ -3,6 +3,7 @@ import { answerQuestion } from "@/lib/ai/answer";
 import { TOOL_IDS, ToolParamsSchema } from "@/lib/ai/tools";
 import { resolveOllamaConfig } from "@/lib/server/ai-config";
 import { getRequestContext, requirePermission } from "@/lib/server/context";
+import { loadBudget } from "@/lib/server/budget-store";
 import { forecastKey, loadSavedAssumptions } from "@/lib/server/forecast-store";
 import { isSameOrigin, jsonError, readJsonBody } from "@/lib/server/http";
 import { ndjsonResponse } from "@/lib/server/ndjson";
@@ -30,7 +31,7 @@ export async function POST(request: Request) {
     ollama: config,
     ollamaConfigError: error,
     signal: request.signal,
-    toolContext: { savedForecast: await loadSavedAssumptions(forecastKey(dataset)) },
+    toolContext: { savedForecast: await loadSavedAssumptions(forecastKey(dataset)), budget: await loadBudget(forecastKey(dataset)) },
   });
   return ndjsonResponse(events, () => ({ type: "error", message: "Something went wrong while answering. The financial data was not changed." }));
 }

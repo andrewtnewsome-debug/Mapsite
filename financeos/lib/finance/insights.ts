@@ -15,7 +15,7 @@ import { addDays, addMonths, formatIsoDate, monthLabel } from "@/lib/domain/date
 import { pctChange, safeDivide, sum } from "@/lib/domain/money";
 import { formatCurrency, formatPercent, formatSignedPercent } from "@/lib/format";
 import { runForecast, deriveForecastDefaults, type ForecastAssumptions } from "./forecast";
-import { expenseChanges, overdueTrend, receivablesSnapshot } from "./metrics";
+import { expenseChanges, expenseDrivers, overdueTrend, receivablesSnapshot } from "./metrics";
 import { balanceSheetAt, closedPnlMonths, summarizeBalanceSheet, summarizePnl } from "./statements";
 
 export type InsightSeverity = "positive" | "info" | "watch" | "concern";
@@ -144,6 +144,10 @@ export function generateInsights(dataset: FinancialDataset, options: InsightOpti
           { label: monthLabel(exp.priorMonth, "long"), value: formatCurrency(c.priorMonth) },
           { label: "Prior 3-month average", value: formatCurrency(c.baselineAverage) },
           { label: "Change vs prior month", value: formatCurrency(c.changeVsPrior) },
+          ...(expenseDrivers(dataset, c.account, exp.month, exp.priorMonth, c.changeVsPrior)?.vendors ?? [])
+            .filter((v) => v.change > 0)
+            .slice(0, 2)
+            .map((v) => ({ label: `Bills from ${v.vendorName}`, value: `${formatCurrency(v.lastMonth)} vs ${formatCurrency(v.priorMonth)} (+${formatCurrency(v.change)})` })),
         ],
         forecasts: [],
         assumptions: [],

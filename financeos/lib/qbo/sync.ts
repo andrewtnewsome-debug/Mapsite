@@ -10,6 +10,8 @@ import { QboError } from "./errors";
 import { assembleQboDataset, type QboRawData } from "./assemble";
 import { needsRefresh, refreshAccessToken } from "./oauth";
 import { saveQboSnapshot } from "./snapshot";
+import { describeReport } from "./structure";
+import { writeJson } from "@/lib/server/store";
 
 /** Token provider that refreshes before expiry and after a 401, persisting rotated refresh tokens. */
 export function createTokenProvider(cfg: QboConfig, initial: StoredConnection, fetchImpl: typeof fetch = fetch): TokenProvider & { current(): StoredConnection } {
@@ -90,6 +92,9 @@ export async function syncQuickBooks(fetchImpl: typeof fetch = fetch): Promise<S
   try {
     const raw = await fetchQboRawData(client, asOfDate);
     const dataset = assembleQboDataset(raw, conn.realmId, new Date().toISOString());
+    // Amount-free report structure for troubleshooting parsing issues.
+    const structures = (["pnl", "balanceSheet", "cashFlow", "aging"] as const).flatMap((k) => (raw[k].ok ? [describeReport(k, raw[k].value)] : []));
+    await writeJson("qbo-report-structure.json", { syncedAt: dataset.syncedAt, structures, warnings: dataset.warnings });
     await saveQboSnapshot(dataset);
     const counts = { invoices: dataset.invoices.length, bills: dataset.bills.length, payments: dataset.payments.length, customers: dataset.customers.length, accounts: dataset.accounts.length, apiRequests: client.requestCount };
     await saveSyncState({ lastSyncAt: dataset.syncedAt, lastAttemptAt: attemptAt, lastError: null, lastErrorCode: null, companyName: dataset.company.name, realmId: conn.realmId, counts });
