@@ -5,6 +5,7 @@ import { SourceBadge } from "@/components/layout/source-badge";
 import { Card } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/states";
 import { generateInsights, insightAsOfLabel } from "@/lib/finance/insights";
+import { forecastKey, loadSavedAssumptions } from "@/lib/server/forecast-store";
 import { loadWorkspace } from "@/lib/server/workspace";
 
 export const metadata = { title: "Insights" };
@@ -20,7 +21,8 @@ export default async function InsightsPage() {
       </>
     );
   }
-  const insights = generateInsights(ds);
+  const saved = await loadSavedAssumptions(forecastKey(ds));
+  const insights = generateInsights(ds, { forecastAssumptions: saved?.assumptions });
   return (
     <>
       <PageHeader

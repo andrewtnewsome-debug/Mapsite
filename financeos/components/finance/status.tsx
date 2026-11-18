@@ -55,7 +55,7 @@ export function PriorityBadge({ level, score }: { level: PriorityLevel; score?: 
   return (
     <Badge tone={p.tone}>
       {p.label}
-      {score != null ? <span className="tabular opacity-70">{score}</span> : null}
+      {score != null ? <span className="tabular font-normal">{score}</span> : null}
     </Badge>
   );
 }

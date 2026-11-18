@@ -147,7 +147,7 @@ export default async function ReceivablesPage({ searchParams }: { searchParams: 
           </div>
         </CardHeader>
         <CardContent className="px-0 pb-2">
-          <TableWrap>
+          <TableWrap aria-label="Customer balances by aging bucket">
             <Table>
               <THead>
                 <TR className="hover:bg-transparent">

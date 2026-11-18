@@ -1,4 +1,5 @@
 import { AiStatusCard } from "@/components/ai/ai-status-card";
+import { DataChecksCard } from "@/components/finance/data-checks";
 import { PageHeader } from "@/components/finance/page-header";
 import { DataSourcePicker, ModelPicker, QboActions, ThemePicker } from "@/components/settings/settings-client";
 import { Badge } from "@/components/ui/badge";
@@ -115,6 +116,8 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
           </CardContent>
         </Card>
 
+        {ws.dataset ? <DataChecksCard dataset={ws.dataset} /> : null}
+
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
           <div className="lg:col-span-1">
             <AiStatusCard status={ollama} configError={error} />
@@ -157,7 +160,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
               <li>This is a local prototype. It does not provide production-grade security or compliance.</li>
             </ul>
             {events.length ? (
-              <TableWrap>
+              <TableWrap aria-label="Activity log">
                 <Table>
                   <THead>
                     <TR className="hover:bg-transparent">

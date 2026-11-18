@@ -101,6 +101,7 @@ export function assembleQboDataset(raw: QboRawData, realmId: string, syncedAt: s
     balanceSheets: snapshots,
     monthlyCashFlow: cf?.months ?? [],
     sourceArAging: aging,
+    sourceTotals: pnl || bs ? { netIncomeByMonth: pnl?.reportedNetIncome ?? {}, totalAssetsByDate: Object.fromEntries(Object.entries(bs?.reportedTotalAssets ?? {}).filter(([d]) => d <= raw.asOfDate)) } : null,
     managementAssumptions: null,
     coverage: {
       company: raw.companyInfo != null,

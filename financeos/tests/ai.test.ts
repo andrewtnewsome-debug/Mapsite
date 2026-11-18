@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { answerQuestion, type ChatEvent } from "@/lib/ai/answer";
 import { verifyAnswer } from "@/lib/ai/guard";
-import { chatStream, getOllamaStatus, OllamaError, ThinkFilter, validateOllamaConfig } from "@/lib/ai/ollama";
+import { chatStream, chatStreamEvents, clearThinkCacheForTests, getOllamaStatus, OllamaError, resolveThinkSetting, stripReasoning, ThinkFilter, validateOllamaConfig } from "@/lib/ai/ollama";
 import { buildMessages } from "@/lib/ai/prompt";
 import { extractDays, extractLimit, extractPeriod, extractWeeks, routeFollowUp, routeQuestion } from "@/lib/ai/router";
 import { matchCustomer, runTool } from "@/lib/ai/tools";
@@ -30,6 +30,7 @@ describe("question routing", () => {
     ["What are the biggest financial risks facing the company?", "financial_risks"],
     ["Give me a weekly CFO briefing.", "weekly_briefing"],
     ["What do we owe vendors?", "payables_summary"],
+    ["Is our balance sheet healthy?", "financial_ratios"],
   ])("routes %s to %s", (q, tool) => {
     expect(ids(q)).toContain(tool);
   });
@@ -133,6 +134,12 @@ describe("Ollama client", () => {
     expect(out).toBe("Hello  world <b>");
   });
 
+  it("removes reasoning that leaked without an opening tag", () => {
+    expect(stripReasoning("Okay, the user wants cash.\nLet me think.\n</think>\n\nYou have **$5**.")).toBe("You have **$5**.");
+    expect(stripReasoning("<think>x</think>Answer")).toBe("Answer");
+    expect(stripReasoning("Plain answer")).toBe("Plain answer");
+  });
+
   it("reports when Ollama is not running", async () => {
     const s = await getOllamaStatus(validateOllamaConfig({ baseUrl: "http://127.0.0.1:9" }));
     expect(s.running).toBe(false);
@@ -143,14 +150,16 @@ describe("Ollama client", () => {
     let mock: Awaited<ReturnType<typeof startMockOllama>>;
     beforeAll(async () => {
       mock = await startMockOllama({
-        models: ["qwen3:4b", "llama3.2:3b"],
+        models: ["qwen3:4b", "llama3.2:3b", "qwen3:hybrid"],
         reply: (body) => {
           const data = body.messages.at(-1)!.content;
           const m = /Total book cash balance: (\$[\d,]+)/.exec(data);
           return m ? `<think>internal</think>You have **${m[1]}** in the bank as of November 18, 2026.` : "I can only discuss the verified data.";
         },
         json: { tools: [{ id: "financial_ratios", params: {} }] },
+        thinking: { "qwen3:4b": [true], "qwen3:hybrid": [true, false] },
       });
+      clearThinkCacheForTests();
     });
     afterAll(() => mock.close());
 
@@ -163,14 +172,32 @@ describe("Ollama client", () => {
       expect(other.modelInstalled).toBe(false);
     });
 
-    it("streams a reply and sends think:false", async () => {
+    it("chooses the think setting from each model's capabilities", async () => {
+      expect(await resolveThinkSetting(validateOllamaConfig({ baseUrl: mock.baseUrl, model: "qwen3:4b" }))).toBe(true);
+      expect(await resolveThinkSetting(validateOllamaConfig({ baseUrl: mock.baseUrl, model: "qwen3:hybrid" }))).toBe(false);
+      expect(await resolveThinkSetting(validateOllamaConfig({ baseUrl: mock.baseUrl, model: "llama3.2:3b" }))).toBeUndefined();
+    });
+
+    it("streams only the answer and reports reasoning separately for thinking-only models", async () => {
       const cfg = validateOllamaConfig({ baseUrl: mock.baseUrl });
+      const kinds: string[] = [];
       let text = "";
-      for await (const c of chatStream(cfg, [{ role: "user", content: "Total book cash balance: $1,234" }])) text += c;
+      for await (const e of chatStreamEvents(cfg, [{ role: "user", content: "Total book cash balance: $1,234" }])) {
+        kinds.push(e.type);
+        if (e.type === "content") text += e.text;
+      }
+      expect(kinds[0]).toBe("thinking");
       expect(text).toBe("You have **$1,234** in the bank as of November 18, 2026.");
       const last = mock.requests.at(-1)!.body as { think: boolean; stream: boolean };
-      expect(last.think).toBe(false);
+      expect(last.think).toBe(true);
       expect(last.stream).toBe(true);
+    });
+
+    it("sends think:false to models that can switch reasoning off, and omits it otherwise", async () => {
+      for await (const _ of chatStream(validateOllamaConfig({ baseUrl: mock.baseUrl, model: "qwen3:hybrid" }), [{ role: "user", content: "hi" }])) void _;
+      expect((mock.requests.at(-1)!.body as { think?: boolean }).think).toBe(false);
+      for await (const _ of chatStream(validateOllamaConfig({ baseUrl: mock.baseUrl, model: "llama3.2:3b" }), [{ role: "user", content: "hi" }])) void _;
+      expect("think" in (mock.requests.at(-1)!.body as object)).toBe(false);
     });
 
     it("explains a missing model", async () => {
@@ -197,7 +224,7 @@ describe("Ollama client", () => {
     });
 
     it("uses the model to pick tools when rules do not match", async () => {
-      const events = await collect("Is our balance sheet in good shape?", mock.baseUrl);
+      const events = await collect("Can we afford to hire two more technicians?", mock.baseUrl);
       const meta = events.find((e) => e.type === "meta");
       expect(meta?.type === "meta" && meta.routing).toBe("model");
       expect(meta?.type === "meta" && meta.calls.map((c) => c.id)).toEqual(["financial_ratios"]);
@@ -218,5 +245,22 @@ describe("Ollama client", () => {
       const done = events.find((e) => e.type === "done")!;
       expect(done.type === "done" && done.answer).toContain("I can answer questions about");
     });
+  });
+});
+
+describe("saved forecast assumptions", () => {
+  it("are used by the AI forecast tool and the cash insight when provided", async () => {
+    const { deriveForecastDefaults } = await import("@/lib/finance/forecast");
+    const { generateInsights } = await import("@/lib/finance/insights");
+    const defaults = deriveForecastDefaults(ds).assumptions;
+    const saved = { savedAt: "2026-11-17T10:00:00.000Z", assumptions: { ...defaults, oneTimeItems: [{ id: "x", label: "Tax payment", week: 2, amount: 200_000, direction: "outflow" as const }] } };
+    const withSaved = runTool(ds, { id: "cash_forecast", params: { weeks: 8 } }, { savedForecast: saved });
+    const without = runTool(ds, { id: "cash_forecast", params: { weeks: 8 } });
+    const v = (r: typeof withSaved) => r.facts.find((f) => f.label.startsWith("Base case projected cash at week 8"))!.value as number;
+    expect(v(without) - v(withSaved)).toBeCloseTo(200_000, 0);
+    expect(withSaved.assumptions[0]).toMatch(/^Your saved forecast assumptions \(saved Nov 17, 2026\)/);
+    expect(withSaved.assumptions.join(" ")).toContain("1 one-time item");
+    const cashInsight = generateInsights(ds, { forecastAssumptions: saved.assumptions }).find((i) => i.category === "cash")!;
+    expect(cashInsight.assumptions.join(" ")).toContain("saved 13-week forecast assumptions");
   });
 });

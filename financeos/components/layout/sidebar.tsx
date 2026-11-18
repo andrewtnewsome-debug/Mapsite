@@ -65,7 +65,7 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
 
 export function Sidebar() {
   return (
-    <aside className="no-print fixed inset-y-0 left-0 z-30 hidden w-60 border-r border-border bg-bg lg:block">
+    <aside aria-label="Sidebar" className="no-print fixed inset-y-0 left-0 z-30 hidden w-60 border-r border-border bg-bg lg:block">
       <SidebarBody />
     </aside>
   );

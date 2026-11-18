@@ -34,6 +34,7 @@ interface AssistantMsg {
   notice: string | null;
   error: string | null;
   routing: string | null;
+  statusText: string | null;
 }
 
 type Msg = UserMsg | AssistantMsg;
@@ -140,7 +141,14 @@ function AssistantBubble({ m, onAsk }: { m: AssistantMsg; onAsk: (q: string) => 
         {m.notice ? <Notice tone="warning" className="mb-2">{m.notice}</Notice> : null}
         {m.error ? <Notice tone="critical" className="mb-2">{m.error}</Notice> : null}
         <div className="text-[14px] text-text">
-          {m.content ? <Markdown text={m.content} /> : m.status === "streaming" ? <Spinner label="Working on it" /> : null}
+          {m.content ? (
+            <Markdown text={m.content} />
+          ) : m.status === "streaming" ? (
+            <span className="inline-flex items-center gap-2 text-[13px] text-text-3">
+              <Spinner label="Working on it" />
+              {m.statusText ?? "Calculating…"}
+            </span>
+          ) : null}
           {m.status === "streaming" && m.content ? <span className="ml-0.5 inline-block h-3.5 w-1.5 animate-pulse bg-text-3 align-middle" aria-hidden /> : null}
         </div>
         {m.status === "done" && m.mode === "ai" && m.verification ? (
@@ -217,7 +225,7 @@ export function AiCfoChat({ suggestions, initialQuestion, companyName, asOfLabel
         .map((m) => ({ role: m.role, content: m.content }));
       const userMsg: UserMsg = { id: newId(), role: "user", content: question };
       const aId = newId();
-      const assistant: AssistantMsg = { id: aId, role: "assistant", content: "", status: "streaming", mode: null, model: null, calls: [], results: [], verification: null, followUps: [], notice: null, error: null, routing: null };
+      const assistant: AssistantMsg = { id: aId, role: "assistant", content: "", status: "streaming", mode: null, model: null, calls: [], results: [], verification: null, followUps: [], notice: null, error: null, routing: null, statusText: null };
       setMessages((ms) => [...ms, userMsg, assistant]);
       setInput("");
       setBusy(true);
@@ -238,7 +246,8 @@ export function AiCfoChat({ suggestions, initialQuestion, companyName, asOfLabel
         }
         await readNdjson<ChatEvent>(res, (e) => {
           if (e.type === "meta") patch({ mode: e.mode, model: e.model, calls: e.calls, results: e.results, notice: e.notice, routing: e.routing });
-          else if (e.type === "token") patch((m) => ({ content: m.content + e.text }));
+          else if (e.type === "status") patch({ statusText: e.text });
+          else if (e.type === "token") patch((m) => ({ content: m.content + e.text, statusText: null }));
           else if (e.type === "error") patch({ error: `${e.message} Showing the calculated answer instead.` });
           else if (e.type === "done") patch({ content: e.answer, verification: e.verification, followUps: e.followUps, mode: e.mode, status: "done" });
         });

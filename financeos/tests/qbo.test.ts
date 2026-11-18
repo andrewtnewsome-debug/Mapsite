@@ -326,3 +326,34 @@ describe("localhost host guard", () => {
     expect(isAllowedHost("finance.local:3000", "finance.local")).toBe(true);
   });
 });
+
+describe("data checks (reconciliation)", () => {
+  it("passes every check on the internally consistent demo company", async () => {
+    const { reconcileDataset } = await import("@/lib/finance/reconcile");
+    const { buildDemoDataset } = await import("@/lib/demo/generate");
+    const checks = reconcileDataset(buildDemoDataset("2026-11-18", { generatedAt: "t" }));
+    const byId = Object.fromEntries(checks.map((c) => [c.id, c.status]));
+    expect(byId).toMatchObject({ "bs-balances": "match", "ar-vs-bs": "match", "ap-vs-bs": "match", "cash-vs-accounts": "match", "cf-vs-bs": "match", "ni-ytd": "match" });
+  });
+
+  it("reconciles a QuickBooks dataset against the report totals and flags differences", async () => {
+    const { reconcileDataset } = await import("@/lib/finance/reconcile");
+    const ok = <T,>(value: T) => ({ ok: true as const, value });
+    const ds = assembleQboDataset(
+      { asOfDate: AS_OF, companyInfo: fx.companyInfo, accounts: ok(fx.accounts), customers: ok(fx.customers), vendors: ok([]), invoices: ok(fx.invoices), bills: ok(fx.bills), payments: ok(fx.payments), pnl: ok(fx.pnlReport), balanceSheet: ok(fx.balanceSheetReport), cashFlow: ok(fx.cashFlowReport), aging: ok(fx.agedReceivablesReport) },
+      "9130",
+      "t",
+    );
+    const c = Object.fromEntries(reconcileDataset(ds).map((x) => [x.id, x]));
+    expect(c["bs-balances"].status).toBe("match");
+    expect(c["pnl-vs-source"].status).toBe("match");
+    expect(c["pnl-vs-source"].label).toContain("3 of 3 months match");
+    expect(c["bs-vs-source"].status).toBe("match");
+    expect(c["cash-vs-accounts"].status).toBe("match");
+    expect(c["ap-vs-bs"].status).toBe("match");
+    expect(c["cf-vs-bs"].status).toBe("match");
+    // Fixture invoices do not include every sandbox invoice, so A/R differs from the report: flagged, not hidden.
+    expect(c["ar-vs-bs"].status).toBe("mismatch");
+    expect(c["ar-vs-aging"].difference).toBeCloseTo(1001.07 - 933, 2);
+  });
+});

@@ -133,7 +133,7 @@ function AgingReport({ ds }: { ds: NonNullable<Awaited<ReturnType<typeof loadWor
         </div>
       </CardHeader>
       <CardContent className="px-0">
-        <TableWrap>
+        <TableWrap aria-label="Accounts receivable aging summary">
           <Table>
             <THead>
               <TR className="hover:bg-transparent">
@@ -180,7 +180,7 @@ function RatiosReport({ ds }: { ds: NonNullable<Awaited<ReturnType<typeof loadWo
         </div>
       </CardHeader>
       <CardContent className="px-0">
-        <TableWrap>
+        <TableWrap aria-label="Financial ratios">
           <Table>
             <THead>
               <TR className="hover:bg-transparent">

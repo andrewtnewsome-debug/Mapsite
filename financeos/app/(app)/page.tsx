@@ -21,6 +21,7 @@ import {
 } from "@/lib/finance/metrics";
 import { monthlyCashSeries, monthlyPnlSeries } from "@/lib/finance/statements";
 import { formatCurrency, formatPercent, formatTimestamp, NOT_AVAILABLE } from "@/lib/format";
+import { forecastKey, loadSavedAssumptions } from "@/lib/server/forecast-store";
 import { loadWorkspace } from "@/lib/server/workspace";
 
 export default async function OverviewPage() {
@@ -40,7 +41,8 @@ export default async function OverviewPage() {
   const ap = payablesSnapshot(ds);
   const month = lastClosedMonthComparison(ds);
   const health = healthIndicators(ds);
-  const insights = generateInsights(ds).slice(0, 4);
+  const saved = await loadSavedAssumptions(forecastKey(ds));
+  const insights = generateInsights(ds, { forecastAssumptions: saved?.assumptions }).slice(0, 4);
   const cashSeries = monthlyCashSeries(ds).filter((m) => !m.isPartial).slice(-18).map((m) => ({ label: m.label, endingCash: m.endingCash }));
   const pnlSeries = monthlyPnlSeries(ds).filter((m) => !m.isPartial).slice(-12);
   const topOverdue = (ar?.customers ?? []).filter((c) => c.overdue > 0).sort((a, b) => b.overdue - a.overdue).slice(0, 5);

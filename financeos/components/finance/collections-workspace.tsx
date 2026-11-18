@@ -137,13 +137,12 @@ export function CollectionsWorkspace({ plans, companyName, asOfDate }: { plans: 
             </div>
           </CardHeader>
           <CardContent className="px-2 pb-2 pt-2">
-            <ul role="listbox" aria-label="Overdue customers" className="space-y-0.5">
+            <ul aria-label="Overdue customers" className="space-y-0.5">
               {plans.map((p, i) => (
                 <li key={p.customerId}>
                   <button
                     type="button"
-                    role="option"
-                    aria-selected={p.customerId === selectedId}
+                    aria-pressed={p.customerId === selectedId}
                     onClick={() => {
                       setSelectedId(p.customerId);
                       setTone(p.recommendedTone);

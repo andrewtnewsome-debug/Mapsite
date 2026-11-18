@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatIsoDate } from "@/lib/domain/dates";
 import { buildManagementSummary } from "@/lib/finance/summary";
 import { formatTimestamp } from "@/lib/format";
+import { forecastKey, loadSavedAssumptions } from "@/lib/server/forecast-store";
 import { loadWorkspace } from "@/lib/server/workspace";
 import { NarrativePanel } from "@/components/ai/narrative-panel";
 
@@ -26,7 +27,8 @@ export default async function SummaryPage() {
       </>
     );
   }
-  const s = buildManagementSummary(ds);
+  const saved = await loadSavedAssumptions(forecastKey(ds));
+  const s = buildManagementSummary(ds, undefined, { forecastAssumptions: saved?.assumptions });
   return (
     <>
       <div className="no-print mb-4">
@@ -62,12 +64,10 @@ export default async function SummaryPage() {
             <CardContent>
               <dl className="divide-y divide-border text-[13px]">
                 {section.items.map((i) => (
-                  <div key={i.label} className="py-2 first:pt-0 last:pb-0">
-                    <div className="flex items-baseline justify-between gap-3">
-                      <dt className="text-text-2">{i.label}</dt>
-                      <dd className="tabular font-semibold">{i.value}</dd>
-                    </div>
-                    {i.note ? <p className="mt-0.5 text-[12px] text-text-3">{i.note}</p> : null}
+                  <div key={i.label} className="grid grid-cols-[1fr_auto] items-baseline gap-x-3 py-2 first:pt-0 last:pb-0">
+                    <dt className="text-text-2">{i.label}</dt>
+                    <dd className="tabular font-semibold">{i.value}</dd>
+                    {i.note ? <dd className="col-span-2 mt-0.5 text-[12px] text-text-3">{i.note}</dd> : null}
                   </div>
                 ))}
               </dl>

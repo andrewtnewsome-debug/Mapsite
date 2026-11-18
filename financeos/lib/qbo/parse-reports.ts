@@ -121,12 +121,13 @@ const PNL_GROUPS: Record<string, PnlCategory> = {
   OtherExpenses: "otherExpense",
 };
 
-export function parseProfitAndLoss(report: QboReport, asOfDate: string): { months: MonthlyPnl[]; warnings: string[] } {
+export function parseProfitAndLoss(report: QboReport, asOfDate: string): { months: MonthlyPnl[]; warnings: string[]; reportedNetIncome: Record<string, number> } {
   const warnings: string[] = [];
   const cols = periodColumns(report);
   const leaves = collectLeaves(report.Rows?.Row);
   const netIncome = findSummary(report.Rows?.Row, "NetIncome");
   const months: MonthlyPnl[] = [];
+  const reportedNetIncome: Record<string, number> = {};
   for (const c of cols) {
     const month = columnMonth(c);
     if (!month) continue;
@@ -141,6 +142,7 @@ export function parseProfitAndLoss(report: QboReport, asOfDate: string): { month
     const endDate = c.endDate ?? monthEnd(month);
     months.push({ month, isPartial: endDate < monthEnd(month) && endDate >= asOfDate, endDate, lines });
     const reported = netIncome?.[c.index];
+    if (reported != null) reportedNetIncome[month] = reported;
     if (reported != null) {
       const ours = roundCents(
         sum(lines.filter((l) => l.category === "income" || l.category === "otherIncome").map((l) => l.amount)) -
@@ -151,7 +153,9 @@ export function parseProfitAndLoss(report: QboReport, asOfDate: string): { month
   }
   // Drop leading months with no activity (before the company started using QuickBooks).
   while (months.length && months[0].lines.length === 0) months.shift();
-  return { months, warnings };
+  const kept = new Set(months.map((m) => m.month));
+  for (const m of Object.keys(reportedNetIncome)) if (!kept.has(m) && reportedNetIncome[m] === 0) delete reportedNetIncome[m];
+  return { months, warnings, reportedNetIncome };
 }
 
 /* ------------------------------------------------------------------ Balance sheet */
@@ -179,13 +183,14 @@ function bsSection(groups: string[]): BalanceSheetSection | null {
   return null;
 }
 
-export function parseBalanceSheet(report: QboReport): { snapshots: BalanceSheetSnapshot[]; warnings: string[] } {
+export function parseBalanceSheet(report: QboReport): { snapshots: BalanceSheetSnapshot[]; warnings: string[]; reportedTotalAssets: Record<string, number> } {
   const warnings: string[] = [];
   const cols = periodColumns(report);
   const leaves = collectLeaves(report.Rows?.Row);
   const totalAssets = findSummary(report.Rows?.Row, "TotalAssets");
   const totalLE = findSummary(report.Rows?.Row, "TotalLiabilitiesAndEquity");
   const snapshots: BalanceSheetSnapshot[] = [];
+  const reportedTotalAssets: Record<string, number> = {};
   const fallbackEnd = report.Header?.EndPeriod && isIsoDate(report.Header.EndPeriod) ? report.Header.EndPeriod : null;
   for (const c of cols) {
     const date = c.endDate ?? (cols.length === 1 ? fallbackEnd : null);
@@ -199,10 +204,11 @@ export function parseBalanceSheet(report: QboReport): { snapshots: BalanceSheetS
     }
     const a = totalAssets?.[c.index];
     const le = totalLE?.[c.index];
+    if (a != null) reportedTotalAssets[date] = a;
     if (a != null && le != null && Math.abs(a - le) > 1) warnings.push(`Balance sheet for ${date} does not balance in QuickBooks (assets ${a}, liabilities and equity ${le}).`);
     snapshots.push({ date, lines });
   }
-  return { snapshots, warnings };
+  return { snapshots, warnings, reportedTotalAssets };
 }
 
 /* ------------------------------------------------------------------ Cash flow */

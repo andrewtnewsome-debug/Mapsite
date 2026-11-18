@@ -1,8 +1,9 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
+/** Horizontally scrollable table container; focusable so keyboard users can scroll it. */
 export function TableWrap({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("w-full overflow-x-auto", className)} {...props} />;
+  return <div tabIndex={0} role="region" aria-label={props["aria-label"] ?? "Table"} className={cn("w-full overflow-x-auto focus-visible:outline-2 focus-visible:outline-ring", className)} {...props} />;
 }
 
 export function Table({ className, ...props }: React.TableHTMLAttributes<HTMLTableElement>) {

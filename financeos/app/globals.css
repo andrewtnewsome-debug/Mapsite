@@ -18,12 +18,12 @@
   --border-strong: #d3d2cb;
   --text: #121211;
   --text-2: #52514e;
-  --text-3: #858480;
+  --text-3: #6b6a66;
   --primary: #121211;
   --primary-fg: #ffffff;
-  --accent: #2a78d6;
+  --accent: #256abf;
   --accent-soft: #e8f1fc;
-  --ring: #2a78d6;
+  --ring: #256abf;
 
   /* status (never used for chart series) */
   --good: #0ca30c;
@@ -71,9 +71,9 @@
   --text-3: #8e8d87;
   --primary: #f0efec;
   --primary-fg: #121211;
-  --accent: #3987e5;
+  --accent: #5598e7;
   --accent-soft: #17263a;
-  --ring: #3987e5;
+  --ring: #5598e7;
 
   --good: #0ca30c;
   --good-text: #3dbf3d;

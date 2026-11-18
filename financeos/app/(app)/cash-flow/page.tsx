@@ -103,7 +103,7 @@ export default async function CashFlowPage() {
           </CardHeader>
           <CardContent className="px-0 pb-2">
             {recent.length ? (
-              <TableWrap>
+              <TableWrap aria-label="Cash flow by activity">
                 <Table>
                   <THead>
                     <TR className="hover:bg-transparent">

@@ -1,10 +1,11 @@
 import "server-only";
 
 import type { AppNotification } from "@/components/layout/notifications";
+import type { ForecastAssumptions } from "@/lib/finance/forecast";
 import { generateInsights } from "@/lib/finance/insights";
 import type { Workspace } from "./workspace";
 
-export function buildNotifications(ws: Workspace): AppNotification[] {
+export function buildNotifications(ws: Workspace, forecastAssumptions: ForecastAssumptions | null = null): AppNotification[] {
   const out: AppNotification[] = [];
   if (ws.source === "quickbooks-sandbox") {
     if (ws.status.kind === "qbo-not-configured") out.push({ id: "qbo-config", level: "warning", title: "QuickBooks keys are not configured", detail: "Add your Intuit development keys to .env.local.", href: "/settings" });
@@ -13,7 +14,7 @@ export function buildNotifications(ws: Workspace): AppNotification[] {
   }
   if (ws.dataset) {
     for (const w of ws.dataset.warnings.slice(0, 3)) out.push({ id: `dq-${w.slice(0, 24)}`, level: "info", title: "Data quality", detail: w, href: "/settings" });
-    for (const i of generateInsights(ws.dataset).filter((x) => x.severity === "concern" || x.severity === "watch").slice(0, 6)) {
+    for (const i of generateInsights(ws.dataset, { forecastAssumptions }).filter((x) => x.severity === "concern" || x.severity === "watch").slice(0, 6)) {
       out.push({ id: i.id, level: i.severity === "concern" ? "critical" : "warning", title: i.title, detail: i.trigger, href: "/insights" });
     }
   }

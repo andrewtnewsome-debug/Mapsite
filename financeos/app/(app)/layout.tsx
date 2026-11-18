@@ -1,11 +1,13 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
+import { forecastKey, loadSavedAssumptions } from "@/lib/server/forecast-store";
 import { buildNotifications } from "@/lib/server/notifications";
 import { loadWorkspace } from "@/lib/server/workspace";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const workspace = await loadWorkspace();
-  const notifications = buildNotifications(workspace);
+  const saved = workspace.dataset ? await loadSavedAssumptions(forecastKey(workspace.dataset)) : null;
+  const notifications = buildNotifications(workspace, saved?.assumptions ?? null);
   return (
     <div className="min-h-dvh">
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-surface focus:px-3 focus:py-2 focus:shadow-pop">

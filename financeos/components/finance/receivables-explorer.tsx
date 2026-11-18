@@ -122,7 +122,7 @@ export function ReceivablesExplorer({ invoices, customers, initialBucket }: { in
       {rows.length === 0 ? (
         <EmptyState title="No invoices match these filters" description="Adjust or reset the filters above." />
       ) : (
-        <TableWrap className="max-h-[560px] overflow-y-auto border-t border-border">
+        <TableWrap aria-label="Unpaid invoices" className="max-h-[560px] overflow-y-auto border-t border-border">
           <Table>
             <THead className="sticky top-0 z-10 bg-surface">
               <TR className="hover:bg-transparent">

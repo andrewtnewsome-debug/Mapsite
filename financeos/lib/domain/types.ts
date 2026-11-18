@@ -207,6 +207,12 @@ export interface DataCoverage {
   arAgingReport: boolean;
 }
 
+/** Totals as reported by the source system, kept to verify our parsing. */
+export interface SourceReportTotals {
+  netIncomeByMonth: Record<string, number>;
+  totalAssetsByDate: Record<string, number>;
+}
+
 export interface FinancialDataset {
   source: DataSourceKind;
   company: CompanyProfile;
@@ -227,6 +233,8 @@ export interface FinancialDataset {
   /** Ascending by month. */
   monthlyCashFlow: MonthlyCashFlow[];
   sourceArAging: SourceArAgingSummary | null;
+  /** Report totals from the source system (QuickBooks), when available. */
+  sourceTotals?: SourceReportTotals | null;
   managementAssumptions: ManagementAssumptions | null;
   coverage: DataCoverage;
   /** Data quality notes shown to the user, e.g. "3 invoices have no due date". */

@@ -13,7 +13,7 @@ import { DATA_SOURCE_LABELS } from "@/lib/domain/types";
 import { addDays, addMonths, formatIsoDate, monthLabel, monthOf } from "@/lib/domain/dates";
 import { pctChange, safeDivide, sum } from "@/lib/domain/money";
 import { AGING_BUCKETS, openBillsAsOf } from "@/lib/finance/aging";
-import { deriveForecastDefaults, runAllScenarios } from "@/lib/finance/forecast";
+import { deriveForecastDefaults, runAllScenarios, type ForecastAssumptions } from "@/lib/finance/forecast";
 import { generateInsights } from "@/lib/finance/insights";
 import {
   cashPosition,
@@ -92,6 +92,11 @@ export const ToolParamsSchema = z
   .strict();
 
 export type ToolParams = z.infer<typeof ToolParamsSchema>;
+
+/** Extra context tools may use, e.g. the owner's saved forecast assumptions. */
+export interface ToolContext {
+  savedForecast?: { savedAt: string; assumptions: ForecastAssumptions } | null;
+}
 
 export interface ToolCall {
   id: ToolId;
@@ -425,14 +430,16 @@ function revenueTrendTool(ds: FinancialDataset): ToolResult {
   };
 }
 
-function forecastTool(ds: FinancialDataset, p: ToolParams): ToolResult {
+function forecastTool(ds: FinancialDataset, p: ToolParams, ctx: ToolContext = {}): ToolResult {
   const weeks = Math.min(13, Math.max(1, p.weeks ?? 13));
   const defaults = deriveForecastDefaults(ds);
-  const all = runAllScenarios(ds, defaults.assumptions);
+  const saved = ctx.savedForecast ?? null;
+  const a = saved?.assumptions ?? defaults.assumptions;
+  const all = runAllScenarios(ds, a);
   if (!all) return unavailable(ds, "cash_forecast", "Cash forecast", "No starting cash balance is available.");
   const at = (id: "base" | "conservative" | "optimistic") => all[id].weeks[weeks - 1];
-  const min = defaults.assumptions.minimumCashBalance;
-  const a = defaults.assumptions;
+  const min = a.minimumCashBalance;
+  const source = saved ? `Your saved forecast assumptions (saved ${formatIsoDate(saved.savedAt.slice(0, 10))})` : "Default forecast assumptions derived from the data";
   return {
     ...base(ds, "cash_forecast", `Projected cash in ${weeks} week${weeks === 1 ? "" : "s"}`),
     facts: [
@@ -452,11 +459,12 @@ function forecastTool(ds: FinancialDataset, p: ToolParams): ToolResult {
       fact("Collection delay assumption", a.collectionDelayDays, "days", "assumption"),
     ],
     assumptions: [
-      `Default forecast assumptions derived from the data: payroll ${formatCurrency(a.weeklyPayroll)}/week, recurring expenses ${formatCurrency(a.weeklyRecurringExpenses)}/week, new billings ${formatCurrency(a.weeklyNewBillings)}/week collected after ${a.newBillingsCollectionDays} days, collection rate ${formatPercent(a.collectionRate, 0)}.`,
+      `${source}: payroll ${formatCurrency(a.weeklyPayroll)}/week, recurring expenses ${formatCurrency(a.weeklyRecurringExpenses)}/week, new billings ${formatCurrency(a.weeklyNewBillings)}/week collected after ${a.newBillingsCollectionDays} days, collection rate ${formatPercent(a.collectionRate, 0)}.`,
       "Conservative: 10 points lower collection rate, 14 days slower collections, 15% lower billings. Optimistic: 3 points higher, 5 days faster, 8% higher billings.",
+      ...(a.oneTimeItems.length ? [`Includes ${a.oneTimeItems.length} one-time item(s) entered on the Cash Flow page.`] : []),
       ...defaults.warnings,
     ],
-    notes: ["These are projections from stated assumptions, not facts. Saved changes on the Cash Flow page are not used here; the AI uses the default assumptions."],
+    notes: ["These are projections from stated assumptions, not facts. They match the 13-week forecast on the Cash Flow page."],
     summary: `Starting from book cash of ${formatCurrency(all.base.startingCash)}, the forecast projects ${formatCurrency(at("base").endingCash)} at the end of week ${weeks} (${formatIsoDate(at("base").endDate)}) in the base case, ${formatCurrency(at("conservative").endingCash)} in the conservative case and ${formatCurrency(at("optimistic").endingCash)} in the optimistic case. The base case low point is ${formatCurrency(all.base.lowestCash.amount)} in week ${all.base.lowestCash.week}${min != null ? `; the conservative case ${all.conservative.weeksBelowMinimum.length ? `falls below the ${formatCurrency(min)} minimum in ${all.conservative.weeksBelowMinimum.length} week(s)` : `stays above the ${formatCurrency(min)} minimum`}` : ""}. This is a projection based on assumptions.`,
   };
 }
@@ -491,8 +499,8 @@ function ratiosTool(ds: FinancialDataset): ToolResult {
   };
 }
 
-function risksTool(ds: FinancialDataset): ToolResult {
-  const insights = generateInsights(ds).filter((i) => i.severity === "concern" || i.severity === "watch");
+function risksTool(ds: FinancialDataset, ctx: ToolContext = {}): ToolResult {
+  const insights = generateInsights(ds, { forecastAssumptions: ctx.savedForecast?.assumptions ?? null }).filter((i) => i.severity === "concern" || i.severity === "watch");
   const health = healthIndicators(ds);
   return {
     ...base(ds, "financial_risks", "Financial risks"),
@@ -506,8 +514,8 @@ function risksTool(ds: FinancialDataset): ToolResult {
   };
 }
 
-function briefingTool(ds: FinancialDataset): ToolResult {
-  const parts = [cashTool(ds), receivablesTool(ds), prioritiesTool(ds, { limit: 3 }), pnlTool(ds, { period: "last-month" }), forecastTool(ds, { weeks: 4 }), risksTool(ds), payablesTool(ds)];
+function briefingTool(ds: FinancialDataset, ctx: ToolContext = {}): ToolResult {
+  const parts = [cashTool(ds), receivablesTool(ds), prioritiesTool(ds, { limit: 3 }), pnlTool(ds, { period: "last-month" }), forecastTool(ds, { weeks: 4 }, ctx), risksTool(ds, ctx), payablesTool(ds)];
   const month = lastClosedMonthComparison(ds);
   const trend = overdueTrend(ds, [7, 0]);
   const weekChange = trend ? trend[1].overdue - trend[0].overdue : null;
@@ -529,7 +537,7 @@ function briefingTool(ds: FinancialDataset): ToolResult {
   };
 }
 
-export function runTool(ds: FinancialDataset, call: ToolCall): ToolResult {
+export function runTool(ds: FinancialDataset, call: ToolCall, ctx: ToolContext = {}): ToolResult {
   const p = ToolParamsSchema.parse(call.params ?? {});
   switch (call.id) {
     case "cash_position":
@@ -551,15 +559,15 @@ export function runTool(ds: FinancialDataset, call: ToolCall): ToolResult {
     case "revenue_trend":
       return revenueTrendTool(ds);
     case "cash_forecast":
-      return forecastTool(ds, p);
+      return forecastTool(ds, p, ctx);
     case "payables_summary":
       return payablesTool(ds);
     case "financial_ratios":
       return ratiosTool(ds);
     case "financial_risks":
-      return risksTool(ds);
+      return risksTool(ds, ctx);
     case "weekly_briefing":
-      return briefingTool(ds);
+      return briefingTool(ds, ctx);
   }
 }
 

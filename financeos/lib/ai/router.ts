@@ -71,7 +71,7 @@ interface Rule {
 
 const RULES: Rule[] = [
   { tool: "weekly_briefing", test: [/\bbriefing\b/i, /\bweekly (update|summary|report)\b/i, /\bpay(ing)? attention to\b/i, /\bwhat should i (know|focus|watch)\b/i, /\bhow (are|is) (we|the business|the company) doing\b/i, /\bstate of the business\b/i] },
-  { tool: "financial_risks", test: [/\brisks?\b/i, /\bworr(y|ied)\b/i, /\bred flags?\b/i, /\bconcerns?\b/i, /\bproblems?\b/i, /\bhealth\b/i] },
+  { tool: "financial_risks", test: [/\brisks?\b/i, /\bworr(y|ied)\b/i, /\bred flags?\b/i, /\bconcerns?\b/i, /\bproblems?\b/i, /\bhealth(y|iness)?\b/i] },
   { tool: "cash_forecast", test: [/\brun out of (cash|money)\b/i, /\bforecast\b/i, /\bproject(ed|ion)?\b.*\bcash\b/i, /\bcash\b.*\b(in|after|over the next) \w+ (weeks?|months?)\b/i, /\bwill we have\b/i, /\bcash runway\b/i, /\brunway\b/i, /\bfuture cash\b/i, /\bnext (week|month|quarter)\b.*\bcash\b/i] },
   { tool: "cash_position", test: [/\bhow much (cash|money)\b/i, /\bcash (balance|position|on hand)\b/i, /\bbank (balance|accounts?)\b/i, /\bin the bank\b/i, /^\s*cash\??\s*$/i] },
   { tool: "collections_priorities", test: [/\bprioriti[sz]e\b/i, /\bfollow up\b/i, /\bcollections?\b/i, /\bchase\b/i, /\bwho should (we|i) (call|contact|email)\b/i] },
@@ -82,7 +82,7 @@ const RULES: Rule[] = [
   { tool: "expense_changes", test: [/\bexpenses?\b.*\b(increas|ris|grow|up|chang|higher|jump)/i, /\b(increas|ris|grow|chang|higher)\w*\b.*\bexpenses?\b/i, /\bspending\b/i, /\bcosts?\b.*\b(increas|ris|up|higher|chang)/i, /\bwhy (are|is) (our )?(expenses|costs)\b/i, /\bexpenses?\b/i] },
   { tool: "revenue_trend", test: [/\brevenue (trend|growth)\b/i, /\b(is|are) (our )?(revenue|sales) (growing|declining|up|down)\b/i, /\bgrowth\b/i, /\btrend\b/i] },
   { tool: "payables_summary", test: [/\bpayables?\b/i, /\b(a\/p|ap)\b/i, /\bbills?\b/i, /\bvendors?\b/i, /\bwho do we owe\b/i, /\bwhat do we owe\b/i] },
-  { tool: "financial_ratios", test: [/\bratios?\b/i, /\bcurrent ratio\b/i, /\bquick ratio\b/i, /\bworking capital\b/i, /\bliquidity\b/i, /\bleverage\b/i, /\bdebt\b/i] },
+  { tool: "financial_ratios", test: [/\bratios?\b/i, /\bcurrent ratio\b/i, /\bquick ratio\b/i, /\bworking capital\b/i, /\bliquidity\b/i, /\bleverage\b/i, /\bdebt\b/i, /\bbalance sheet\b/i, /\bsolven(t|cy)\b/i] },
 ];
 
 export interface RouteResult {

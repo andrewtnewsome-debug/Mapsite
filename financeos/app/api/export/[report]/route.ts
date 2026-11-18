@@ -18,6 +18,7 @@ import {
 import { buildManagementSummary, managementSummaryToText } from "@/lib/finance/summary";
 import { getRequestContext, requirePermission } from "@/lib/server/context";
 import { jsonError } from "@/lib/server/http";
+import { forecastKey, loadSavedAssumptions } from "@/lib/server/forecast-store";
 import { activeDataset } from "@/lib/server/workspace";
 
 const REPORTS = ["receivables", "ar-aging", "pnl", "balance-sheet", "cash-flow", "ratios", "management-summary"] as const;
@@ -105,7 +106,8 @@ export async function GET(request: Request, ctx: { params: Promise<{ report: str
       return csvResponse(toCsv(["Ratio", "Value", "Unit", "Formula", "Note"], rows, preamble(ds, "Financial Ratios")), csvFilename(`${prefix}-ratios`, ds.asOfDate));
     }
     case "management-summary": {
-      const text = managementSummaryToText(buildManagementSummary(ds));
+      const saved = await loadSavedAssumptions(forecastKey(ds));
+      const text = managementSummaryToText(buildManagementSummary(ds, undefined, { forecastAssumptions: saved?.assumptions }));
       return csvResponse(text, `${prefix}-management-summary-${ds.asOfDate}.txt`, "text/plain; charset=utf-8");
     }
   }

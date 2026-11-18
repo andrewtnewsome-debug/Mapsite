@@ -110,13 +110,60 @@ interface ChatOptions {
   format?: unknown;
 }
 
-function buildBody(cfg: OllamaConfig, messages: ChatMessage[], stream: boolean, opts: ChatOptions) {
+/** The value sent as Ollama's `think` parameter, or undefined to omit it. */
+export type ThinkSetting = boolean | "low" | "medium" | "high" | undefined;
+
+const thinkCache = new Map<string, ThinkSetting>();
+
+/**
+ * Chooses how to ask a model not to reason at length.
+ * - Models that allow thinking to be switched off get `think: false` (fastest).
+ * - Thinking-only models (e.g. the Qwen3 2507 "thinking" builds behind `qwen3:4b`)
+ *   get their lowest supported level; Ollama then returns the reasoning in a
+ *   separate `thinking` field, which FinanceOS discards.
+ * - Models without thinking support get no `think` parameter.
+ */
+export async function resolveThinkSetting(cfg: OllamaConfig, fetchImpl: typeof fetch = fetch): Promise<ThinkSetting> {
+  const key = `${cfg.baseUrl}|${cfg.model}`;
+  if (thinkCache.has(key)) return thinkCache.get(key);
+  let setting: ThinkSetting = undefined;
+  try {
+    const res = await fetchImpl(`${cfg.baseUrl}/api/show`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ model: cfg.model }),
+      signal: AbortSignal.timeout(5000),
+      cache: "no-store",
+    });
+    if (res.ok) {
+      const body = (await res.json()) as { capabilities?: string[]; thinking?: { values?: (boolean | string)[] } };
+      const values = body.thinking?.values;
+      if (Array.isArray(values) && values.length) {
+        if (values.includes(false)) setting = false;
+        else if (values.includes("low")) setting = "low";
+        else setting = values.includes(true) ? true : (values[0] as ThinkSetting);
+      } else if (body.capabilities?.includes("thinking")) {
+        // Older Ollama versions: hybrid reasoning models accept think:false.
+        setting = false;
+      }
+    }
+  } catch {
+    setting = undefined;
+  }
+  thinkCache.set(key, setting);
+  return setting;
+}
+
+export function clearThinkCacheForTests(): void {
+  thinkCache.clear();
+}
+
+function buildBody(cfg: OllamaConfig, messages: ChatMessage[], stream: boolean, opts: ChatOptions, think: ThinkSetting) {
   return JSON.stringify({
     model: cfg.model,
     messages,
     stream,
-    // Qwen3 and other reasoning models: answer directly without a long hidden reasoning phase.
-    think: false,
+    ...(think === undefined ? {} : { think }),
     keep_alive: "15m",
     ...(opts.format ? { format: opts.format } : {}),
     options: { temperature: opts.temperature ?? 0.2, num_ctx: opts.numCtx ?? 8192 },
@@ -149,7 +196,11 @@ async function post(cfg: OllamaConfig, body: string, opts: ChatOptions, fetchImp
   return res;
 }
 
-/** Removes <think>...</think> blocks, including across streamed chunks. */
+/**
+ * Removes model reasoning from visible text, including across streamed chunks:
+ * "<think>...</think>" blocks, and reasoning that has no opening tag and only a
+ * closing "</think>" (seen with some thinking-only models).
+ */
 export class ThinkFilter {
   private inThink = false;
   private buffer = "";
@@ -195,14 +246,26 @@ export class ThinkFilter {
   }
 }
 
-/** Streams assistant text from Ollama's NDJSON /api/chat response. */
-export async function* chatStream(cfg: OllamaConfig, messages: ChatMessage[], opts: ChatOptions = {}, fetchImpl: typeof fetch = fetch): AsyncGenerator<string> {
-  const res = await post(cfg, buildBody(cfg, messages, true, opts), opts, fetchImpl);
+/** Final cleanup of a complete answer: drops any reasoning that leaked into the content. */
+export function stripReasoning(text: string): string {
+  let t = text.replace(/<think>[\s\S]*?<\/think>/g, "");
+  const orphan = t.lastIndexOf("</think>");
+  if (orphan >= 0) t = t.slice(orphan + 8);
+  return t.replace(/<\/?think>/g, "").trim();
+}
+
+export type StreamEvent = { type: "content"; text: string } | { type: "thinking" };
+
+/** Streams assistant output from Ollama's NDJSON /api/chat response as content and reasoning-progress events. */
+export async function* chatStreamEvents(cfg: OllamaConfig, messages: ChatMessage[], opts: ChatOptions = {}, fetchImpl: typeof fetch = fetch): AsyncGenerator<StreamEvent> {
+  const think = await resolveThinkSetting(cfg, fetchImpl);
+  const res = await post(cfg, buildBody(cfg, messages, true, opts, think), opts, fetchImpl);
   if (!res.body) throw new OllamaError("Ollama returned an empty response.", "bad-response");
   const reader = res.body.getReader();
   const decoder = new TextDecoder();
   const filter = new ThinkFilter();
   let pending = "";
+  let thinkingAnnounced = false;
   try {
     for (;;) {
       let chunk: ReadableStreamReadResult<Uint8Array>;
@@ -219,39 +282,50 @@ export async function* chatStream(cfg: OllamaConfig, messages: ChatMessage[], op
         const line = pending.slice(0, nl).trim();
         pending = pending.slice(nl + 1);
         if (!line) continue;
-        let obj: { message?: { content?: string }; done?: boolean; error?: string };
+        let obj: { message?: { content?: string; thinking?: string }; done?: boolean; error?: string };
         try {
           obj = JSON.parse(line);
         } catch {
           continue;
         }
         if (obj.error) throw new OllamaError(`Ollama error: ${obj.error}`, "bad-response");
+        if (obj.message?.thinking && !thinkingAnnounced) {
+          thinkingAnnounced = true;
+          yield { type: "thinking" };
+        }
         const text = obj.message?.content ?? "";
         if (text) {
           const visible = filter.push(text);
-          if (visible) yield visible;
+          if (visible) yield { type: "content", text: visible };
         }
         if (obj.done) {
           const rest = filter.flush();
-          if (rest) yield rest;
+          if (rest) yield { type: "content", text: rest };
           return;
         }
       }
     }
     const rest = filter.flush();
-    if (rest) yield rest;
+    if (rest) yield { type: "content", text: rest };
   } finally {
     reader.releaseLock();
   }
 }
 
+/** Streams only the visible answer text. */
+export async function* chatStream(cfg: OllamaConfig, messages: ChatMessage[], opts: ChatOptions = {}, fetchImpl: typeof fetch = fetch): AsyncGenerator<string> {
+  for await (const e of chatStreamEvents(cfg, messages, opts, fetchImpl)) if (e.type === "content") yield e.text;
+}
+
 /** Non-streaming chat returning parsed JSON (Ollama structured outputs). */
 export async function chatJson<T>(cfg: OllamaConfig, messages: ChatMessage[], schema: unknown, opts: ChatOptions = {}, fetchImpl: typeof fetch = fetch): Promise<T> {
-  const res = await post(cfg, buildBody(cfg, messages, false, { ...opts, format: schema, temperature: 0 }), opts, fetchImpl);
+  const think = await resolveThinkSetting(cfg, fetchImpl);
+  const res = await post(cfg, buildBody(cfg, messages, false, { ...opts, format: schema, temperature: 0 }, think), opts, fetchImpl);
   const body = (await res.json()) as { message?: { content?: string } };
-  const content = (body.message?.content ?? "").replace(/<think>[\s\S]*?<\/think>/g, "").trim();
+  const content = stripReasoning(body.message?.content ?? "");
+  const jsonStart = content.indexOf("{");
   try {
-    return JSON.parse(content) as T;
+    return JSON.parse(jsonStart > 0 ? content.slice(jsonStart) : content) as T;
   } catch {
     throw new OllamaError("The local model returned output that was not valid JSON.", "bad-response");
   }

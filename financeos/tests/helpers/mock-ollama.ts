@@ -12,6 +12,8 @@ export interface MockOllamaOptions {
   /** JSON returned for structured (format) requests. */
   json?: unknown;
   chunkSize?: number;
+  /** Supported `think` values per model, as reported by /api/show (absent = no thinking capability). */
+  thinking?: Record<string, (boolean | string)[]>;
 }
 
 export async function startMockOllama(opts: MockOllamaOptions = {}) {
@@ -26,6 +28,10 @@ export async function startMockOllama(opts: MockOllamaOptions = {}) {
       if (req.url === "/api/tags") {
         return res.end(JSON.stringify({ models: (opts.models ?? ["qwen3:4b"]).map((name) => ({ name, model: name, size: 2_500_000_000, modified_at: "2026-01-01T00:00:00Z", details: { parameter_size: "4.0B" } })) }));
       }
+      if (req.url === "/api/show") {
+        const values = opts.thinking?.[body.model];
+        return res.end(JSON.stringify({ capabilities: ["completion", ...(values ? ["thinking"] : [])], ...(values ? { thinking: { values, default: values[0] } } : {}), details: { family: "test" } }));
+      }
       if (req.url === "/api/chat") {
         if (!(opts.models ?? ["qwen3:4b"]).includes(body.model)) {
           res.statusCode = 404;
@@ -36,6 +42,10 @@ export async function startMockOllama(opts: MockOllamaOptions = {}) {
         }
         const text = opts.reply ? opts.reply(body) : "OK.";
         res.setHeader("Content-Type", "application/x-ndjson");
+        // Like real Ollama: with think enabled, reasoning arrives in a separate "thinking" field.
+        if (body.think && body.think !== false) {
+          res.write(JSON.stringify({ model: body.model, message: { role: "assistant", content: "", thinking: "Let me work through the verified data..." }, done: false }) + "\n");
+        }
         const size = opts.chunkSize ?? 7;
         for (let i = 0; i < text.length; i += size) {
           res.write(JSON.stringify({ model: body.model, created_at: "2026-01-01T00:00:00Z", message: { role: "assistant", content: text.slice(i, i + size) }, done: false }) + "\n");

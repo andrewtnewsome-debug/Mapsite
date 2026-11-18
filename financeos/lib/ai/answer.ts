@@ -11,16 +11,17 @@ import { z } from "zod";
 import type { FinancialDataset } from "@/lib/domain/types";
 import { followUpsFor } from "./followups";
 import { verifyAnswer, type Verification } from "./guard";
-import { chatJson, chatStream, getOllamaStatus, OllamaError, type OllamaConfig, type OllamaStatus } from "./ollama";
+import { chatJson, chatStreamEvents, getOllamaStatus, OllamaError, stripReasoning, type OllamaConfig, type OllamaStatus } from "./ollama";
 import { buildMessages, type HistoryTurn } from "./prompt";
 import { routeFollowUp, routeQuestion, SUPPORTED_QUESTIONS } from "./router";
-import { runTool, TOOL_DESCRIPTIONS, TOOL_IDS, ToolParamsSchema, type ToolCall, type ToolResult } from "./tools";
+import { runTool, TOOL_DESCRIPTIONS, TOOL_IDS, ToolParamsSchema, type ToolCall, type ToolContext, type ToolResult } from "./tools";
 
 export type AnswerMode = "ai" | "deterministic";
 
 export type ChatEvent =
   | { type: "meta"; mode: AnswerMode; model: string | null; calls: ToolCall[]; results: ToolResult[]; routing: "rules" | "follow-up" | "model" | "none"; notice: string | null }
   | { type: "token"; text: string }
+  | { type: "status"; text: string }
   | { type: "done"; answer: string; verification: Verification | null; followUps: string[]; mode: AnswerMode }
   | { type: "error"; message: string };
 
@@ -34,6 +35,7 @@ export interface AnswerInput {
   ollamaConfigError?: string | null;
   fetchImpl?: typeof fetch;
   signal?: AbortSignal;
+  toolContext?: ToolContext;
 }
 
 const ToolSelectionSchema = z.object({
@@ -121,7 +123,7 @@ export async function* answerQuestion(input: AnswerInput): AsyncGenerator<ChatEv
   }
 
   // 2. Run deterministic tools.
-  const results = calls.map((c) => runTool(dataset, c));
+  const results = calls.map((c) => runTool(dataset, c, input.toolContext));
   const mode: AnswerMode = aiReady ? "ai" : "deterministic";
   yield { type: "meta", mode, model: aiReady ? status!.model : null, calls, results, routing, notice };
 
@@ -139,9 +141,13 @@ export async function* answerQuestion(input: AnswerInput): AsyncGenerator<ChatEv
   // 3. Let the local model explain the verified results.
   let answer = "";
   try {
-    for await (const chunk of chatStream(ollama, buildMessages(dataset, question, results, input.history), { signal: input.signal }, input.fetchImpl)) {
-      answer += chunk;
-      yield { type: "token", text: chunk };
+    for await (const e of chatStreamEvents(ollama, buildMessages(dataset, question, results, input.history), { signal: input.signal }, input.fetchImpl)) {
+      if (e.type === "thinking") {
+        yield { type: "status", text: "The local model is reasoning before it answers. On a computer without a graphics card this can take a minute." };
+        continue;
+      }
+      answer += e.text;
+      yield { type: "token", text: e.text };
     }
   } catch (err) {
     if ((err as Error).name === "AbortError") return;
@@ -151,7 +157,7 @@ export async function* answerQuestion(input: AnswerInput): AsyncGenerator<ChatEv
     yield { type: "done", answer: fallback, verification: null, followUps, mode: "deterministic" };
     return;
   }
-  answer = answer.trim();
+  answer = stripReasoning(answer);
   if (!answer) {
     yield { type: "done", answer: results.length ? deterministicAnswer(results) : UNSUPPORTED, verification: null, followUps, mode: "deterministic" };
     return;

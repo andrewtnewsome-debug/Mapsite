@@ -37,7 +37,7 @@ export default async function AiCfoPage({ searchParams }: { searchParams: Promis
       ) : (
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
           <AiCfoChat suggestions={SUPPORTED_QUESTIONS.slice(0, 10)} initialQuestion={q} companyName={ds.company.name} asOfLabel={formatIsoDate(ds.asOfDate, "long")} />
-          <aside className="space-y-4 xl:sticky xl:top-20 xl:self-start">
+          <aside aria-label="Local AI status and help" className="space-y-4 xl:sticky xl:top-20 xl:self-start">
             <AiStatusCard status={status} configError={error} />
             <Card>
               <CardHeader>

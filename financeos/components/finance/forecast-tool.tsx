@@ -479,7 +479,7 @@ function WeeklyTable({ result, minimum }: { result: ForecastResult; minimum: num
     { label: "Ending cash", pick: (w) => w.endingCash, kind: "balance" },
   ];
   return (
-    <div className="overflow-x-auto border-y border-border">
+    <div tabIndex={0} role="region" aria-label="Weekly projected cash flow table" className="overflow-x-auto border-y border-border">
       <table className="w-full min-w-[1100px] text-[12px]">
         <caption className="sr-only">Weekly projected cash flow</caption>
         <thead>

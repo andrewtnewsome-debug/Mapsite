@@ -4,7 +4,7 @@ import type { FinancialDataset } from "@/lib/domain/types";
 import { formatIsoDate } from "@/lib/domain/dates";
 import { DATA_SOURCE_LABELS } from "@/lib/domain/types";
 import { formatCurrency, formatPercent, formatSignedPercent, NOT_AVAILABLE } from "@/lib/format";
-import { generateInsights, type Insight } from "./insights";
+import { generateInsights, type Insight, type InsightOptions } from "./insights";
 import {
   cashPosition,
   lastClosedMonthComparison,
@@ -28,13 +28,13 @@ export interface ManagementSummary {
   risks: Insight[];
 }
 
-export function buildManagementSummary(dataset: FinancialDataset, generatedAt = new Date().toISOString()): ManagementSummary {
+export function buildManagementSummary(dataset: FinancialDataset, generatedAt = new Date().toISOString(), options: InsightOptions = {}): ManagementSummary {
   const month = lastClosedMonthComparison(dataset);
   const ttm = trailingTwelveMonths(dataset);
   const cash = cashPosition(dataset);
   const ar = receivablesSnapshot(dataset);
   const ap = payablesSnapshot(dataset);
-  const insights = generateInsights(dataset);
+  const insights = generateInsights(dataset, options);
   const monthName = month?.label ?? "Last closed month";
 
   const sections: SummarySection[] = [

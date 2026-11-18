@@ -7,9 +7,9 @@ import type { FinancialDataset } from "@/lib/domain/types";
 import { DATA_SOURCE_LABELS } from "@/lib/domain/types";
 import type { Insight } from "@/lib/finance/insights";
 import { verifyAnswer } from "./guard";
-import { chatStream, getOllamaStatus, OllamaError, type OllamaConfig } from "./ollama";
+import { chatStream, getOllamaStatus, OllamaError, stripReasoning, type OllamaConfig } from "./ollama";
 import { dataBlock, systemPrompt } from "./prompt";
-import { runTool, type ToolResult } from "./tools";
+import { runTool, type ToolContext, type ToolResult } from "./tools";
 
 export type NarrativeEvent =
   | { type: "token"; text: string }
@@ -39,6 +39,7 @@ export async function* streamNarrative(
   kind: "management-summary" | "insight",
   insight: Insight | null,
   fetchImpl?: typeof fetch,
+  ctx: ToolContext = {},
 ): AsyncGenerator<NarrativeEvent> {
   const status = await getOllamaStatus(cfg, fetchImpl);
   if (!status.running) {
@@ -52,7 +53,7 @@ export async function* streamNarrative(
   const results =
     kind === "insight" && insight
       ? [insightAsToolResult(ds, insight)]
-      : [runTool(ds, { id: "profit_and_loss", params: { period: "last-month" } }), runTool(ds, { id: "cash_position", params: {} }), runTool(ds, { id: "receivables_summary", params: {} }), runTool(ds, { id: "payables_summary", params: {} }), runTool(ds, { id: "financial_risks", params: {} })];
+      : [runTool(ds, { id: "profit_and_loss", params: { period: "last-month" } }), runTool(ds, { id: "cash_position", params: {} }), runTool(ds, { id: "receivables_summary", params: {} }), runTool(ds, { id: "payables_summary", params: {} }), runTool(ds, { id: "financial_risks", params: {} }, ctx)];
   const instruction =
     kind === "insight"
       ? "Explain this observation to the owner in 2-4 sentences: what it means for the business and what to look into. Do not state causes as facts; the data does not show why it happened."
@@ -70,5 +71,6 @@ export async function* streamNarrative(
     yield { type: "error", code: err instanceof OllamaError ? err.code : "error", message: err instanceof OllamaError ? err.message : "The local model failed." };
     return;
   }
-  yield { type: "done", text: text.trim(), unverified: verifyAnswer(text, results).unverified, model: cfg.model };
+  const clean = stripReasoning(text);
+  yield { type: "done", text: clean, unverified: verifyAnswer(clean, results).unverified, model: cfg.model };
 }

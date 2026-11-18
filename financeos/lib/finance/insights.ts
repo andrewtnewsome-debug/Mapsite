@@ -14,7 +14,7 @@ import type { FinancialDataset } from "@/lib/domain/types";
 import { addDays, addMonths, formatIsoDate, monthLabel } from "@/lib/domain/dates";
 import { pctChange, safeDivide, sum } from "@/lib/domain/money";
 import { formatCurrency, formatPercent, formatSignedPercent } from "@/lib/format";
-import { runForecast, deriveForecastDefaults } from "./forecast";
+import { runForecast, deriveForecastDefaults, type ForecastAssumptions } from "./forecast";
 import { expenseChanges, overdueTrend, receivablesSnapshot } from "./metrics";
 import { balanceSheetAt, closedPnlMonths, summarizeBalanceSheet, summarizePnl } from "./statements";
 
@@ -52,7 +52,12 @@ export const INSIGHT_THRESHOLDS = {
 
 const SEVERITY_ORDER: Record<InsightSeverity, number> = { concern: 0, watch: 1, info: 2, positive: 3 };
 
-export function generateInsights(dataset: FinancialDataset): Insight[] {
+export interface InsightOptions {
+  /** The owner's saved 13-week forecast assumptions; defaults derived from the data are used when absent. */
+  forecastAssumptions?: ForecastAssumptions | null;
+}
+
+export function generateInsights(dataset: FinancialDataset, options: InsightOptions = {}): Insight[] {
   const insights: Insight[] = [];
   const ar = receivablesSnapshot(dataset);
   const t = INSIGHT_THRESHOLDS;
@@ -244,11 +249,13 @@ export function generateInsights(dataset: FinancialDataset): Insight[] {
   }
 
   // 7. Cash forecast shortfall
-  const defaults = deriveForecastDefaults(dataset);
-  const base = runForecast({ dataset, assumptions: defaults.assumptions, scenario: "base" });
-  const conservative = runForecast({ dataset, assumptions: defaults.assumptions, scenario: "conservative" });
+  const usingSaved = Boolean(options.forecastAssumptions);
+  const assumptions = options.forecastAssumptions ?? deriveForecastDefaults(dataset).assumptions;
+  const assumptionNote = usingSaved ? "Uses your saved 13-week forecast assumptions from the Cash Flow page." : "Uses the default forecast assumptions derived from your data; adjust them on the Cash Flow page.";
+  const base = runForecast({ dataset, assumptions, scenario: "base" });
+  const conservative = runForecast({ dataset, assumptions, scenario: "conservative" });
   if (base && conservative) {
-    const min = defaults.assumptions.minimumCashBalance;
+    const min = assumptions.minimumCashBalance;
     const threshold = min ?? 0;
     const thresholdLabel = min != null ? `minimum cash balance of ${formatCurrency(min)}` : "zero";
     const baseBreach = base.weeks.find((w) => w.endingCash < threshold);
@@ -269,7 +276,7 @@ export function generateInsights(dataset: FinancialDataset): Insight[] {
         ],
         assumptions: [
           `Compared against a ${thresholdLabel}.`,
-          "Uses the default 13-week forecast assumptions; adjust them on the Cash Flow page.",
+          assumptionNote,
         ],
         trigger: "Any week in the base or conservative 13-week forecast ends below the minimum cash balance (or zero if none is set).",
         followUpQuestion: "Are we going to run out of cash?",

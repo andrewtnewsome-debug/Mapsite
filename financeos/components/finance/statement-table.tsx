@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 export function StatementTableView({ table }: { table: StatementTable }) {
   const cmp = table.comparisonLabel != null;
   return (
-    <div className="overflow-x-auto">
+    <div tabIndex={0} role="region" aria-label={table.title} className="overflow-x-auto">
       <table className="w-full min-w-[560px] text-[13px]">
         <caption className="sr-only">{table.title}</caption>
         <thead>

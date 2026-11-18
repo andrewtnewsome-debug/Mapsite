@@ -109,7 +109,7 @@ export default async function ProfitabilityPage() {
           </CardHeader>
           <CardContent className="px-0 pb-2">
             {exp ? (
-              <TableWrap>
+              <TableWrap aria-label="Expense changes">
                 <Table>
                   <THead>
                     <TR className="hover:bg-transparent">
@@ -119,7 +119,9 @@ export default async function ProfitabilityPage() {
                       <TH numeric>{monthLabel(exp.priorMonth)}</TH>
                       <TH numeric>Change</TH>
                       <TH numeric>vs 3-mo avg</TH>
-                      <TH> </TH>
+                      <TH>
+                        <span className="sr-only">Flag</span>
+                      </TH>
                     </TR>
                   </THead>
                   <TBody>
@@ -154,7 +156,7 @@ export default async function ProfitabilityPage() {
           </CardHeader>
           <CardContent className="px-0 pb-2">
             {customers && customers.customers.length ? (
-              <TableWrap>
+              <TableWrap aria-label="Revenue by customer">
                 <Table>
                   <THead>
                     <TR className="hover:bg-transparent">
