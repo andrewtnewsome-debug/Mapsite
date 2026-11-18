@@ -317,3 +317,12 @@ describe("OAuth state replay protection", () => {
     expect(consumeOAuthState("def", 2_000)).toBe(true);
   });
 });
+
+describe("localhost host guard", () => {
+  it("allows loopback hosts and rejects rebinding hosts", async () => {
+    const { isAllowedHost } = await import("@/lib/host-guard");
+    for (const h of ["localhost:3000", "127.0.0.1:3000", "[::1]:3000", "LOCALHOST"]) expect(isAllowedHost(h)).toBe(true);
+    for (const h of ["evil.example:3000", "localhost.evil.example", "127.0.0.1.nip.io", "", null]) expect(isAllowedHost(h)).toBe(false);
+    expect(isAllowedHost("finance.local:3000", "finance.local")).toBe(true);
+  });
+});

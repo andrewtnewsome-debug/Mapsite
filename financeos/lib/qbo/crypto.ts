@@ -32,9 +32,9 @@ async function getKey(): Promise<Buffer> {
     cachedKey = Buffer.from(fromEnv, "hex");
     return cachedKey;
   }
-  const keyPath = path.join(dataDir(), "secret.key");
+  const keyPath = path.join(/*turbopackIgnore: true*/ dataDir(), "secret.key");
   try {
-    const hex = (await fs.readFile(keyPath, "utf8")).trim();
+    const hex = (await fs.readFile(/*turbopackIgnore: true*/ keyPath, "utf8")).trim();
     if (/^[0-9a-f]{64}$/.test(hex)) {
       cachedKey = Buffer.from(hex, "hex");
       return cachedKey;
@@ -42,12 +42,12 @@ async function getKey(): Promise<Buffer> {
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
   }
-  await fs.mkdir(dataDir(), { recursive: true, mode: 0o700 });
+  await fs.mkdir(/*turbopackIgnore: true*/ dataDir(), { recursive: true, mode: 0o700 });
   const key = randomBytes(32);
-  await fs.writeFile(keyPath, key.toString("hex"), { encoding: "utf8", mode: 0o600, flag: "wx" }).catch(async (err) => {
+  await fs.writeFile(/*turbopackIgnore: true*/ keyPath, key.toString("hex"), { encoding: "utf8", mode: 0o600, flag: "wx" }).catch(async (err) => {
     if ((err as NodeJS.ErrnoException).code !== "EEXIST") throw err;
   });
-  const hex = (await fs.readFile(keyPath, "utf8")).trim();
+  const hex = (await fs.readFile(/*turbopackIgnore: true*/ keyPath, "utf8")).trim();
   cachedKey = Buffer.from(hex, "hex");
   return cachedKey;
 }
