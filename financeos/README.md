@@ -110,8 +110,8 @@ Run on the demo company on a 4-core CPU **without a graphics card**, Ollama 0.40
 | Model | Questions routed correctly | Figures verified by the number guard | Median answer time |
 | --- | --- | --- | --- |
 | `qwen3:4b-instruct` | 20 / 20 | 133 / 134 (the one mismatch was flagged to the user) | 32 s (weekly briefing: 2 min) |
-| `qwen3:4b` (default; always reasons first) | see `.data/eval/` after running | | 1 to 5 min per answer on this CPU |
+| `qwen3:4b` (default; always reasons first), 6-question subset | 6 / 6 | 43 / 44 (the one mismatch was flagged) | 2 min 39 s (range 2 to 5 min) |
 
-What the real-model runs changed in the product: thinking-only models are detected and their reasoning is kept out of answers; each tool now supplies its own correct conclusion (for example "Conservative case falls below the minimum: Yes, 5 of 13 weeks") because a 4B model could otherwise invert a comparison; expense answers name the vendors whose bills changed; shares of a total are provided rather than estimated. The chat shows the calculated conclusion, labeled, above the AI explanation, and flags any figure that does not match.
+Both models gave correct, well-grounded answers; the instruct model was about five times faster on this hardware, so SETUP_GUIDE recommends it for computers without a graphics card. What the real-model runs changed in the product: thinking-only models are detected and their reasoning is kept out of answers; each tool now supplies its own correct conclusion (for example "Conservative case falls below the minimum: Yes, 5 of 13 weeks") because a 4B model could otherwise invert a comparison; expense answers name the vendors whose bills changed; shares of a total are provided rather than estimated. The chat shows the calculated conclusion, labeled, above the AI explanation, and flags any figure that does not match.
 
 **Not yet verified against live services:** QuickBooks has been tested with mocked Intuit responses only (the build environment cannot reach Intuit, and connecting needs your Intuit login). See "Known limitations" in [CLAUDE.md](CLAUDE.md).

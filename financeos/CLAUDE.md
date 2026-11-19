@@ -64,7 +64,7 @@ FinanceOS is an AI finance employee for small and lower-middle-market businesses
 
 ## Known limitations / not yet verified
 - **Live QuickBooks not tested.** The build environment could not reach Intuit hosts, and connecting requires the founder's Intuit login. Parsers are tested against mocked responses shaped like Intuit's. First real sync may reveal report-structure differences (e.g. unusual groups, multi-currency, sub-customers). Check Settings → "Data quality notes" and the AR reconciliation banner after the first sync.
-- **AI CFO tested with real models on a 4-core CPU without a GPU** (see `.data/eval/` reports when re-run; summary in README). `qwen3:4b` answers correctly but slowly because it always reasons first; `qwen3:4b-instruct` is the faster option. Answer quality on other models is untested.
+- **AI CFO tested with real models on a 4-core CPU without a GPU** (summary in README): `qwen3:4b-instruct` 20/20 routing, 133/134 figures verified, median 32 s; `qwen3:4b` 6/6 routing, 43/44 figures, median 2 min 39 s. Remaining mismatches are model transcription or self-computed percentages, which the guard flags; when one appears, add the figure to the tool's facts rather than relying on the model. Answer quality on other models is untested.
 - **Not run on Windows itself** (built and tested on Linux). Cross-platform precautions are in place; first run on Windows should follow SETUP_GUIDE.md.
 - AR aging uses invoice balances; unapplied payments and credit memos are not netted (flagged as a data-quality note and visible in the reconciliation banner).
 - The forecast excludes owner distributions, taxes, capex and new borrowing unless entered as one-time items. The AI CFO uses default forecast assumptions, not the user's saved ones.

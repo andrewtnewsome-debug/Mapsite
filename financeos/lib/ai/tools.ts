@@ -597,6 +597,13 @@ function budgetTool(ds: FinancialDataset, ctx: ToolContext): ToolResult {
       fact(`${monthLabel(last, "long")} net income, actual`, month.totals.netIncomeActual, "currency"),
       fact(`${monthLabel(last, "long")} net income, budget`, month.totals.netIncomeBudget, "currency", "assumption"),
       ...biggest.map((r) => fact(`${r.account} year-to-date variance (${r.favorable ? "favorable" : "unfavorable"})`, r.variance, "currency")),
+      // Share of the net income gap from each unfavorable item, so the model never estimates it.
+      ...(t.netIncomeActual < t.netIncomeBudget
+        ? biggest
+            .filter((r) => r.favorable === false)
+            .slice(0, 3)
+            .map((r) => fact(`${r.account} share of the net income shortfall`, Math.abs(r.variance) / (t.netIncomeBudget - t.netIncomeActual), "percent"))
+        : []),
     ],
     table: { columns: ["Account", "Budget YTD", "Actual YTD", "Variance", ""], rows: biggest.map((r) => [r.account, formatCurrency(r.budget), formatCurrency(r.actual), formatCurrency(r.variance), r.favorable ? "Favorable" : "Unfavorable"]) },
     assumptions: [`The budget is the owner's plan, not recorded data. ${budget.method}`],
