@@ -102,6 +102,16 @@ Run inside the `financeos` folder:
 On Windows you can also double-click **`start-financeos.cmd`**.
 
 ## Testing
-130 automated tests cover AR aging and date boundaries, partial payments, customer aggregation, collections scoring, statements and ratios, periods, the 13-week forecast and scenarios, missing-data handling, demo-data accounting identities, AI routing and tools, the number guard, the Ollama client against a protocol-faithful mock server, QuickBooks OAuth/state/token handling, the API client (pagination, refresh, backoff), report and entity parsing with mocked Intuit responses, invoice parsing, CSV safety and the localhost host guard.
+**146 automated tests** cover AR aging and date boundaries, partial payments, customer aggregation, collections scoring, statements and ratios, periods, the 13-week forecast and scenarios, budgets and variances, reconciliation checks, missing-data handling, demo-data accounting identities, AI routing and tools, the number guard, the Ollama client against a protocol-faithful mock server (including thinking-model behavior), QuickBooks OAuth/state/token handling, the API client (pagination, refresh, backoff), report and entity parsing with mocked Intuit responses, invoice parsing, CSV safety and the localhost host guard. An **axe-core** accessibility audit of every page reports zero WCAG 2.1 AA violations in light and dark mode.
 
-**Not yet verified against live services:** QuickBooks has been tested with mocked Intuit responses only, and the AI CFO has not yet been run against a real `qwen3:4b` model (see "Known limitations" in [CLAUDE.md](CLAUDE.md)).
+### Real local-model evaluation (`npm run eval:ai`)
+Run on the demo company on a 4-core CPU **without a graphics card**, Ollama 0.40.16, 20 questions (the founder's question list plus budget, payables, customer and balance-sheet questions):
+
+| Model | Questions routed correctly | Figures verified by the number guard | Median answer time |
+| --- | --- | --- | --- |
+| `qwen3:4b-instruct` | 20 / 20 | 133 / 134 (the one mismatch was flagged to the user) | 32 s (weekly briefing: 2 min) |
+| `qwen3:4b` (default; always reasons first) | see `.data/eval/` after running | | 1 to 5 min per answer on this CPU |
+
+What the real-model runs changed in the product: thinking-only models are detected and their reasoning is kept out of answers; each tool now supplies its own correct conclusion (for example "Conservative case falls below the minimum: Yes, 5 of 13 weeks") because a 4B model could otherwise invert a comparison; expense answers name the vendors whose bills changed; shares of a total are provided rather than estimated. The chat shows the calculated conclusion, labeled, above the AI explanation, and flags any figure that does not match.
+
+**Not yet verified against live services:** QuickBooks has been tested with mocked Intuit responses only (the build environment cannot reach Intuit, and connecting needs your Intuit login). See "Known limitations" in [CLAUDE.md](CLAUDE.md).
