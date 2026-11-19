@@ -148,6 +148,25 @@ function AssistantBubble({ m, onAsk }: { m: AssistantMsg; onAsk: (q: string) => 
           ) : null}
         </div>
         {m.notice ? <Notice tone="warning" className="mb-2">{m.notice}</Notice> : null}
+        {m.mode === "ai" && m.results.some((r) => r.available) ? (
+          <div className="mb-3 rounded-lg border border-border bg-surface-2/60 px-3 py-2.5 text-[13px] text-text-2">
+            <p className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-text-3">
+              <Calculator className="size-3.5" aria-hidden /> Calculated by FinanceOS
+            </p>
+            {m.results
+              .filter((r) => r.available)
+              .map((r, i) => (
+                <div key={`${r.toolId}-${i}`} className={r.summary.length > 700 ? "line-clamp-6" : undefined}>
+                  <Markdown text={r.summary} />
+                </div>
+              ))}
+          </div>
+        ) : null}
+        {m.mode === "ai" && (m.content || m.status === "streaming") ? (
+          <p className="mb-1 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-text-3">
+            <Bot className="size-3.5" aria-hidden /> AI explanation
+          </p>
+        ) : null}
         {m.error ? <Notice tone="critical" className="mb-2">{m.error}</Notice> : null}
         <div className="text-[14px] text-text">
           {m.content ? (

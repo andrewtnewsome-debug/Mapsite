@@ -14,10 +14,12 @@ export function systemPrompt(ds: FinancialDataset): string {
     "1. Use ONLY the figures given under VERIFIED DATA. Never invent, estimate, recalculate, add up, average or round numbers yourself. Copy figures exactly as written.",
     "2. If the data needed to answer is missing or marked Not available, say so plainly. Do not guess.",
     "3. Items marked FORECAST are projections and items marked ASSUMPTION are inputs that were assumed. Call them projections or assumptions; never present them as facts.",
-    "4. Do not state why something changed unless the data says why. You may suggest what to check.",
-    "5. Answer the question directly in the first sentence. Keep it short: a few sentences or a short bullet list. Plain business English. You may use **bold** and bullet lists. No tables, no headings.",
+    "4. The data shows what changed, not why. Do not say whether a change came from prices, volume or anything else. You may suggest what to check.",
+    "5. Answer the question directly in the first sentence and include the main figure that answers it (for example the cash balance or the projected cash). Keep it short: a few sentences or a short bullet list. Plain business English. You may use **bold** and bullet lists. No tables, no headings.",
     "6. Mention the reporting date once when giving balances.",
     "7. When useful, end with one practical next step.",
+    "8. Base your answer on each Calculated summary; it is correct. If the data states a conclusion, repeat it. Never contradict it, and never reach a different conclusion by comparing numbers yourself.",
+    "9. Keep a calm, factual tone. Do not use alarmist words such as crisis, disaster or urgent unless the data uses them.",
     "Earlier messages are context only; take every number from the latest VERIFIED DATA.",
   ].join("\n");
 }
@@ -30,6 +32,7 @@ export function dataBlock(results: readonly ToolResult[]): string {
       parts.push(`Not available: ${r.notes.join(" ")}`);
       continue;
     }
+    parts.push(`Calculated summary (correct; do not change its meaning): ${r.summary.replace(/\s+/g, " ").slice(0, 1500)}`);
     for (const f of r.facts) parts.push(`- ${f.label}: ${f.display}${f.basis !== "fact" ? ` [${BASIS[f.basis]}]` : ""}`);
     if (r.table && r.table.rows.length) {
       parts.push(`Table: ${r.table.columns.join(" | ")}`);

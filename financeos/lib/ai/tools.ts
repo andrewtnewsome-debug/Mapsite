@@ -433,7 +433,7 @@ function expenseTool(ds: FinancialDataset): ToolResult {
     assumptions: [`"Significant" means up at least ${formatPercent(EXPENSE_CHANGE_THRESHOLD.pct, 0)} and ${formatCurrency(EXPENSE_CHANGE_THRESHOLD.amount)} versus both the prior month and the prior three-month average.`],
     notes: [
       drivers.length
-        ? "Vendor-level detail comes from recorded vendor bills coded to each account. It shows where the money went, not the business reason; confirm the reason with the vendor or project."
+        ? "Vendor-level detail comes from recorded vendor bills coded to each account. Higher bills can mean more work, higher prices or timing; the data does not show which. Confirm the reason with the vendor or project."
         : "The accounting data shows how much each expense changed, not why. Causes must be confirmed from the underlying transactions.",
     ],
     summary: `${monthLabel(e.month, "long")} expenses totaled ${formatCurrency(totalLast)} vs ${formatCurrency(totalPrior)} in ${monthLabel(e.priorMonth, "long")}. ${significant.length ? `Significant increases: ${significant.map((c) => `${c.account} up ${formatCurrency(c.changeVsPrior)} (${formatSignedPercent(c.pctVsPrior)})`).join("; ")}.` : "No account met the significant-increase threshold."} Largest increases: ${increases.map((c) => `${c.account} ${formatSignedPercent(c.pctVsPrior)}`).join(", ") || "none"}.${driverSummary ? ` ${driverSummary}` : ""}`,
@@ -485,6 +485,12 @@ function forecastTool(ds: FinancialDataset, p: ToolParams, ctx: ToolContext = {}
       fact("Conservative case lowest projected cash (13 weeks)", all.conservative.lowestCash.amount, "currency", "forecast"),
       fact("Conservative case lowest week", all.conservative.lowestCash.week, "count", "forecast"),
       fact("Minimum cash balance", min, "currency", "assumption"),
+      ...(["base", "conservative", "optimistic"] as const).map((id) => {
+        const below = min == null ? [] : all[id].weeksBelowMinimum;
+        const label = `${id[0].toUpperCase()}${id.slice(1)} case falls below the minimum cash balance in any of the 13 weeks`;
+        return fact(label, min == null ? "Not available (no minimum set)" : below.length ? `Yes: ${below.length} of 13 weeks, first in week ${below[0]}` : "No", "text", "forecast");
+      }),
+      fact("Any scenario projects cash below zero", (["base", "conservative", "optimistic"] as const).some((id) => all[id].weeksBelowZero.length > 0) ? "Yes" : "No", "text", "forecast"),
       fact("Weekly payroll assumption", a.weeklyPayroll, "currency", "assumption"),
       fact("Weekly new billings assumption", a.weeklyNewBillings, "currency", "assumption"),
       fact("Collection rate assumption", a.collectionRate, "percent", "assumption"),
