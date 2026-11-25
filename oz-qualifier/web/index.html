@@ -1,0 +1,398 @@
+<title>OZ Qualifier</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: one column. Search card first, then the result (verdict, per-round bars, exact-address steps, tract tables, links, state programs), then sample reports. */
+:root {
+  --bg: #f4f6f8; --surface: #ffffff; --ink: #17212b; --muted: #5a6775; --line: #d9dfe6; --field: #ffffff;
+  --accent: #1f5f8b; --accent-ink: #ffffff; --yes: #0d6b4e; --yes-bg: #e3f2ec; --no: #4a5562; --no-bg: #eaedf1;
+  --part: #87590a; --part-bg: #fbf0d9; --bar: #dfe5eb;
+  --display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #11161c; --surface: #18202a; --ink: #e4e9ef; --muted: #98a5b3; --line: #2a3542; --field: #10161d;
+  --accent: #7fb6e0; --accent-ink: #0d1620; --yes: #63d2a6; --yes-bg: #133128; --no: #c0c9d3; --no-bg: #222b36;
+  --part: #f0c36a; --part-bg: #2f2716; --bar: #26313d; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #11161c; --surface: #18202a; --ink: #e4e9ef; --muted: #98a5b3; --line: #2a3542; --field: #10161d;
+  --accent: #7fb6e0; --accent-ink: #0d1620; --yes: #63d2a6; --yes-bg: #133128; --no: #c0c9d3; --no-bg: #222b36;
+  --part: #f0c36a; --part-bg: #2f2716; --bar: #26313d; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--body); }
+.wrap { max-width: 920px; margin: 0 auto; padding-block: 32px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 28px; }
+a { color: var(--accent); }
+header { display: flex; flex-direction: column; gap: 8px; max-width: 70ch; }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0; }
+h1 { font: 700 clamp(28px, 4.5vw, 38px)/1.1 var(--display); margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+h2 { font: 600 18px/1.25 var(--display); margin: 0; text-wrap: balance; }
+h3 { font: 600 15px/1.3 var(--display); margin: 0; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+form.search { display: flex; flex-wrap: wrap; gap: 8px; }
+form.search label { flex-basis: 100%; font-weight: 600; }
+#q { flex: 1 1 280px; min-width: 0; font: 16px/1.4 var(--body); padding: 12px 14px; border-radius: 9px; border: 1px solid var(--line);
+  background: var(--field); color: var(--ink); }
+#q:focus-visible, .btn:focus-visible, .chip:focus-visible, #tractIn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.btn { font: 600 15px/1 var(--body); padding: 12px 18px; border-radius: 9px; border: 0; background: var(--accent); color: var(--accent-ink); cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--accent); border: 1px solid var(--line); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.chip { font: 500 13px/1 var(--body); padding: 7px 10px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; }
+.chip:hover { border-color: var(--accent); }
+#result { display: flex; flex-direction: column; gap: 16px; }
+.tag { align-self: flex-start; font: 500 11px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 5px 8px; border-radius: 6px; background: var(--part-bg); color: var(--part); }
+.verdict { border-radius: 12px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--line); }
+.verdict .q { font-size: 14px; }
+.verdict .a { font: 700 26px/1.15 var(--display); }
+.verdict.yes { background: var(--yes-bg); } .verdict.yes .a { color: var(--yes); }
+.verdict.no { background: var(--no-bg); } .verdict.no .a { color: var(--no); }
+.verdict.part { background: var(--part-bg); } .verdict.part .a { color: var(--part); }
+.rounds { display: flex; flex-direction: column; gap: 12px; }
+.round { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: baseline; }
+.round .name { font-weight: 600; }
+.round .val { font: 500 14px/1.2 var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+.round .meta { grid-column: 1 / -1; font-size: 13px; color: var(--muted); }
+.bar { grid-column: 1 / -1; height: 8px; border-radius: 99px; background: var(--bar); overflow: hidden; }
+.bar > span { display: block; height: 100%; border-radius: 99px; background: var(--yes); max-width: 100%; }
+.bar.nmtc > span { background: var(--accent); }
+.steps { display: flex; flex-direction: column; gap: 10px; margin: 0; padding-left: 20px; }
+.linkrow { display: flex; flex-wrap: wrap; gap: 8px; }
+.linkbtn { display: inline-block; font: 600 13px/1 var(--body); padding: 9px 12px; border-radius: 8px; border: 1px solid var(--line); text-decoration: none; color: var(--accent); background: var(--surface); }
+.linkbtn:hover { border-color: var(--accent); }
+.tractform { display: flex; flex-wrap: wrap; gap: 8px; }
+#tractIn { flex: 1 1 200px; min-width: 0; font: 15px/1.4 var(--mono); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--field); color: var(--ink); }
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; font-size: 12px; white-space: nowrap; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.pill { display: inline-block; font: 600 11px/1 var(--body); padding: 4px 7px; border-radius: 999px; white-space: nowrap; }
+.pill.yes { background: var(--yes-bg); color: var(--yes); } .pill.no { background: var(--no-bg); color: var(--no); }
+details { border-top: 1px solid var(--line); padding-top: 10px; }
+summary { cursor: pointer; font-weight: 600; }
+details[open] summary { margin-bottom: 10px; }
+ul.links, ul.progs { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+.progs li span { display: block; color: var(--muted); font-size: 13px; }
+.notice { font-size: 13px; color: var(--muted); border-left: 3px solid var(--line); padding-left: 10px; }
+.err { color: var(--part); font-weight: 500; }
+.samples { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 8px; }
+.sample { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); text-decoration: none; color: var(--ink); }
+.sample:hover { border-color: var(--accent); }
+.sample b { font-weight: 600; } .sample span { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+footer { border-top: 1px solid var(--line); padding-top: 14px; color: var(--muted); font-size: 13px; display: flex; flex-direction: column; gap: 6px; }
+footer .disc { color: var(--ink); font-weight: 500; }
+@media (prefers-reduced-motion: no-preference) { .bar > span { transition: width .4s ease; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">oz-qualifier &middot; Opportunity Zone screening</p>
+    <h1>Is it in an Opportunity Zone?</h1>
+    <p class="muted">Check a ZIP code, a street address, or a census tract number against both Opportunity Zone designation rounds (2018 and 2027) and NMTC low-income tracts. Data: CDFI Fund, Treasury and Census Bureau official lists.</p>
+  </header>
+
+  <section class="card" aria-label="Search">
+    <form class="search" id="searchForm">
+      <label for="q">ZIP code, address, or census tract</label>
+      <input id="q" name="q" type="text" inputmode="text" autocomplete="off" placeholder="e.g. 44113, or 2516 Market Ave, Cleveland, OH 44113">
+      <button class="btn" type="submit">Check</button>
+    </form>
+    <div class="chips"><span class="small muted">Try:</span>
+      <button class="chip" type="button" data-q="44113">44113</button>
+      <button class="chip" type="button" data-q="2516 Market Ave, Cleveland, OH 44113">2516 Market Ave, Cleveland, OH 44113</button>
+      <button class="chip" type="button" data-q="39035197200">Tract 39035197200</button>
+      <button class="chip" type="button" data-q="27701">27701</button>
+    </div>
+  </section>
+
+  <section id="result" aria-live="polite"></section>
+
+  <section id="samplesSec" class="card" hidden>
+    <h2>Full sample reports</h2>
+    <p class="small muted">One-page reports from the command-line tool, which also geocodes exact addresses, checks HUBZone status and reads company websites.</p>
+    <div class="samples" id="samples"></div>
+  </section>
+
+  <footer>
+    <p>How this page works: a ZIP is matched to its census tracts with the Census Bureau's ZIP Code Tabulation Area relationship files, then each tract is checked against the official lists (2018 round: 8,764 tracts, 2010 boundaries, in effect through Dec 31, 2028; 2027 round: 6,576 tracts, 2020 boundaries, Jan 1, 2027 through Dec 31, 2036; NMTC: 2016-2020 ACS low-income communities). A ZIP can span several tracts, so a ZIP result tells you whether any part of the area is designated; only the exact address decides a specific location.</p>
+    <p class="disc">This is a screening tool. It is not tax, legal, or investment advice, and any Opportunity Zone structure must be confirmed with qualified counsel and against the CDFI Fund's official records before reliance.</p>
+  </footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (s, el = document) => el.querySelector(s);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const pct = (n) => (n >= 99.95 ? "100" : n < 0.05 && n > 0 ? "<0.1" : n.toFixed(1)) + "%";
+  const cache = new Map();
+  async function getJSON(path) {
+    if (!cache.has(path)) cache.set(path, fetch(path).then((r) => { if (!r.ok) throw new Error(path + " " + r.status); return r.json(); }));
+    try { return await cache.get(path); } catch (e) { cache.delete(path); throw e; }
+  }
+  const zipFile = (z) => getJSON("data/zips/" + z[0] + ".json");
+  const counties = () => getJSON("data/counties.json");
+  const statesData = () => getJSON("data/states.json");
+  let desigSets = null;
+  async function designations() {
+    if (!desigSets) {
+      const d = await getJSON("data/designations.json");
+      desigSets = Object.fromEntries(Object.entries(d).map(([k, v]) => [k, new Set(v)]));
+      desigSets.q27ct = new Map(d.q27.filter((g) => g.startsWith("09")).map((g) => [g.slice(5), g]));
+      desigSets.nmtcct = new Map(d.nmtc.filter((g) => g.startsWith("09")).map((g) => [g.slice(5), g]));
+    }
+    return desigSets;
+  }
+
+  const ROUNDS = {
+    r18: { label: "2018 round", period: "in effect through Dec 31, 2028", tracts: "2010 census tracts" },
+    r27: { label: "2027 round", period: "Jan 1, 2027 through Dec 31, 2036", tracts: "2020 census tracts" },
+  };
+  const geocoderUrl = (addr, vintage) => "https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress?address=" +
+    encodeURIComponent(addr) + "&benchmark=Public_AR_Current&vintage=" + vintage + "&layers=Census+Tracts&format=html";
+
+  function classify(share) {
+    if (share >= 99.5) return "all";
+    if (share < 1) return share > 0 ? "sliver" : "none";
+    return "part";
+  }
+
+  function parseInput(raw) {
+    const s = raw.trim();
+    const digits = s.replace(/[\s-]/g, "");
+    if (/^\d{11}$/.test(digits)) return { kind: "tract", geoid: digits };
+    if (/^\d{5}(\d{4})?$/.test(digits)) return { kind: "zip", zip: digits.slice(0, 5) };
+    const zips = [...s.matchAll(/\b(\d{5})(?:-\d{4})?\b/g)].map((m) => m[1]);
+    if (/[a-z]/i.test(s)) return { kind: "address", address: s, zip: zips.length ? zips[zips.length - 1] : null };
+    return { kind: "bad" };
+  }
+
+  function render(html) { $("#result").innerHTML = html; }
+
+  async function run(raw, opts = {}) {
+    const p = parseInput(raw);
+    if (p.kind === "bad") {
+      render(`<div class="card"><p class="err">Enter a 5-digit ZIP code, a street address that includes its ZIP, or an 11-digit census tract number.</p></div>`);
+      return;
+    }
+    render(`<div class="card"><p class="muted">Checking…</p></div>`);
+    try {
+      if (p.kind === "tract") {
+        await showTract(p.geoid, opts);
+        setHash("tract-" + p.geoid);
+      } else if (p.kind === "zip") {
+        await showZip(p.zip, null, opts);
+        setHash("zip-" + p.zip);
+      } else {
+        await showZip(p.zip, p.address, opts);
+        setHash("");
+      }
+    } catch (e) {
+      render(`<div class="card"><p class="err">The lookup data could not be loaded (${esc(e.message)}). Reload the page and try again.</p></div>`);
+    }
+  }
+
+  function setHash(h) {
+    try {
+      if (h) history.replaceState(null, "", "#" + h);
+      else history.replaceState(null, "", location.pathname + location.search);
+    } catch (e) { /* the viewer may not allow it */ }
+  }
+
+  async function stateBlock(fipsList) {
+    const sd = await statesData();
+    const parts = [];
+    for (const f of fipsList) {
+      const st = sd.states[f];
+      if (!st) continue;
+      const rows = sd.programs.filter((r) => r.state === st[0]);
+      if (!rows.length) {
+        parts.push(`<p class="small muted">No ${esc(st[1])} programs are in the seeded table yet (it covers OH, NC, GA, TX and CA).</p>`);
+        continue;
+      }
+      const items = rows.map((r) => `<li>${/^https:\/\//.test(r.official_url) ? `<a href="${esc(r.official_url)}" target="_blank" rel="noopener">${esc(r.program_name)}</a>` : esc(r.program_name)}<span>${esc(r.description)} (checked ${esc(r.as_of)})</span></li>`).join("");
+      parts.push(`<h3>${esc(st[1])} programs to research</h3><ul class="progs">${items}</ul>`);
+    }
+    return parts.length ? `<div class="card">${parts.join("")}<p class="small muted">Hand-maintained starting point, not a complete list.</p></div>` : "";
+  }
+
+  function mapLinks(q) {
+    const g = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q);
+    return `<div class="card"><h3>Verify on a map</h3><ul class="links">
+      <li><a href="${esc(g)}" target="_blank" rel="noopener">Google Maps: ${esc(q)}</a></li>
+      <li><a href="https://amis.cdfifund.gov/s/cims-public?c__program=Opportunity%20Zones" target="_blank" rel="noopener">CDFI Fund CIMS map (Opportunity Zones)</a></li>
+      <li><a href="https://www.huduser.gov/opportunityzones/" target="_blank" rel="noopener">HUD Opportunity Zones map</a></li>
+      <li><a href="https://maps.certify.sba.gov/hubzone/map" target="_blank" rel="noopener">SBA HUBZone map</a> <span class="small muted">(HUBZone status is not checked on this page)</span></li>
+    </ul></div>`;
+  }
+
+  function exactSteps(address) {
+    return `<div class="card"><h3>Check the exact address</h3>
+      <p class="small muted">A ZIP covers several census tracts. This page cannot look a street address up by itself, so use the Census Bureau's geocoder for the exact tract:</p>
+      <ol class="steps">
+        <li>Open the Census result for <b>${esc(address)}</b>:
+          <div class="linkrow" style="margin-top:6px">
+            <a class="linkbtn" href="${esc(geocoderUrl(address, "Census2010_Current"))}" target="_blank" rel="noopener">Tract for the 2018 round (2010 tracts)</a>
+            <a class="linkbtn" href="${esc(geocoderUrl(address, "ACS2024_Current"))}" target="_blank" rel="noopener">Tract for the 2027 round (2020 tracts)</a>
+          </div></li>
+        <li>Copy the 11-digit <b>GEOID</b> listed under "Census Tracts" and paste it here:
+          <form class="tractform" id="tractForm" style="margin-top:6px">
+            <input id="tractIn" inputmode="numeric" autocomplete="off" placeholder="e.g. 39035103602" aria-label="Census tract GEOID">
+            <button class="btn ghost" type="submit">Check tract</button>
+          </form>
+          <div id="tractOut" style="margin-top:10px"></div></li>
+      </ol>
+      <p class="small muted">The two links usually show the same number. When they differ, the tract was redrawn in 2020: use the first for the 2018 round and the second for the 2027 round.</p></div>`;
+  }
+
+  function wireTractForm() {
+    const f = $("#tractForm");
+    if (!f) return;
+    f.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      const g = $("#tractIn").value.replace(/\D/g, "");
+      const out = $("#tractOut");
+      if (g.length !== 11) { out.innerHTML = `<p class="err">A tract GEOID has 11 digits (state 2, county 3, tract 6).</p>`; return; }
+      out.innerHTML = await tractCard(g, true);
+    });
+  }
+
+  async function tractStatus(g) {
+    const d = await designations();
+    const in18 = d.q18.has(g) || (g.startsWith("51515") && d.q18.has("51019" + g.slice(5)));
+    let in27 = d.q27.has(g), g27 = g;
+    if (!in27 && g.startsWith("09") && d.q27ct.has(g.slice(5))) { in27 = true; g27 = d.q27ct.get(g.slice(5)); }
+    let lic = d.nmtc.has(g);
+    if (!lic && g.startsWith("09") && d.nmtcct.has(g.slice(5))) lic = true;
+    return { in18, r18: d.q18rural.has(g), in27, r27: d.q27rural.has(g27), lic };
+  }
+
+  async function tractCard(g, compact) {
+    const [s, c] = await Promise.all([tractStatus(g), counties()]);
+    const county = c[g.slice(0, 5)] || "county not on file";
+    const any = s.in18 || s.in27;
+    const rows = `
+      <tr><td>2018 round <span class="small muted">(${ROUNDS.r18.period})</span></td><td><span class="pill ${s.in18 ? "yes" : "no"}">${s.in18 ? "Designated" : "Not designated"}</span>${s.r18 ? ' <span class="small muted">rural</span>' : ""}</td></tr>
+      <tr><td>2027 round <span class="small muted">(${ROUNDS.r27.period})</span></td><td><span class="pill ${s.in27 ? "yes" : "no"}">${s.in27 ? "Designated" : "Not designated"}</span>${s.r27 ? ' <span class="small muted">rural</span>' : ""}</td></tr>
+      <tr><td>NMTC low-income community <span class="small muted">(2016-2020 ACS)</span></td><td><span class="pill ${s.lic ? "yes" : "no"}">${s.lic ? "Eligible" : "Not eligible"}</span></td></tr>`;
+    const verdict = `<div class="verdict ${any ? "yes" : "no"}"><p class="q">Census tract <span class="mono">${esc(g)}</span> &middot; ${esc(county)}</p>
+      <p class="a">${any ? "YES, designated" : "NO, not designated"}</p>
+      <p class="small">${any ? "Designated in the " + [s.in18 && "2018 round", s.in27 && "2027 round"].filter(Boolean).join(" and the ") + "." : "Not on the 2018 or 2027 Opportunity Zone list."}</p></div>`;
+    return `${compact ? "" : ""}${verdict}<div class="scroll"><table><tbody>${rows}</tbody></table></div>
+      <p class="small muted">The 2018 list uses 2010 tract numbers and the 2027 list uses 2020 tract numbers. Most tracts kept their number in 2020; if this one was redrawn, check the number from the matching Census link.</p>`;
+  }
+
+  async function showTract(g) {
+    const html = await tractCard(g, false);
+    const st = g.slice(0, 2);
+    render(`<div class="card">${html}</div>${mapLinks("census tract " + g)}${await stateBlock([st])}`);
+  }
+
+  function tractTable(list, cMap, kind) {
+    const rows = list.map(([g, share, f]) => {
+      const name = cMap[g.slice(0, 5)] || "";
+      if (kind === "t10") {
+        return `<tr><td class="mono">${esc(g)}</td><td>${esc(name)}</td><td class="num">${pct(share)}</td>
+          <td>${f & 1 ? '<span class="pill yes">2018 zone</span>' + (f & 2 ? ' <span class="small muted">rural</span>' : "") : '<span class="pill no">No</span>'}</td></tr>`;
+      }
+      return `<tr><td class="mono">${esc(g)}</td><td>${esc(name)}</td><td class="num">${pct(share)}</td>
+        <td>${f & 1 ? '<span class="pill yes">2027 zone</span>' + (f & 4 ? ' <span class="small muted">rural</span>' : "") : '<span class="pill no">No</span>'}</td>
+        <td>${f & 2 ? '<span class="pill yes">NMTC</span>' : '<span class="pill no">No</span>'}</td></tr>`;
+    }).join("");
+    const head = kind === "t10"
+      ? "<tr><th>2010 tract</th><th>County</th><th>Share of ZIP land</th><th>2018 round</th></tr>"
+      : "<tr><th>2020 tract</th><th>County</th><th>Share of ZIP land</th><th>2027 round</th><th>NMTC</th></tr>";
+    return `<div class="scroll"><table><thead>${head}</thead><tbody>${rows}</tbody></table></div>`;
+  }
+
+  function roundRow(label, meta, share, count, total, cls) {
+    return `<div class="round"><span class="name">${esc(label)}</span><span class="val">${pct(share)} of land</span>
+      <div class="bar ${cls || ""}" role="img" aria-label="${esc(label)}: ${pct(share)} of the ZIP's land"><span style="width:${Math.min(100, share).toFixed(1)}%"></span></div>
+      <span class="meta">${esc(meta)} &middot; ${count} of ${total} tract${total === 1 ? "" : "s"}</span></div>`;
+  }
+
+  async function showZip(zip, address, opts) {
+    const header = address ? `<p class="small muted">Address entered: <b>${esc(address)}</b></p>` : "";
+    if (!zip) {
+      render(`<div class="card">${header}<p class="err">No ZIP code found in that address. Add the 5-digit ZIP for an instant area check, or use the exact check below.</p></div>${exactSteps(address)}`);
+      wireTractForm();
+      return;
+    }
+    const [bucket, cMap] = await Promise.all([zipFile(zip), counties()]);
+    const z = bucket[zip];
+    if (!z) {
+      render(`<div class="card">${header}<div class="verdict part"><p class="q">ZIP ${esc(zip)}</p><p class="a">No mapped area for this ZIP</p>
+        <p class="small">The Census Bureau has no area for ZIP ${esc(zip)}. It is usually a PO-box-only ZIP or one assigned to a single organization or building. Check the street address instead.</p></div></div>
+        ${address ? exactSteps(address) : ""}${mapLinks(zip)}`);
+      wireTractForm();
+      return;
+    }
+    const [t10, t20] = z;
+    const sum = (list, bit) => list.reduce((a, [, s, f]) => a + (f & bit ? s : 0), 0);
+    const cnt = (list, bit) => list.filter(([, , f]) => f & bit).length;
+    const s18 = sum(t10, 1), s27 = sum(t20, 1), sN = sum(t20, 2);
+    const k18 = classify(s18), k27 = classify(s27);
+    const best = Math.max(s18, s27);
+    let cls, answer, line;
+    if (k18 === "all" || k27 === "all") {
+      cls = "yes"; answer = "YES, the whole ZIP is designated";
+      line = "Every census tract in this ZIP is in an Opportunity Zone (" + [k18 === "all" && "2018 round", k27 === "all" && "2027 round"].filter(Boolean).join(" and ") + ").";
+    } else if (best >= 1) {
+      cls = "part"; answer = "PARTLY designated";
+      line = `Up to ${pct(best)} of this ZIP's land is in designated tracts. Whether a specific location qualifies depends on its exact address.`;
+    } else {
+      cls = "no"; answer = "NO designated tracts";
+      line = best > 0 ? "Only thin boundary slivers of designated tracts touch this ZIP; a location here is almost certainly outside a zone. Confirm with the exact address."
+                      : "No part of this ZIP is in a 2018 or 2027 Opportunity Zone.";
+    }
+    const cs = [...new Set(t20.map(([g]) => g.slice(0, 5)))].map((f) => cMap[f]).filter(Boolean);
+    const states = [...new Set(t20.map(([g]) => g.slice(0, 2)))];
+    const exampleTag = opts.example ? `<span class="tag">Example &middot; type your own ZIP or address above</span>` : "";
+    render(`<div class="card">${exampleTag}${header}
+      <div class="verdict ${cls}"><p class="q">ZIP ${esc(zip)} &middot; ${esc(cs.slice(0, 3).join("; "))}${cs.length > 3 ? " and others" : ""}</p>
+        <p class="a">${esc(answer)}</p><p class="small">${esc(line)}</p></div>
+      <div class="rounds">
+        ${roundRow("2018 round", ROUNDS.r18.period, s18, cnt(t10, 1), t10.length)}
+        ${roundRow("2027 round", ROUNDS.r27.period, s27, cnt(t20, 1), t20.length)}
+        ${roundRow("NMTC low-income tracts", "2016-2020 ACS eligibility data", sN, cnt(t20, 2), t20.length, "nmtc")}
+      </div>
+      <details><summary>Census tracts in ZIP ${esc(zip)}</summary>
+        <p class="small muted" style="margin-bottom:8px">2020 tracts (2027 round and NMTC)</p>${tractTable(t20, cMap, "t20")}
+        <p class="small muted" style="margin:14px 0 8px">2010 tracts (2018 round)</p>${tractTable(t10, cMap, "t10")}
+        <p class="notice" style="margin-top:10px">ZIP areas are the Census Bureau's ZIP Code Tabulation Areas, which approximate postal ZIP codes. Shares are of the ZIP's land area.</p>
+      </details></div>
+      ${address ? exactSteps(address) : (cls === "part" ? `<div class="card"><p class="small">To check a specific location in this ZIP, type its full street address above.</p></div>` : "")}
+      ${mapLinks(address || zip)}${await stateBlock(states)}`);
+    wireTractForm();
+  }
+
+  async function loadSamples() {
+    try {
+      const list = await getJSON("data/samples.json");
+      if (!Array.isArray(list) || !list.length) return;
+      $("#samples").innerHTML = list.map((s) => `<a class="sample" href="${esc(s.file)}"><b>${esc(s.company)} &middot; ${esc(s.answer)}</b><span>${esc(s.address)}</span></a>`).join("");
+      $("#samplesSec").hidden = false;
+    } catch (e) { /* no samples bundled */ }
+  }
+
+  $("#searchForm").addEventListener("submit", (ev) => { ev.preventDefault(); run($("#q").value); });
+  document.querySelectorAll(".chip[data-q]").forEach((b) => b.addEventListener("click", () => { $("#q").value = b.dataset.q; run(b.dataset.q); }));
+  function fromHash() {
+    const h = (location.hash || "").slice(1);
+    let m;
+    if ((m = /^zip-(\d{5})$/.exec(h))) { $("#q").value = m[1]; run(m[1]); return true; }
+    if ((m = /^tract-(\d{11})$/.exec(h))) { $("#q").value = m[1]; run(m[1]); return true; }
+    return false;
+  }
+  window.addEventListener("hashchange", fromHash);
+  if (!fromHash()) run("44113", { example: true }).then(() => setHash(""));
+  loadSamples();
+})();
+</script>

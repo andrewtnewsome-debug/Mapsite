@@ -11,7 +11,14 @@ pip install -r requirements.txt          # Python 3.9+; requests, beautifulsoup4
 python build_data.py                     # downloads the official lists into data/designations.sqlite (~10 s)
 python qualify.py --address "9500 Euclid Ave, Cleveland, OH 44195"
 python qualify.py --website https://www.greatlakesbrewing.com
+python qualify.py --serve                # the same checks from a web form at http://127.0.0.1:8765
 ```
+
+`--serve` runs a small web form on your own computer (127.0.0.1 only). Type one or more addresses or a website and get the same verdicts and one-page reports, with exact-address geocoding and HUBZone included.
+
+### Browser lookup page (nothing to install)
+
+`web/index.html` is a static page that checks a **ZIP code**, a **street address** or a **census tract number** in the browser. Build its data with `python tools/build_web_data.py` (after `build_data.py`), then serve the `web/` folder or publish it. A ZIP is matched to its census tracts with the Census Bureau's ZIP Code Tabulation Area relationship files. The page shows how much of the ZIP's land is in 2018-round zones, 2027-round zones and NMTC tracts, tract by tract. A static page cannot geocode a street address, so for an address it screens the address's ZIP and links to the Census geocoder's result for the exact tract. Paste that tract number back in for the exact answer. HUBZone status is not checked there.
 
 | Option | What it does |
 |---|---|
@@ -113,7 +120,9 @@ build_data.py         downloads and loads datasets from data/sources.json
 ozq/                  geocode, extract, hubzone, verdict, report, db, loaders, net (HTTP cache)
 data/sources.json     dataset manifest (sources, vintages, periods, columns)
 data/state_incentives.csv   hand-maintained state programs
-tools/                crosscheck.py, verify_points.py, check_links.py
+ozq/webform.py        local web form behind --serve
+web/index.html        static ZIP / address / tract lookup page (data built by tools/build_web_data.py)
+tools/                crosscheck.py, verify_points.py, check_links.py, build_web_data.py
 tests/                offline unit tests
 reports/examples/     sample reports from the verification runs
 VERIFICATION.md       what was checked at each build step, with results

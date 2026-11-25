@@ -8,3 +8,4 @@ reports/*
 !reports/examples/
 __pycache__/
 *.pyc
+web/data/

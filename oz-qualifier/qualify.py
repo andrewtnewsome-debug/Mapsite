@@ -5,6 +5,7 @@
     python qualify.py --address "9500 Euclid Ave, Cleveland, OH 44195"
     python qualify.py --name "Acme Co" --address "..."          # name is only a label
     python qualify.py --latlon 41.5033,-81.6229                 # skip address matching
+    python qualify.py --serve                                   # local web form at http://127.0.0.1:8765
 
 The resolved address is always shown, and in an interactive terminal you confirm or
 correct it before the verdict is final. With --yes (or when not run from a terminal)
@@ -186,7 +187,14 @@ def main(argv=None) -> int:
     ap.add_argument("--out", type=Path, default=REPORTS_DIR, help="report folder (default reports/)")
     ap.add_argument("--max-locations", type=int, default=10, help="most locations to qualify from one website")
     ap.add_argument("--today", help="evaluate designation periods as of this date (YYYY-MM-DD)")
+    ap.add_argument("--serve", nargs="?", const=8765, type=int, metavar="PORT",
+                    help="run a local web form (default port 8765) instead of a one-off check")
     args = ap.parse_args(argv)
+
+    if args.serve:
+        from ozq.webform import serve
+        serve(args.serve, args.out)
+        return 0
 
     if not (args.website or args.address or args.latlon):
         if args.name:
