@@ -229,8 +229,10 @@ def render_console(rep: LocationReport) -> str:
 CSS = """
 :root{--bg:#fff;--fg:#1c2430;--muted:#5d6878;--line:#dde2ea;--card:#f6f8fb;--yes:#0b6e4f;--yes-bg:#e6f4ee;
 --no:#46505e;--no-bg:#eef0f4;--unk:#8a5a00;--unk-bg:#fff4dc;--warn:#8a3b00;--warn-bg:#fff1e6;--link:#1d5bbf}
-@media (prefers-color-scheme:dark){:root{--bg:#12161c;--fg:#e6e9ef;--muted:#9aa4b2;--line:#2a313b;--card:#1a1f27;
---yes:#5fd3a6;--yes-bg:#12302a;--no:#c3cad4;--no-bg:#22272f;--unk:#f2c46b;--unk-bg:#2e2615;--warn:#ffb27a;--warn-bg:#2e2016;--link:#8ab4ff}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161c;--fg:#e6e9ef;--muted:#9aa4b2;--line:#2a313b;--card:#1a1f27;
+--yes:#5fd3a6;--yes-bg:#12302a;--no:#c3cad4;--no-bg:#22272f;--unk:#f2c46b;--unk-bg:#2e2615;--warn:#ffb27a;--warn-bg:#2e2016;--link:#8ab4ff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12161c;--fg:#e6e9ef;--muted:#9aa4b2;--line:#2a313b;--card:#1a1f27;
+--yes:#5fd3a6;--yes-bg:#12302a;--no:#c3cad4;--no-bg:#22272f;--unk:#f2c46b;--unk-bg:#2e2615;--warn:#ffb27a;--warn-bg:#2e2016;--link:#8ab4ff;color-scheme:dark}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 main{max-width:880px;margin:0 auto;padding:24px 16px 40px}
 a{color:var(--link)}h1{font-size:15px;font-weight:600;margin:0;color:var(--muted);letter-spacing:.02em}
