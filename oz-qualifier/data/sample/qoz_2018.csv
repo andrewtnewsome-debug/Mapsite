@@ -1,0 +1,7 @@
+geoid,qualifies,category,state,county,note
+39035107101,1,Low-Income Community,Ohio,Cuyahoga,copied from official list
+39035118900,1,Low-Income Community,Ohio,Cuyahoga,copied from official list
+37063002300,1,Low-Income Community,North Carolina,Durham,copied from official list
+51019050100,1,Low-Income Community,Virginia,Bedford,copied from official list
+39035107702,0,,,,not in official list (negative test case)
+13121003500,0,,,,not in official list (negative test case)

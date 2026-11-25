@@ -1,0 +1,4 @@
+geoid,qualifies,category,state,county,note
+37063002300,1,Non-Rural,North Carolina,Durham County,copied from official list
+39035107101,0,,,,not in official list (negative test case)
+13121003500,0,,,,not in official list (negative test case)
