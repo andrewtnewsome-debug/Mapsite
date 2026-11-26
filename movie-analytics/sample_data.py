@@ -1,0 +1,201 @@
+"""25-film sample dataset, used only when data/boxoffice.csv is missing.
+
+Figures are widely reported numbers (Box Office Mojo / The Numbers / trade press),
+lifetime grosses including re-releases where those are commonly quoted. They are
+approximate and for testing the pipeline end to end, not for analysis. Production
+budgets in particular are studio-reported and often wrong.
+"""
+
+from __future__ import annotations
+
+import csv
+from pathlib import Path
+
+COLUMNS = [
+    "title", "release_year", "release_date", "studio", "distributor", "genre", "genres",
+    "mpaa_rating", "runtime_min", "production_budget", "opening_weekend_domestic",
+    "domestic_gross", "international_gross", "worldwide_gross", "china_gross",
+    "director", "producers", "executive_producers", "lead_cast", "franchise", "tmdb_id",
+]
+
+M = 1_000_000
+
+# (title, year, date, studio, distributor, primary genre, genres, rating, runtime,
+#  budget, opening weekend, domestic, worldwide, china, director, producers,
+#  executive producers, lead cast, franchise, tmdb_id)
+_FILMS = [
+    ("Avatar", 2009, "2009-12-18", "Lightstorm Entertainment", "20th Century Fox", "Science Fiction",
+     "Action; Adventure; Fantasy; Science Fiction", "PG-13", 162,
+     237 * M, 77_025_481, 785_221_649, 2_923_706_026, None,
+     "James Cameron", "James Cameron; Jon Landau", "", "Sam Worthington; Zoe Saldaña; Sigourney Weaver",
+     "Avatar", 19995),
+    ("Avengers: Endgame", 2019, "2019-04-26", "Marvel Studios", "Walt Disney Studios", "Action",
+     "Action; Adventure; Science Fiction", "PG-13", 181,
+     356 * M, 357_115_007, 858_373_000, 2_799_439_100, 629_100_000,
+     "Anthony Russo; Joe Russo", "Kevin Feige",
+     "Louis D'Esposito; Victoria Alonso; Michael Grillo; Trinh Tran; Jon Favreau; James Gunn; Stan Lee",
+     "Robert Downey Jr.; Chris Evans; Mark Ruffalo", "Marvel Cinematic Universe", 299534),
+    ("Titanic", 1997, "1997-12-19", "Lightstorm Entertainment", "Paramount Pictures", "Drama",
+     "Drama; Romance", "PG-13", 194,
+     200 * M, 28_638_131, 674_292_608, 2_264_743_305, None,
+     "James Cameron", "James Cameron; Jon Landau", "Rae Sanchini",
+     "Leonardo DiCaprio; Kate Winslet; Billy Zane", "", 597),
+    ("John Carter", 2012, "2012-03-09", "Walt Disney Pictures", "Walt Disney Studios", "Science Fiction",
+     "Action; Adventure; Science Fiction", "PG-13", 132,
+     263_700_000, 30_180_188, 73_078_100, 284_139_100, None,
+     "Andrew Stanton", "Jim Morris; Colin Wilson; Lindsey Collins", "",
+     "Taylor Kitsch; Lynn Collins; Willem Dafoe", "", 49529),
+    ("The Marvels", 2023, "2023-11-10", "Marvel Studios", "Walt Disney Studios", "Action",
+     "Action; Adventure; Science Fiction", "PG-13", 105,
+     274_800_000, 46_110_859, 84_500_223, 206_136_825, None,
+     "Nia DaCosta", "Kevin Feige", "Louis D'Esposito; Mary Livanos",
+     "Brie Larson; Teyonah Parris; Iman Vellani", "Marvel Cinematic Universe", 609681),
+    ("Joker", 2019, "2019-10-04", "DC Films", "Warner Bros.", "Crime",
+     "Crime; Thriller; Drama", "R", 122,
+     55 * M, 96_202_337, 335_451_311, 1_078_958_629, None,
+     "Todd Phillips", "Todd Phillips; Bradley Cooper; Emma Tillinger Koskoff",
+     "Michael E. Uslan; Walter Hamada; Aaron L. Gilbert; Joseph Garner; Richard Baratta; Bruce Berman",
+     "Joaquin Phoenix; Robert De Niro; Zazie Beetz", "Joker", 475557),
+    ("Get Out", 2017, "2017-02-24", "Blumhouse Productions", "Universal Pictures", "Horror",
+     "Horror; Mystery; Thriller", "R", 104,
+     4_500_000, 33_377_060, 176_040_665, 255_407_969, None,
+     "Jordan Peele", "Sean McKittrick; Jason Blum; Edward H. Hamm Jr.; Jordan Peele",
+     "Raymond Mansfield; Shaun Redick; Couper Samuelson; Jeanette Volturno-Brill",
+     "Daniel Kaluuya; Allison Williams; Bradley Whitford", "", 419430),
+    ("Paranormal Activity", 2009, "2009-09-25", "Blumhouse Productions", "Paramount Pictures", "Horror",
+     "Horror", "R", 86,
+     15_000, 77_873, 107_918_810, 193_355_800, None,
+     "Oren Peli", "Oren Peli; Jason Blum", "",
+     "Katie Featherston; Micah Sloat; Mark Fredrichs", "Paranormal Activity", 23827),
+    ("Black Panther", 2018, "2018-02-16", "Marvel Studios", "Walt Disney Studios", "Action",
+     "Action; Adventure; Science Fiction", "PG-13", 134,
+     200 * M, 202_003_951, 700_059_566, 1_346_913_161, 105 * M,
+     "Ryan Coogler", "Kevin Feige", "Louis D'Esposito; Victoria Alonso; Nate Moore; Jeffrey Ford; Stan Lee",
+     "Chadwick Boseman; Michael B. Jordan; Lupita Nyong'o", "Marvel Cinematic Universe", 284054),
+    ("Black Panther: Wakanda Forever", 2022, "2022-11-11", "Marvel Studios", "Walt Disney Studios", "Action",
+     "Action; Adventure; Science Fiction", "PG-13", 161,
+     250 * M, 181_339_761, 453_829_060, 859_208_836, None,
+     "Ryan Coogler", "Kevin Feige; Nate Moore", "Louis D'Esposito; Victoria Alonso",
+     "Letitia Wright; Lupita Nyong'o; Danai Gurira", "Marvel Cinematic Universe", 505642),
+    ("Creed", 2015, "2015-11-25", "Metro-Goldwyn-Mayer", "Warner Bros.", "Drama",
+     "Drama", "PG-13", 133,
+     35 * M, 29_632_823, 109_767_581, 173_567_581, None,
+     "Ryan Coogler",
+     "Irwin Winkler; Robert Chartoff; Charles Winkler; William Chartoff; David Winkler; Kevin King-Templeton; Sylvester Stallone",
+     "", "Michael B. Jordan; Sylvester Stallone; Tessa Thompson", "Rocky", 312221),
+    ("Fruitvale Station", 2013, "2013-07-12", "Significant Productions", "The Weinstein Company", "Drama",
+     "Drama", "R", 85,
+     900_000, 377_285, 16_098_998, 17_549_645, None,
+     "Ryan Coogler", "Nina Yang Bongiovi; Forest Whitaker", "",
+     "Michael B. Jordan; Melonie Diaz; Octavia Spencer", "", 157354),
+    ("Sinners", 2025, "2025-04-18", "Proximity Media", "Warner Bros.", "Horror",
+     "Horror; Thriller; Drama", "R", 137,
+     90 * M, 48 * M, 278_600_000, 366_100_000, None,
+     "Ryan Coogler", "Zinzi Coogler; Sev Ohanian; Ryan Coogler", "",
+     "Michael B. Jordan; Hailee Steinfeld; Miles Caton", "", 1233413),
+    ("The Dark Knight", 2008, "2008-07-18", "Syncopy", "Warner Bros.", "Action",
+     "Action; Crime; Drama; Thriller", "PG-13", 152,
+     185 * M, 158_411_483, 534_858_444, 1_004_558_444, None,
+     "Christopher Nolan", "Emma Thomas; Charles Roven; Christopher Nolan",
+     "Michael E. Uslan; Benjamin Melniker; Kevin De La Noy; Thomas Tull",
+     "Christian Bale; Heath Ledger; Aaron Eckhart", "The Dark Knight", 155),
+    ("Oppenheimer", 2023, "2023-07-21", "Syncopy", "Universal Pictures", "Drama",
+     "Drama; History", "R", 180,
+     100 * M, 82_455_420, 330_078_895, 975_811_333, None,
+     "Christopher Nolan", "Emma Thomas; Charles Roven; Christopher Nolan", "",
+     "Cillian Murphy; Emily Blunt; Matt Damon", "", 872585),
+    ("Barbie", 2023, "2023-07-21", "LuckyChap Entertainment", "Warner Bros.", "Comedy",
+     "Comedy; Adventure; Fantasy", "PG-13", 114,
+     145 * M, 162_022_044, 636_238_421, 1_445_638_421, None,
+     "Greta Gerwig", "David Heyman; Margot Robbie; Tom Ackerley; Robbie Brenner", "",
+     "Margot Robbie; Ryan Gosling; America Ferrera", "", 346698),
+    ("Jaws", 1975, "1975-06-20", "Zanuck/Brown Productions", "Universal Pictures", "Thriller",
+     "Horror; Thriller; Adventure", "PG", 124,
+     9 * M, 7_061_513, 260_000_000, 476_512_065, None,
+     "Steven Spielberg", "Richard D. Zanuck; David Brown", "",
+     "Roy Scheider; Robert Shaw; Richard Dreyfuss", "Jaws", 578),
+    ("E.T. the Extra-Terrestrial", 1982, "1982-06-11", "Amblin Entertainment", "Universal Pictures",
+     "Science Fiction", "Science Fiction; Family; Adventure", "PG", 115,
+     10_500_000, 11_835_389, 437_141_279, 792_910_554, None,
+     "Steven Spielberg", "Kathleen Kennedy; Steven Spielberg", "",
+     "Henry Thomas; Dee Wallace; Peter Coyote", "", 601),
+    ("Jurassic Park", 1993, "1993-06-11", "Amblin Entertainment", "Universal Pictures", "Adventure",
+     "Adventure; Science Fiction", "PG-13", 127,
+     63 * M, 47_026_828, 402_453_882, 1_058_668_429, None,
+     "Steven Spielberg", "Kathleen Kennedy; Gerald R. Molen", "",
+     "Sam Neill; Laura Dern; Jeff Goldblum", "Jurassic Park", 329),
+    ("Star Wars", 1977, "1977-05-25", "Lucasfilm", "20th Century Fox", "Science Fiction",
+     "Adventure; Action; Science Fiction", "PG", 121,
+     11 * M, 1_554_475, 460_998_507, 775_398_007, None,
+     "George Lucas", "Gary Kurtz", "",
+     "Mark Hamill; Harrison Ford; Carrie Fisher", "Star Wars", 11),
+    ("The Blair Witch Project", 1999, "1999-07-14", "Haxan Films", "Artisan Entertainment", "Horror",
+     "Horror; Mystery", "R", 81,
+     60_000, 1_512_054, 140_539_099, 248_639_099, None,
+     "Daniel Myrick; Eduardo Sánchez", "Gregg Hale; Robin Cowie", "",
+     "Heather Donahue; Joshua Leonard; Michael C. Williams", "", 2667),
+    ("The Lone Ranger", 2013, "2013-07-03", "Jerry Bruckheimer Films", "Walt Disney Studios", "Western",
+     "Action; Adventure; Western", "PG-13", 150,
+     215 * M, 29_210_849, 89_302_115, 260_502_115, None,
+     "Gore Verbinski", "Jerry Bruckheimer; Gore Verbinski",
+     "Mike Stenson; Chad Oman; Ted Elliott; Terry Rossio; Eric McLeod",
+     "Johnny Depp; Armie Hammer; William Fichtner", "", 57201),
+    ("Mad Max: Fury Road", 2015, "2015-05-15", "Kennedy Miller Mitchell", "Warner Bros.", "Action",
+     "Action; Adventure; Science Fiction", "R", 120,
+     150 * M, 45_428_128, 154_280_290, 380_437_896, None,
+     "George Miller", "Doug Mitchell; George Miller; P.J. Voeten", "",
+     "Tom Hardy; Charlize Theron; Nicholas Hoult", "Mad Max", 76341),
+    ("Top Gun: Maverick", 2022, "2022-05-27", "Skydance Media", "Paramount Pictures", "Action",
+     "Action; Drama", "PG-13", 131,
+     170 * M, 126_707_459, 718_732_821, 1_495_696_292, 0,
+     "Joseph Kosinski", "Jerry Bruckheimer; Tom Cruise; Christopher McQuarrie; David Ellison",
+     "Tommy Harper; Dana Goldberg; Don Granger; Chad Oman; Mike Stenson",
+     "Tom Cruise; Miles Teller; Jennifer Connelly", "Top Gun", 361743),
+    ("Everything Everywhere All at Once", 2022, "2022-03-25", "AGBO", "A24", "Science Fiction",
+     "Action; Adventure; Science Fiction; Comedy", "R", 139,
+     14_300_000, 509_148, 77_191_785, 143_356_365, None,
+     "Daniel Kwan; Daniel Scheinert",
+     "Daniel Kwan; Daniel Scheinert; Jonathan Wang; Anthony Russo; Joe Russo; Mike Larocca", "",
+     "Michelle Yeoh; Ke Huy Quan; Stephanie Hsu", "", 545611),
+]
+
+
+def sample_rows() -> list[dict]:
+    rows = []
+    for f in _FILMS:
+        (title, year, date, studio, dist, genre, genres, rating, runtime, budget, opening,
+         domestic, worldwide, china, director, producers, eps, cast, franchise, tmdb_id) = f
+        rows.append({
+            "title": title,
+            "release_year": year,
+            "release_date": date,
+            "studio": studio,
+            "distributor": dist,
+            "genre": genre,
+            "genres": genres,
+            "mpaa_rating": rating,
+            "runtime_min": runtime,
+            "production_budget": budget,
+            "opening_weekend_domestic": opening,
+            "domestic_gross": domestic,
+            "international_gross": worldwide - domestic,
+            "worldwide_gross": worldwide,
+            "china_gross": "" if china is None else china,
+            "director": director,
+            "producers": producers,
+            "executive_producers": eps,
+            "lead_cast": cast,
+            "franchise": franchise,
+            "tmdb_id": tmdb_id,
+        })
+    return rows
+
+
+def write_sample_csv(path: Path) -> int:
+    rows = sample_rows()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=COLUMNS)
+        writer.writeheader()
+        writer.writerows(rows)
+    return len(rows)
