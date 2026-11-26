@@ -1240,10 +1240,25 @@
       { key: "mult", label: "Breakeven multiple", num: true, get: function (r) { return r.mult; }, fmt: mult }
     ], rows, null, null);
   }
-  function downloadAssumptions() {
+  function assumptionsJson() {
     var out = clone(A);
     out.pa_tiers.forEach(function (t, i) { t.label = tierLabel(i).replace("–", "-"); });
-    var blob = new Blob([JSON.stringify(out, null, 2) + "\n"], { type: "application/json" });
+    return JSON.stringify(out, null, 2) + "\n";
+  }
+  function copyAssumptions() {
+    var text = assumptionsJson(), box = $("a-json"), status = $("a-status");
+    function fallback() { // clipboard refused: show the JSON selected so it can be copied by hand
+      box.value = text; box.hidden = false; box.focus(); box.select();
+      status.className = ""; status.textContent = "Select-all and copy the JSON below.";
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () {
+        box.hidden = true; status.className = "ok-text"; status.textContent = "Copied. Paste it into config/assumptions.json.";
+      }, fallback);
+    } catch (e) { fallback(); }
+  }
+  function downloadAssumptions() {
+    var blob = new Blob([assumptionsJson()], { type: "application/json" });
     var a = el("a");
     a.href = URL.createObjectURL(blob);
     a.download = "assumptions.json";
@@ -1547,6 +1562,10 @@
     $("clear-all").addEventListener("click", function () { state.f = freshFilters(); state.isolate = ""; update(); });
     $("a-reset").addEventListener("click", function () { A = clone(DEFAULTS); commitAssumptions(); renderAssumptionsForm(); });
     $("a-download").addEventListener("click", downloadAssumptions);
+    $("a-copy").addEventListener("click", copyAssumptions);
+    var framed = true;
+    try { framed = window.self !== window.top; } catch (e) { framed = true; }
+    if (framed) $("a-download").hidden = true; // embedded viewers block file downloads; Copy still works
     Array.prototype.forEach.call(document.querySelectorAll("[data-tableview]"), function (b) {
       b.addEventListener("click", function () {
         var k = b.getAttribute("data-tableview");

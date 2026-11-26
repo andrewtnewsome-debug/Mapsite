@@ -58,7 +58,7 @@ body {
 }
 button, input, select { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
-.wrap { max-width: 1280px; margin: 0 auto; padding: 0 16px 48px; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-block: 0 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 
 /* ---------- header ---------- */
 .top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; padding: 24px 0 12px; }
@@ -228,11 +228,12 @@ table.data .pos-t { color: var(--good-text); } table.data .neg-t { color: var(--
 .form-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; }
 .error { color: var(--bad-text); font-weight: 600; }
 .ok-text { color: var(--good-text); }
+.json-out { width: 100%; margin-top: 10px; font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--surface-2); color: var(--ink); border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
 .section-title { font-size: 13px; font-weight: 650; margin: 18px 0 8px; }
 
 /* ---------- detail overlay ---------- */
 .overlay { position: fixed; inset: 0; z-index: 50; background: rgba(0, 0, 0, 0.35); display: flex; justify-content: flex-end; }
-.drawer { width: min(760px, 100%); height: 100%; overflow-y: auto; background: var(--page); box-shadow: var(--shadow); padding: 20px 16px 40px; }
+.drawer { width: min(760px, 100%); height: 100%; overflow-y: auto; background: var(--page); box-shadow: var(--shadow); padding: calc(20px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(40px + env(safe-area-inset-bottom, 0px)) 16px; }
 .drawer-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
 .drawer h2 { font-size: 22px; margin: 0; line-height: 1.2; }
 .drawer .card h2 { font-size: 15px; }

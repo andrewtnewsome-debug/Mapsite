@@ -158,15 +158,17 @@
         <div class="card-head">
           <div>
             <h2>Profit model assumptions</h2>
-            <p class="card-sub">Edits recompute every figure immediately and are remembered in this browser. To make them the default, download the file and replace <code>config/assumptions.json</code>, then rerun <code>python build_dashboard.py</code>.</p>
+            <p class="card-sub">Edits recompute every figure immediately and are remembered in this browser. To make them the default, download (or copy) the JSON and replace <code>config/assumptions.json</code>, then rerun <code>python build_dashboard.py</code>.</p>
           </div>
         </div>
         <div id="assumptions-form"></div>
         <div class="form-actions">
           <button class="btn" id="a-reset" type="button">Reset to config/assumptions.json</button>
           <button class="btn primary" id="a-download" type="button">Download assumptions.json</button>
+          <button class="btn" id="a-copy" type="button">Copy as JSON</button>
           <span id="a-status" aria-live="polite"></span>
         </div>
+        <textarea id="a-json" class="json-out" rows="12" readonly hidden aria-label="Assumptions as JSON"></textarea>
         <h3 class="section-title">What these assumptions imply</h3>
         <p class="card-sub">Worldwide gross a film needs to break even, for a typical 40% domestic share.</p>
         <div class="table-wrap" id="a-implied"></div>
