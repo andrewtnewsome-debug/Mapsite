@@ -27,7 +27,7 @@ function check(name, ok, detail) { results.push({ name, ok: !!ok, detail: detail
   await page.goto(URL);
   await page.waitForSelector('[data-testid="tile-films"]');
   const total = await tile("films");
-  check("page loads with every film", total === String(await page.evaluate(() => window.__dashboard.films.length)), total);
+  check("page loads with every film", total.replace(/,/g, "") === String(await page.evaluate(() => window.__dashboard.films.length)), total);
 
   // 1. A filter changes the overview strip.
   const before = { films: await tile("films"), roi: await tile("roi"), share: await tile("share") };
@@ -69,12 +69,13 @@ function check(name, ok, detail) { results.push({ name, ok: !!ok, detail: detail
   const coogler = await page.evaluate(() => window.__dashboard.filtered().map((f) => ({
     title: f.title, year: f.year, gross_multiple: f.m.gross_multiple, est_roi: f.m.est_roi, est_profit: f.m.est_profit,
     breakeven_multiple: f.m.breakeven_multiple, pa_estimate: f.m.pa_estimate, rentals_total: f.m.rentals_total })));
-  check("director picker narrows to Ryan Coogler's films", /Showing 5 of/.test(shown), shown);
-  check("films table shows his filmography", titles.length === 5 && (await page.locator("#films-title").innerText()).includes("Ryan Coogler"), titles);
+  const nCoogler = await page.evaluate(() => window.__dashboard.films.filter((f) => (f.people.director || []).includes("Ryan Coogler")).length);
+  check("director picker narrows to Ryan Coogler's films", nCoogler > 0 && shown.includes(`Showing ${nCoogler} of`), { shown, nCoogler });
+  check("films table shows his filmography", titles.length === nCoogler && (await page.locator("#films-title").innerText()).includes("Ryan Coogler"), titles);
   const tilesCoogler = { films: await tile("films"), mult: await tile("mult"), roi: await tile("roi") };
-  check("overview strip recomputed for his films", tilesCoogler.films === "5", tilesCoogler);
+  check("overview strip recomputed for his films", tilesCoogler.films === String(nCoogler), tilesCoogler);
   const scatterDots = await page.locator("#scatter circle.dot").count();
-  check("scatter narrowed to his films", scatterDots === 5, scatterDots);
+  check("scatter narrowed to his films", scatterDots === nCoogler, scatterDots);
 
   // 4. People leaderboard: his row is there; clicking applies the filter.
   await page.click("#clear-all");
@@ -84,7 +85,7 @@ function check(name, ok, detail) { results.push({ name, ok: !!ok, detail: detail
   const lbRow = (await row.count()) ? await row.locator("xpath=ancestor::tr").innerText() : null;
   await row.click();
   check("clicking a leaderboard name filters the dashboard",
-    (await page.locator("#view-dash").isVisible()) && /Showing 5 of/.test(await showing()), lbRow);
+    (await page.locator("#view-dash").isVisible()) && (await showing()).includes(`Showing ${nCoogler} of`), lbRow);
   await page.click('#view-tabs button[data-view="people"]');
   await page.click('#lb-role button[data-role="lead_cast"]');
   check("lead actor leaderboard lists Michael B. Jordan", (await page.locator('#lb-table button[data-person="Michael B. Jordan"]').count()) === 1);
@@ -116,7 +117,7 @@ function check(name, ok, detail) { results.push({ name, ok: !!ok, detail: detail
   check("detail repeats the theatrical-only disclaimer", detailText.includes("Excludes streaming, home entertainment"));
   check("detail flags the reported budget", detailText.includes("Reported budget"));
   await page.locator("#drawer button.person", { hasText: "Ryan Coogler" }).click();
-  check("clicking a name in the detail filters the dashboard", /Showing 5 of/.test(await showing()) && (await page.locator("#detail").isHidden()));
+  check("clicking a name in the detail filters the dashboard", (await showing()).includes(`Showing ${nCoogler} of`) && (await page.locator("#detail").isHidden()));
   await page.click("#clear-all");
   // A real click on a dot opens the detail.
   const c = await page.locator("#scatter circle.dot").first().boundingBox();

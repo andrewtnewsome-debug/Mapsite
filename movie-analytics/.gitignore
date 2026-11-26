@@ -13,3 +13,10 @@ data/boxoffice.csv
 
 __pycache__/
 .pytest_cache/
+
+# Public datasets downloaded by import_public.py
+data/public/
+
+# Generated dashboard embeds the built dataset (see README: licensing)
+dashboard/index.html
+dashboard/data/

@@ -25,7 +25,8 @@ CREATE TABLE movies (
     primary_genre   TEXT,
     mpaa_rating     TEXT,
     runtime_min     INTEGER,
-    franchise       TEXT,              -- NULL = original
+    franchise       TEXT,              -- NULL = original (when franchise_known = 1)
+    franchise_known INTEGER NOT NULL DEFAULT 1 CHECK (franchise_known IN (0, 1)),  -- 0 = source has no franchise data
     tmdb_id         INTEGER
 );
 
@@ -70,9 +71,10 @@ def build(staging: dict, db_path=DB_PATH) -> sqlite3.Connection:
     conn.executescript(SCHEMA)
     for movie_id, m in enumerate(staging["movies"], start=1):
         conn.execute(
-            "INSERT INTO movies VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO movies VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
             (movie_id, m["title"], m["release_year"], m["release_date"], m["studio"], m["distributor"],
-             m["primary_genre"], m["mpaa_rating"], m["runtime_min"], m["franchise"], m["tmdb_id"]),
+             m["primary_genre"], m["mpaa_rating"], m["runtime_min"], m["franchise"],
+             int(bool(m.get("franchise_known", True))), m["tmdb_id"]),
         )
         fin = m["financials"]
         conn.execute(

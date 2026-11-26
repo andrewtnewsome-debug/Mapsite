@@ -2,8 +2,21 @@
 (function () {
   "use strict";
 
+  // Data is inlined for the local file; a hosted copy may ship it beside the page instead.
+  var holder = document.getElementById("movie-data");
+  var inline = holder.textContent.trim();
+  if (inline) boot(JSON.parse(inline));
+  else {
+    fetch(holder.getAttribute("data-src") || "movies.json")
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(boot)
+      .catch(function (e) {
+        document.getElementById("subtitle").textContent = "Could not load the film data (" + e.message + "). Reload the page to try again.";
+      });
+  }
+
+  function boot(DATA) {
   var PM = window.ProfitModel;
-  var DATA = JSON.parse(document.getElementById("movie-data").textContent);
   var INF = new PM.Inflation(DATA.cpi);
   var LATEST = INF.latestYear;
   var DEFAULTS = DATA.assumptions;
@@ -141,6 +154,7 @@
     m.decade = Math.floor(m.year / 10) * 10;
     m.genres = m.genres || [];
     m.people = m.people || {};
+    if (m.franchise_known === undefined) m.franchise_known = true;
     return m;
   });
   var BY_ID = {};
@@ -148,6 +162,7 @@
   function recompute() { FILMS.forEach(function (f) { f.m = PM.compute(f.fin, f.year, A, INF); }); }
   recompute();
   function D(v, f) { return isNum(v) ? v * (state.infl ? f.k : 1) : null; }
+  var UNKNOWN_FRANCHISE = FILMS.filter(function (f) { return !f.franchise_known; }).length;
   var YMIN = Math.min.apply(null, FILMS.map(function (f) { return f.year; }));
   var YMAX = Math.max.apply(null, FILMS.map(function (f) { return f.year; }));
 
@@ -188,7 +203,7 @@
     if (F.tier !== "" && String(f.m.budget_tier) !== F.tier) return false;
     if (F.rating && (f.rating || "Not rated") !== F.rating) return false;
     if (F.fr === "franchise" && !f.franchise) return false;
-    if (F.fr === "original" && f.franchise) return false;
+    if (F.fr === "original" && (f.franchise || !f.franchise_known)) return false;
     var minww = parseFloat(F.minww);
     if (isNum(minww) && minww > 0) {
       var ww = D(f.fin.worldwide_gross, f);
@@ -354,7 +369,7 @@
   // ------------------------------------------------------------------ header, banner, filters
   function renderHeader() {
     var ds = DATA.dataset || {};
-    $("subtitle").textContent = FILMS.length + " films, " + YMIN + "–" + YMAX + " · source: " + (ds.file || "?") +
+    $("subtitle").textContent = FILMS.length.toLocaleString("en-US") + " films, " + YMIN + "–" + YMAX + " · source: " + (ds.file || "?") +
       (ds.tmdb_enriched ? " + TMDb" : "") + " · built " + String(DATA.generated_at || "").slice(0, 10);
     $("infl-real-btn").textContent = "Adjusted (" + LATEST + " $)";
     var banner = $("banner");
@@ -504,7 +519,7 @@
   function renderActive(rows) {
     var bar = $("active-bar"), F = state.f;
     bar.textContent = "";
-    var lead = el("span", null, "Showing " + rows.length + " of " + FILMS.length + " films");
+    var lead = el("span", null, "Showing " + rows.length.toLocaleString("en-US") + " of " + FILMS.length.toLocaleString("en-US") + " films");
     lead.setAttribute("data-testid", "showing");
     bar.appendChild(lead);
     function chip(label, clear) {
@@ -521,6 +536,7 @@
     if (F.tier !== "") chip("Budget " + tierLabel(+F.tier), function () { F.tier = ""; });
     if (F.rating) chip("Rated " + F.rating, function () { F.rating = ""; });
     if (F.fr !== "all") chip(F.fr === "franchise" ? "Franchise films" : "Original films", function () { F.fr = "all"; });
+    if (F.fr !== "all" && UNKNOWN_FRANCHISE) bar.appendChild(el("span", null, "(excludes " + UNKNOWN_FRANCHISE.toLocaleString("en-US") + " films with unknown franchise status)"));
     if (parseFloat(F.minww) > 0) chip("Worldwide ≥ $" + F.minww + "M", function () { F.minww = ""; });
     if (F.micro) chip("Budget ≥ $1M", function () { F.micro = false; });
     ROLE_KEYS.forEach(function (r) {
@@ -540,7 +556,7 @@
       ["films", "Films", rows.length.toLocaleString("en-US"), "of " + FILMS.length.toLocaleString("en-US") + " in the database"],
       ["mult", "Median gross multiple", mult(median(mults)), "worldwide gross ÷ reported budget"],
       ["roi", "Median estimated ROI", pct(median(rois)), "est. profit ÷ (budget + P&A)"],
-      ["share", "Estimated profitable", scored.length ? share(wins / scored.length) : "—", wins + " of " + scored.length + " films with budget and gross"]
+      ["share", "Estimated profitable", scored.length ? share(wins / scored.length) : "—", wins.toLocaleString("en-US") + " of " + scored.length.toLocaleString("en-US") + " films with budget and gross"]
     ].forEach(function (t) {
       var tile = el("div", "tile");
       tile.setAttribute("data-testid", "tile-" + t[0]);
@@ -716,7 +732,7 @@
     tier: { label: "budget tier", key: function (f) { return isNum(f.m.budget_tier) ? tierLabel(f.m.budget_tier) + (basisReal() ? " (" + LATEST + " $)" : "") : "No budget"; },
       order: function (f) { return isNum(f.m.budget_tier) ? f.m.budget_tier : 99; } },
     rating: { label: "MPAA rating", key: function (f) { return f.rating || "Not rated"; } },
-    franchise: { label: "franchise status", key: function (f) { return f.franchise ? "Franchise" : "Original"; } }
+    franchise: { label: "franchise status", key: function (f) { return f.franchise ? "Franchise" : f.franchise_known ? "Original" : "Status unknown"; } }
   };
   function statsFor(key, films, order) {
     var scored = films.filter(function (f) { return f.m.profitable !== null; });
@@ -857,10 +873,8 @@
     var span = x1 - x0, step = span <= 12 ? 2 : span <= 30 ? 5 : span <= 80 ? 10 : 20;
     for (var yr = Math.ceil(x0 / step) * step; yr <= x1; yr += step) T(svg, X(yr), m.t + ph + 18, String(yr), "tick", "middle");
     S("line", { x1: m.l, x2: m.l + pw, y1: m.t + ph, y2: m.t + ph, "class": "axisline" }, svg);
-    if (isNum(be)) {
-      S("line", { x1: m.l, x2: m.l + pw, y1: Y(be), y2: Y(be), "class": "ref-line" }, svg);
-      T(svg, m.l + 6, Y(be) - 6, "median breakeven " + mult(be), "lbl-2 halo", "start");
-    }
+    $("yearline-be").textContent = isNum(be) ? " (" + mult(be) + ")" : "";
+    if (isNum(be)) S("line", { x1: m.l, x2: m.l + pw, y1: Y(be), y2: Y(be), "class": "ref-line" }, svg);
     var d = "";
     pts.forEach(function (p, i) {
       var cmd = i > 0 && p.year - pts[i - 1].year === 1 ? "L" : "M";
@@ -1046,9 +1060,12 @@
     var box = $("lb-table"), more = $("lb-more"), role = state.lb.role;
     box.textContent = ""; more.textContent = "";
     var list = leaderboard(rows);
+    var credited = rows.filter(function (f) { return (f.people[role] || []).length; }).length;
     $("lb-sub").textContent = ROLE_PLURAL[role] + " ranked by the economics of their films: " + list.length + " " +
       (list.length === 1 ? "person" : "people") + " with at least " + state.lb.min + " film" + (state.lb.min === 1 ? "" : "s") +
-      " among the " + rows.length + " films matching the dashboard filters. Click a name to filter the dashboard to their films.";
+      ". " + credited.toLocaleString("en-US") + " of the " + rows.length.toLocaleString("en-US") + " films matching the dashboard filters have " +
+      ROLE_LABEL[role].toLowerCase() + " credits in the data" + (credited < rows.length ? " (a TMDb key fills the rest)" : "") +
+      ". Click a name to filter the dashboard to their films.";
     if (!list.length) { box.appendChild(el("div", "empty-state", "Nobody meets the minimum film count for these filters. Lower the minimum or widen the filters.")); return; }
     var cols = [
       { key: "rank", label: "#", cls: "rank", get: function () { return null; }, render: function (td, p, i) { td.textContent = String(i + 1); } },
@@ -1319,7 +1336,7 @@
       f.distributor, f.studio && f.studio !== f.distributor ? f.studio : null].filter(Boolean).join(" · ")));
     var tags = el("div", "tags");
     f.genres.forEach(function (g) { tags.appendChild(el("span", "tag", g)); });
-    tags.appendChild(el("span", "tag", f.franchise ? "Franchise: " + f.franchise : "Original"));
+    tags.appendChild(el("span", "tag", f.franchise ? "Franchise: " + f.franchise : f.franchise_known ? "Original" : "Franchise status unknown"));
     hl.appendChild(tags);
     var x = el("button", "close", "×"); x.type = "button"; x.setAttribute("aria-label", "Close");
     x.addEventListener("click", function () { closeMovie(); });
@@ -1596,4 +1613,5 @@
     state: state, films: FILMS, filtered: filtered, update: update, leaderboard: leaderboard,
     setAssumptions: function (a) { A = a; commitAssumptions(); }, assumptions: function () { return A; }
   };
+  }
 })();

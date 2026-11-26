@@ -55,6 +55,7 @@ def export(conn: sqlite3.Connection) -> dict:
             "rating": row["mpaa_rating"],
             "runtime": row["runtime_min"],
             "franchise": row["franchise"],
+            "franchise_known": bool(row["franchise_known"]),
             "tmdb_id": row["tmdb_id"],
             "fin": {**{k: row[k] for k in MONEY_KEYS}, "source": row["source"]},
             "people": {role: people.get(row["id"], {}).get(role, []) for role in ROLES},

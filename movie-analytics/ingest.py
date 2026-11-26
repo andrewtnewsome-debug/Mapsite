@@ -65,12 +65,17 @@ reported figures, and the dashboard shows a "Sample data" banner.
 | `lead_cast` | names | top-billed first, semicolon-separated |
 | `franchise` | text | franchise or collection name; blank = original |
 | `tmdb_id` | integer | optional; speeds up and disambiguates TMDb enrichment |
+| `source` | text | optional; where the row's figures came from (shown in the film detail) |
+| `franchise_known` | 0 or 1 | optional; 0 = the source has no franchise data, so a blank `franchise` means "unknown", not "original" |
 
 Then rerun:
 
 ```
 python ingest.py && python build_db.py && python build_dashboard.py
 ```
+
+No dataset of your own? `python import_public.py` builds this file from two public
+datasets (about 1,100 films); see the main README.
 
 ## Other files here
 
@@ -138,7 +143,7 @@ def normalize_row(raw: dict, source: str, log: ConflictLog) -> dict | None:
             log.add("data", title, year, f"could not parse {field}={raw_value!r}; stored as missing")
     if fin["production_budget"] == 0:
         fin["production_budget"] = None  # a $0 budget means unknown
-    fin["source"] = source
+    fin["source"] = clean_text(raw.get("source")) or source  # per-row provenance when the CSV has it
 
     people = {role: [] for role in ROLES}
     for column, role in PEOPLE_COLUMNS.items():
@@ -155,6 +160,9 @@ def normalize_row(raw: dict, source: str, log: ConflictLog) -> dict | None:
         "mpaa_rating": clean_text(raw.get("mpaa_rating")),
         "runtime_min": parse_int(raw.get("runtime_min")),
         "franchise": clean_text(raw.get("franchise")),
+        # A blank franchise means "original" unless the row says its source never recorded franchises.
+        "franchise_known": bool(clean_text(raw.get("franchise")))
+        or (clean_text(raw.get("franchise_known")) or "1").lower() not in ("0", "false", "no"),
         "tmdb_id": parse_int(raw.get("tmdb_id")),
         "financials": fin,
         "people": people,
@@ -206,6 +214,9 @@ def merge_tmdb(record: dict, info: dict, log: ConflictLog) -> None:
         if record.get(field) in (None, "") and info.get(field):
             record[field] = info[field]
             filled.append(field)
+    if not record.get("franchise_known"):
+        record["franchise_known"] = True  # TMDb answered: no collection means an original
+        filled.append("franchise_known")
     if not record["genres"] and info.get("genres"):
         record["genres"] = list(info["genres"])
         record["primary_genre"] = record["primary_genre"] or info["genres"][0]

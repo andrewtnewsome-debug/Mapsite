@@ -23,6 +23,48 @@ copied elsewhere.
 Without `data/boxoffice.csv` the pipeline runs on a 25-film sample
 (`data/sample_boxoffice.csv`) and the dashboard shows a "Sample data" banner.
 
+## About 1,100 films from public data
+
+```bash
+python import_public.py    # writes data/boxoffice.csv, then run the three commands above
+```
+
+This downloads two public datasets once into `data/public/` and joins them:
+
+| Dataset | What it adds |
+|---|---|
+| [TidyTuesday 2018-10-23 `movie_profit.csv`](https://github.com/rfordatascience/tidytuesday/tree/master/data/2018/2018-10-23), originally The Numbers | budget, domestic and worldwide gross, distributor, MPAA rating, one of five genres |
+| [TidyTuesday 2021-03-09 `movies.csv`](https://github.com/rfordatascience/tidytuesday/tree/master/data/2021/2021-03-09), FiveThirtyEight + OMDb, 1970-2013 | director, top 3 cast, all genres, runtime |
+
+By default it keeps the films found in both, which have full credits, plus the 25 curated
+sample films: 1,104 films in all. `--all` keeps every usable `movie_profit` film (about
+3,300; credits only where matched), and `--no-sample` drops the curated films. It will not
+overwrite an existing `data/boxoffice.csv` without `--force`.
+
+How the join works: films are matched on title and year (a year either way allowed). A
+fallback matches on budget, gross and shared title words, so *X-Men 2* finds
+*X2 (X-Men 2)*. Each match is used once, sequel numbers must agree, and every fallback
+match is listed in `data/public/import_report.txt` for checking. Where both sources give a
+figure, `movie_profit`'s is kept and disagreements over 10% are logged in the same report.
+A curated sample film that is also in the public data keeps its own row.
+
+Know the gaps before reading the results:
+
+- **Partial catalogue.** `movie_profit` only covers Action, Adventure, Comedy, Drama and
+  Horror (TidyTuesday's filter), and several of the biggest films (*Avatar*, *Titanic*,
+  *The Dark Knight*) are absent; the curated sample puts some back. The credits data ends
+  in 2013, so the public films run 1970-2013, and figures are a 2018 snapshot.
+- **Selection.** FiveThirtyEight picked films that also had a Bechdel-test rating, which
+  leans toward well-known titles.
+- **Not in either source:** producers, executive producers, opening weekends, studios
+  (only distributors) and franchise status. Public films are marked *franchise status
+  unknown*, so the Franchise/Original filter only compares films whose status is known.
+  The people leaderboard says how many films have credits for the chosen role. A TMDb key
+  fills all of these.
+- **Licensing.** Box office figures originate with The Numbers. `data/public/`,
+  `data/boxoffice.csv` and the generated dashboard are git-ignored so they are not
+  published by accident.
+
 ## Add the real dataset
 
 Save it as **`data/boxoffice.csv`** and rerun the three commands. `data/README.md` lists
@@ -40,8 +82,9 @@ every column; in short:
   `data/conflicts.log`.
 
 `data/boxoffice.csv` is git-ignored because commercial box office data is usually
-licensed. Remove that line from `.gitignore` if you are free to commit it. Note that
-`dashboard/index.html` and `dashboard/data/movies.json` embed whatever dataset you build.
+licensed, and so are `dashboard/index.html` and `dashboard/data/movies.json`, which embed
+whatever dataset you build. Remove those lines from `.gitignore` if you are free to commit
+them.
 
 ## Add a TMDb key (optional)
 
@@ -207,6 +250,7 @@ node tests/e2e_dashboard.js     # browser checks; needs Node.js + the playwright
 ## Layout
 
 ```
+import_public.py     optional: public datasets -> data/boxoffice.csv (~1,100 films)
 ingest.py            seed CSV / sample -> TMDb enrichment -> data/staging/movies.json
 build_db.py          staging JSON -> movies.db (+ verification)
 build_dashboard.py   movies.db -> dashboard/data/movies.json + dashboard/index.html
@@ -225,7 +269,7 @@ tests/
 
 | Table | Columns |
 |---|---|
-| `movies` | id, title, release_year, release_date, studio, distributor, primary_genre, mpaa_rating, runtime_min, franchise (NULL = original), tmdb_id |
+| `movies` | id, title, release_year, release_date, studio, distributor, primary_genre, mpaa_rating, runtime_min, franchise (NULL = original), franchise_known, tmdb_id |
 | `financials` | movie_id, production_budget, opening_weekend_domestic, domestic_gross, international_gross, worldwide_gross, china_gross, source |
 | `genres` | movie_id, genre (one row per genre per film) |
 | `people` | movie_id, person_name, role (`director` / `producer` / `executive_producer` / `lead_cast`), billing_order (1 = first listed) |
@@ -236,10 +280,14 @@ tests/
 - Money is stored as integer **nominal** US dollars. The release year lets inflation be
   applied at display time from `data/cpi.csv`. Negative values are rejected by CHECK
   constraints, and ingest stores unparseable or negative input as NULL.
+- `movies.franchise_known` (0 or 1) is an addition: 0 means the row's source records no
+  franchise data, so a NULL `franchise` is unknown rather than original. TMDb enrichment
+  sets it to 1.
 - `china_gross` is an addition to the original spec. It is nullable and only used to apply
   the separate China rental rate.
-- `financials.source` is `seed` or `sample`, with `+tmdb` appended when TMDb filled any
-  gap.
+- `financials.source` is the CSV's `source` column when present (the public importer
+  names its datasets), otherwise `seed` or `sample`, with `+tmdb` appended when TMDb
+  filled any gap.
 - A person with two roles on one film (Ryan Coogler directed and produced *Sinners*) has
   two `people` rows.
 - **Placeholder, not built in v1:** `financials.ancillary_revenue_estimate` (INTEGER,

@@ -94,7 +94,7 @@ def parse_money(value) -> int | None:
     text = str(value).strip().lower().replace(",", "").replace("$", "").replace(" ", "")
     if text in BLANK_TOKENS:
         return None
-    match = re.fullmatch(r"(-?\d+(?:\.\d+)?)(k|m|mm|b|bn)?", text)
+    match = re.fullmatch(r"(-?\d+(?:\.\d+)?(?:e[+-]?\d+)?)(k|m|mm|b|bn)?", text)  # 1.75e+08 from R/pandas
     if not match:
         return None
     number = float(match.group(1)) * _MONEY_SUFFIX.get(match.group(2) or "", 1)
